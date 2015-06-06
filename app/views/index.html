@@ -1,9 +1,45 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <title>{{ title }}</title>
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Bus Simulator</title>
+    <!-- stylesheets -->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/index.css">
+    <!-- scripts -->
+    <script type="text/javascript" src="../javascripts/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../javascripts/angular.min.js"></script>
+    <script type="text/javascript" src="../javascripts/angular-ui-router.js"></script>
+    <script type="text/javascript" src="../javascripts/angular-app.js"></script>
+    <script type="text/javascript" src="../javascripts/bootstrap.min.js"></script>
 </head>
-<body>
-<h1>{{ title }}</h1>
-<h2>Welcome to {{ title }}</h2>
+
+<body ng-app="bus-simulator">
+<!--Navigation bar-->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref="tool">Bus Simulator</a>
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+            <li><a ui-sref="tool">Tool</a></li>
+            <li><a ui-sref="about">About</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!--Main content-->
+<div class="container main-container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <ui-view> <!--Whenever ui-router detects a route change, it will place the new state's template inside this tag and initialize the controller we specified in our state configuration.--> </ui-view>
+        </div>
+    </div>
+</div>
 </body>
+</html>
