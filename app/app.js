@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/main');
 
@@ -27,6 +28,10 @@ app.configure = function () {
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, 'public')));
 
+    // database setup
+    mongoose.connect("mongodb://localhost/bus_simulator_db");
+
+    // routes setup
     app.use('/', routes);
 
     // catch 404 and forward to error handler
