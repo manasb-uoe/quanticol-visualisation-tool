@@ -8,7 +8,7 @@ var serviceSchema = new mongoose.Schema({
     name: {type: String, index: {unique: true}},
     description: String,
     service_type: String,
-    routes: [Mixed]
+    routes: [mongoose.Schema.Types.Mixed]
 });
 
 module.exports = mongoose.model('Service', serviceSchema);
