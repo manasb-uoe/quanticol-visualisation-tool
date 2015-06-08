@@ -13,7 +13,7 @@
     <script type="text/javascript" src="/libs/bootstrap.min.js"></script>
 </head>
 
-<body ng-app="bus-simulator">
+<body data-ng-app="bus-simulator" ng-controller="NavigationController">
 <!--Navigation bar-->
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -26,9 +26,10 @@
             </button>
             <a class="navbar-brand" ui-sref="tool">QUANTICOL Bus Simulator</a>
         </div>
-        <ul class="nav navbar-nav navbar-left">
-            <li class="active"><a ui-sref="tool">Tool</a></li>
-            <li><a ui-sref="about">About</a></li>
+        <ul class="nav navbar-nav navbar-right">
+            <li ng-repeat="tab in tabs" ng-class="{'active': tab.active}">
+                <a ui-sref="{{tab.state}}" ng-click="selectTab(tab)"> <span class="glyphicon {{tab.iconClass}}" aria-hidden="true"></span> {{tab.name}}</a>
+            </li>
         </ul>
     </div>
 </nav>
