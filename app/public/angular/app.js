@@ -3,11 +3,10 @@
  */
 
 /**
- * Angular app initialization
+ * Main app module initialization
  */
 
 var app = angular.module("bus-simulator", ["ui.router"]);
-
 
 /**
  * Routes configuration
@@ -17,18 +16,14 @@ app.config([
     "$stateProvider",
     "$urlRouterProvider",
     function ($stateProvider, $urlRouterProvider) {
-        // tool state
         $stateProvider.state("tool", {
             url: "/tool",
-            templateUrl: "./angular-views/tool.html",
-            controller: "ToolController"
+            templateUrl: "/angular/views/tool.html"
         });
 
-        // about state
         $stateProvider.state("about", {
             url: "/about",
-            templateUrl: "./angular-views/about.html",
-            controller: "AboutController"
+            templateUrl: "/angular/views/about.html"
         });
 
         // redirect to tool state for undefined routes
