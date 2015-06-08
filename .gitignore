@@ -5,3 +5,9 @@
 node_modules
 *.log
 *.gz
+
+# database files
+data/
+
+# windows batch scripts
+*.bat
