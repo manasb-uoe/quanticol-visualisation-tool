@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
 var mongoose = require('mongoose');
+var dbConfig = require("./utils/db_config");
 
 var routes = require('./routes/main');
 
@@ -29,7 +30,7 @@ app.configure = function () {
     app.use(express.static(path.join(__dirname, 'public')));
 
     // database setup
-    mongoose.connect("mongodb://localhost/bus_simulator_db");
+    mongoose.connect(dbConfig.url_prod);
 
     // routes setup
     app.use('/', routes);
