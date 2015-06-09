@@ -54,7 +54,7 @@ function populateStops(path, cbA) {
                 function (stopJson, cbB) {
                     stopJson.location = [stopJson.longitude, stopJson.latitude];
 
-                    // delete unused fields
+                    // delete unused items
                     delete stopJson.atco_code;
                     delete stopJson.identifier;
                     delete stopJson.orientation;
@@ -69,9 +69,7 @@ function populateStops(path, cbA) {
                         cbB();
                     });
                 },
-                function (err) {
-                    if (err) throw err;
-
+                function () {
                     console.log("DONE\n");
                     cbA();
                 }
@@ -80,6 +78,59 @@ function populateStops(path, cbA) {
     });
 }
 
+function populateServices(path, cbA) {
+    console.log("Populating Services...");
+
+    Service.remove(function (err) {
+        if (err) throw err;
+
+        getJSON(path, function (status, servicesJson) {
+            async.each(
+                servicesJson.services,
+                function (serviceJson, cbB) {
+                    var service = new Service(serviceJson);
+                    service.save(function (err) {
+                        if (err) throw err;
+
+                        cbB();
+                    });
+                },
+                function () {
+                    console.log("DONE\n");
+                    cbA();
+                }
+            )
+        });
+    })
+}
+
+function populateVehicleLocations(path, cbA) {
+    console.log("Populating Vehicle Locations...");
+
+    getJSON(path, function (status, vehicleLocationsJson) {
+        async.each(
+            vehicleLocationsJson.vehicles,
+            function (vehicleLocationJson, cbB) {
+                vehicleLocationJson.location = [vehicleLocationJson.longitude, vehicleLocationJson.latitude];;
+
+                // delete unused items
+                delete vehicleLocationJson.latitude;
+                delete vehicleLocationJson.longitude;
+
+                var vehicleLocation = new VehicleLocation(vehicleLocationJson);
+                vehicleLocation.save(function (err) {
+                    if (err) throw err;
+
+                    cbB();
+                });
+            },
+            function () {
+                console.log("DONE\n");
+                cbA();
+            }
+        )
+    });
+}
 
 /**
  * Handle command line arguments
@@ -91,22 +142,29 @@ mongoose.connection.on("error", function (err) {
 });
 mongoose.connection.once("open", function () {
     var arg = process.argv[2];
+
+    var finalCallback = function () {
+        console.log("END OF DB POPULATION SCRIPT");
+        process.exit(0);
+    };
+
     switch (arg) {
-        case "all":
+        case "nonlive":
             async.series([
                 function (cb) {
                     populateStops("/api/v1/stops", cb);
-                }, function() {
-                    console.log("END OF DB POPULATION SCRIPT");
-                    process.exit(0);
-                }
+                },
+                function (cb) {
+                    populateServices("/api/v1/services", cb);
+                },
+                finalCallback
             ]);
             break;
         case "live":
-            console.log(arg);
+            populateVehicleLocations("/api/v1/vehicle_locations", finalCallback);
             break;
         default:
-            throw new Error("Only command line arguments allowed are: 'all' or 'live'.");
+            throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'.");
     }
 });
 
