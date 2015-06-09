@@ -8,6 +8,7 @@
 
 var app = angular.module("bus-simulator", ["ui.router"]);
 
+
 /**
  * Routes configuration
  */
@@ -63,3 +64,26 @@ app.controller("NavigationController", [
         });
     }
 ]);
+
+
+/**
+ * Directives
+ */
+
+app.directive("map", function () {
+    return {
+        restrict: "E",
+        template: "<div class='{{className}}' style='height: 100%;'></div>",
+        transclude: false,
+        scope: {
+            className: "@"
+        },
+        link: function postLink(scope, element, attrs) {
+            var googleMap = new GoogleMapsApiWrapper(
+                {lat: 55.953825, lng: -3.188646},
+                12,
+                $(element).children()[0]
+            );
+        }
+    }
+});
