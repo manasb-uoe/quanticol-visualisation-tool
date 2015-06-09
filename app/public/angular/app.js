@@ -23,7 +23,7 @@ app.config([
 
         $stateProvider.state("documentation", {
             url: "/documentation",
-            templateUrl: "/angular/views/about.html"
+            templateUrl: "/angular/views/documentation.html"
         });
 
         // redirect to tool state for undefined routes
