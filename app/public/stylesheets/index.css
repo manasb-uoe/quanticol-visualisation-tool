@@ -19,23 +19,55 @@ html, body {
 .main-container .control-panel {
     position: fixed;
     top: 50px;
-    height: 150px;
+    height: 200px;
     width: 100%;
-    margin-top: -150px;
+    margin-top: -200px;
     background-color: transparent;
 }
 
 .main-container .control-panel .control-panel-body {
+    position: relative;
     background-color: rgba(248, 248, 248, 0.8);
     height: 100%;
     box-shadow: 0 6px 8px -6px #999;
+    padding: 15px;
+    overflow: auto;
+    text-align: center;
+}
+
+.main-container .control-panel .control-panel-body .title {
+    font-weight: 600;
+}
+
+.main-container .control-panel .control-panel-body .btn-select-services, .btn-select-buses, .btn-change-time-span {
+    margin-bottom: 5px;
+}
+
+.main-container .control-panel .control-panel-body .divider {
+    border-color: lightgray;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container {
+    padding-right: 20px;
+    float: right;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container .btn-reset-selection {
+    margin-right: 10px;
+    width: 80px;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container .btn-animate {
+    width: 80px;
 }
 
 .main-container .control-panel-trigger-wrapper {
     position: fixed;
     top: 58px;
     width: 100%;
-    margin-top: 0;
+    margin-top: 0px;
     text-align: center;
 }
 

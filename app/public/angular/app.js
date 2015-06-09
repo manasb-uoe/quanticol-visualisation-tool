@@ -88,46 +88,53 @@ app.directive("map", function () {
     }
 });
 
-app.directive("controlPanel", function () {
-    return {
-        restrict: "E",
-        templateUrl: "/angular/views/control_panel.html",
-        transclude: false,
-        scope: {
+app.directive("controlPanel", [
+    "$timeout",
+    function ($timeout) {
+        return {
+            restrict: "E",
+            templateUrl: "/angular/views/control_panel.html",
+            transclude: false,
+            controller: function($scope) {
+                // business logic goes here
+            },
+            link: function postLink(scope, element, attrs) {
+                scope.isVisible = false;
 
-        },
-        link: function postLink(scope, element, attrs) {
-            scope.isVisible = false;
-            var animationDuration = 500;
+                var controlPanel = $(element).find(".control-panel");
+                var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
 
-            var controlPanel = $(element).find(".control-panel");
-            var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
+                scope.toggle = function () {
+                    if (scope.isVisible) {
+                        $(function () {
+                            controlPanelTriggerWrapper.animate({
+                                marginTop: "0px"
+                            }, {duration: 500, queue: false});
+                            controlPanel.animate({
+                                marginTop: "-200px"
+                            }, {duration: 500, queue: false});
+                        });
 
-            scope.toggle = function () {
-                if (scope.isVisible) {
-                    $(function () {
-                        controlPanelTriggerWrapper.animate({
-                            marginTop: "0px"
-                        }, {duration: animationDuration, queue: false});
-                        controlPanel.animate({
-                            marginTop: "-150px"
-                        }, {duration: animationDuration, queue: false});
-                    });
+                        scope.isVisible = false;
+                    } else {
+                        $(function () {
+                            controlPanelTriggerWrapper.animate({
+                                marginTop: "200px"
+                            }, {duration: 500, queue: false});
+                            controlPanel.animate({
+                                marginTop: "0px"
+                            }, {duration: 500, queue: false});
+                        });
 
-                    scope.isVisible = false;
-                } else {
-                    $(function () {
-                        controlPanelTriggerWrapper.animate({
-                            marginTop: "150px"
-                        }, {duration: animationDuration, queue: false});
-                        controlPanel.animate({
-                            marginTop: "0px"
-                        }, {duration: animationDuration, queue: false});
-                    });
+                        scope.isVisible = true;
+                    }
+                };
 
-                    scope.isVisible = true;
-                }
-            };
+                // open control panel when page reloads
+                $timeout(function () {
+                    scope.toggle();
+                }, 1500);
+            }
         }
-    }
-});
+    }]
+);
