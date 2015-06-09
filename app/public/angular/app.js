@@ -91,21 +91,20 @@ app.directive("map", function () {
 app.directive("controlPanel", function () {
     return {
         restrict: "E",
-        templateUrl: "/angular/views/control_panel_directive_template.html",
-        transclude: true,
+        templateUrl: "/angular/views/control_panel.html",
+        transclude: false,
         scope: {
 
         },
         link: function postLink(scope, element, attrs) {
-            var isVisible = false;
+            scope.isVisible = false;
             var animationDuration = 500;
 
             var controlPanel = $(element).find(".control-panel");
             var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
 
             scope.toggle = function () {
-                console.log("click");
-                if (isVisible) {
+                if (scope.isVisible) {
                     $(function () {
                         controlPanelTriggerWrapper.animate({
                             marginTop: "0px"
@@ -115,7 +114,7 @@ app.directive("controlPanel", function () {
                         }, {duration: animationDuration, queue: false});
                     });
 
-                    isVisible = false;
+                    scope.isVisible = false;
                 } else {
                     $(function () {
                         controlPanelTriggerWrapper.animate({
@@ -126,7 +125,7 @@ app.directive("controlPanel", function () {
                         }, {duration: animationDuration, queue: false});
                     });
 
-                    isVisible = true;
+                    scope.isVisible = true;
                 }
             };
         }
