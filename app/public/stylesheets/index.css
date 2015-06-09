@@ -2,7 +2,51 @@ html, body {
     height: 100%;
 }
 
+/* Index page */
+
+.navbar {
+    box-shadow: 0 6px 8px -6px #999;
+}
+
+
+/* Tool page */
+
 .main-container {
     margin-top: 50px;
     height: 100%;
 }
+
+.main-container .control-panel {
+    position: fixed;
+    top: 50px;
+    height: 150px;
+    width: 100%;
+    margin-top: -150px;
+    background-color: rgba(248, 248, 248, 0.8);
+}
+
+.main-container .control-panel-trigger-wrapper {
+    position: fixed;
+    top: 58px;
+    width: 100%;
+    margin-top: 0;
+    text-align: center;
+}
+
+.main-container .control-panel-trigger-wrapper .control-panel-trigger {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0 0 15px 15px;
+    background-color: #0e9aef;
+    display: inline;
+    padding: 10px;
+    text-align: center;
+    color: #f8f8f8;
+    cursor: pointer;
+}
+
+.main-container .control-panel-trigger-wrapper .control-panel-trigger:hover {
+    background-color: #0c8ad7;
+}
+

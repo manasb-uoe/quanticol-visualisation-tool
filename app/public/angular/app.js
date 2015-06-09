@@ -87,3 +87,48 @@ app.directive("map", function () {
         }
     }
 });
+
+app.directive("controlPanel", function () {
+    return {
+        restrict: "E",
+        templateUrl: "/angular/views/control_panel_directive_template.html",
+        transclude: true,
+        scope: {
+
+        },
+        link: function postLink(scope, element, attrs) {
+            var isVisible = false;
+            var animationDuration = 500;
+
+            var controlPanel = $(element).find(".control-panel");
+            var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
+
+            scope.toggle = function () {
+                console.log("click");
+                if (isVisible) {
+                    $(function () {
+                        controlPanelTriggerWrapper.animate({
+                            marginTop: "0px"
+                        }, {duration: animationDuration, queue: false});
+                        controlPanel.animate({
+                            marginTop: "-150px"
+                        }, {duration: animationDuration, queue: false});
+                    });
+
+                    isVisible = false;
+                } else {
+                    $(function () {
+                        controlPanelTriggerWrapper.animate({
+                            marginTop: "150px"
+                        }, {duration: animationDuration, queue: false});
+                        controlPanel.animate({
+                            marginTop: "0px"
+                        }, {duration: animationDuration, queue: false});
+                    });
+
+                    isVisible = true;
+                }
+            };
+        }
+    }
+});
