@@ -29,11 +29,13 @@
             </button>
             <a class="navbar-brand" ui-sref="tool">QUANTICOL Bus Simulator</a>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li ng-repeat="tab in tabs" ng-class="{'active': tab.active}">
-                <a ui-sref="{{tab.state}}" ng-click="selectTab(tab)"> <span class="glyphicon {{tab.iconClass}}" aria-hidden="true"></span> {{tab.name}}</a>
-            </li>
-        </ul>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li ng-repeat="tab in tabs" ng-class="{'active': tab.active}">
+                    <a ui-sref="{{tab.state}}" ng-click="selectTab(tab)"> <span class="glyphicon {{tab.iconClass}}" aria-hidden="true"></span> {{tab.name}}</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
