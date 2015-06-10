@@ -2,6 +2,14 @@ html, body {
     height: 100%;
 }
 
+/* Fix navbar moving to right problem when a modal is opened */
+.modal-open .navbar-fixed-top,
+.modal-open .control-panel,
+.modal-open .control-panel-trigger-wrapper {
+    padding-right: 17px;
+}
+
+
 /* Index page */
 
 .navbar {
