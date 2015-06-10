@@ -6,26 +6,22 @@ var modalServiceModule = angular.module("bootstrap.services.modal", []);
 
 modalServiceModule.factory("$modal", [
     "$http",
-    function ($http) {
+    "$compile",
+    "$rootScope",
+    function ($http, $compile, $rootScope) {
         var defaults = {
-            modalId: undefined,
             templateUrl: undefined,
             template: undefined,
-            size: undefined
+            size: undefined,
+            controller: undefined,
+            scope: $rootScope.$new()
         };
 
         var globalId = 0;
 
         var privateMethods = {
             getDialog: function(cb) {
-                if (defaults.modalId) {
-                    var $dialog = $("body").find("#" + defaults.modalId);
-                    if ($dialog.length == 1) {
-                        cb($dialog);
-                    } else {
-                        cb(null, new Error("No modal found with id: " + defaults.modalId));
-                    }
-                } else if (defaults.templateUrl) {
+                if (defaults.templateUrl) {
                     privateMethods.getTemplateFromUrl(defaults.templateUrl, function (template, err) {
                         if (err) cb(null, err);
 
@@ -45,6 +41,7 @@ modalServiceModule.factory("$modal", [
                     });
             },
             createDialog: function (template) {
+                // generate size class
                 var sizeClass = undefined;
                 if (defaults.size == "lg") {
                     sizeClass = " modal-lg";
@@ -54,17 +51,24 @@ modalServiceModule.factory("$modal", [
                     sizeClass = '';
                 }
 
+                // add controller name within ng-controller to provided template
+                var templateHtml = defaults.controller
+                    ? "<div ng-controller='" + defaults.controller + "'>" + template + "</div>"
+                    : "<div>" + template + "</div>";
+
                 var html = [
                     '<div class="modal fade" id="modal-' + globalId +  '"tabindex="-1" role="dialog" aria-hidden="true">',
                     '<div class="modal-dialog' + sizeClass + '">',
                     '<div class="modal-content">',
-                    template,
+                    templateHtml,
                     '</div>',
                     '</div>',
                     '</div>'
                 ].join("");
 
-                var $dialog = $(html);
+                // compile html and add to body of the page
+                var compiledHtml = $compile(html)(defaults.scope);
+                var $dialog = $(compiledHtml);
                 $dialog.appendTo($("body"));
 
                 globalId++;
@@ -75,16 +79,17 @@ modalServiceModule.factory("$modal", [
 
         var publicMethods = {
             create: function(options, cb) {
-                angular.copy(options, defaults);
+                angular.extend(defaults, options);
                 privateMethods.getDialog(function ($dialog, err) {
                     if (err) cb(null, err);
 
-                    cb({
+                    var modalInstance  = {
                         show: function() {
                             $dialog.modal("show");
                         },
                         hide: function() {
-                            $dialog.modal("show");
+                            console.log("hiding");
+                            $dialog.modal("hide");
                         },
                         onShown: function (cb) {
                             $dialog.on("show.bs.modal", cb);
@@ -92,7 +97,12 @@ modalServiceModule.factory("$modal", [
                         onHidden: function (cb) {
                             $dialog.on("hidden.bs.modal", cb);
                         }
-                    });
+                    };
+
+                    // provide modalInstance to specified controller
+                    defaults.scope.modalInstance = modalInstance;
+
+                    cb(modalInstance);
                 });
             }
         };
