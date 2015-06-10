@@ -34,6 +34,23 @@ app.config([
 
 
 /**
+ * Services
+ */
+
+app.factory("$map", function () {
+    return {
+        create: function(centerLocation, zoomLevel, mapContainer) {
+            return new GoogleMapsApiWrapper(
+                centerLocation,
+                zoomLevel,
+                mapContainer
+            );
+        }
+    }
+});
+
+
+/**
  * Controllers
  */
 
@@ -70,71 +87,74 @@ app.controller("NavigationController", [
  * Directives
  */
 
-app.directive("map", function () {
-    return {
-        restrict: "E",
-        template: "<div class='{{className}}' style='height: 100%;'></div>",
-        transclude: false,
-        scope: {
-            className: "@"
-        },
-        link: function postLink(scope, element, attrs) {
-            var googleMap = new GoogleMapsApiWrapper(
-                {lat: 55.953825, lng: -3.188646},
-                12,
-                $(element).children()[0]
-            );
-        }
-    }
-});
-
-app.directive("controlPanel", [
-    "$timeout",
-    function ($timeout) {
+app.directive("map", [
+    "$map",
+    function ($map) {
         return {
             restrict: "E",
-            templateUrl: "/angular/views/control_panel.html",
+            template: "<div class='{{className}}' style='height: 100%;'></div>",
             transclude: false,
-            controller: function($scope) {
-                // business logic goes here
+            scope: {
+                className: "@"
             },
             link: function postLink(scope, element, attrs) {
-                scope.isVisible = false;
-
-                var controlPanel = $(element).find(".control-panel");
-                var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
-
-                scope.toggle = function () {
-                    if (scope.isVisible) {
-                        $(function () {
-                            controlPanelTriggerWrapper.animate({
-                                marginTop: "0px"
-                            }, {duration: 500, queue: false});
-                            controlPanel.animate({
-                                marginTop: "-200px"
-                            }, {duration: 500, queue: false});
-                        });
-
-                        scope.isVisible = false;
-                    } else {
-                        $(function () {
-                            controlPanelTriggerWrapper.animate({
-                                marginTop: "200px"
-                            }, {duration: 500, queue: false});
-                            controlPanel.animate({
-                                marginTop: "0px"
-                            }, {duration: 500, queue: false});
-                        });
-
-                        scope.isVisible = true;
-                    }
-                };
-
-                // open control panel when page reloads
-                $timeout(function () {
-                    scope.toggle();
-                }, 1500);
+                $map.create(
+                    {lat: 55.953825, lng: -3.188646},
+                    12,
+                    $(element).children()[0]
+                );
             }
         }
-    }]
+    }
+]);
+
+app.directive("controlPanel", [
+        "$timeout",
+        function ($timeout) {
+            return {
+                restrict: "E",
+                templateUrl: "/angular/views/control_panel.html",
+                transclude: false,
+                controller: function($scope) {
+                    // business logic goes here
+                },
+                link: function postLink(scope, element, attrs) {
+                    scope.isVisible = false;
+
+                    var controlPanel = $(element).find(".control-panel");
+                    var controlPanelTriggerWrapper = $(element).find(".control-panel-trigger-wrapper");
+
+                    scope.toggle = function () {
+                        if (scope.isVisible) {
+                            $(function () {
+                                controlPanelTriggerWrapper.animate({
+                                    marginTop: "0px"
+                                }, {duration: 500, queue: false});
+                                controlPanel.animate({
+                                    marginTop: "-200px"
+                                }, {duration: 500, queue: false});
+                            });
+
+                            scope.isVisible = false;
+                        } else {
+                            $(function () {
+                                controlPanelTriggerWrapper.animate({
+                                    marginTop: "200px"
+                                }, {duration: 500, queue: false});
+                                controlPanel.animate({
+                                    marginTop: "0px"
+                                }, {duration: 500, queue: false});
+                            });
+
+                            scope.isVisible = true;
+                        }
+                    };
+
+                    // open control panel when page reloads
+                    $timeout(function () {
+                        scope.toggle();
+                    }, 1500);
+                }
+            }
+        }]
 );
