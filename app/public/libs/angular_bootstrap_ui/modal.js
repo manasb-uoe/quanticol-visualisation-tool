@@ -8,7 +8,8 @@ modalServiceModule.factory("$modal", [
     "$http",
     "$compile",
     "$rootScope",
-    function ($http, $compile, $rootScope) {
+    "$timeout",
+    function ($http, $compile, $rootScope, $timeout) {
         var defaults = {
             templateUrl: undefined,
             template: undefined,
@@ -83,23 +84,32 @@ modalServiceModule.factory("$modal", [
                 privateMethods.getDialog(function ($dialog, err) {
                     if (err) cb(null, err);
 
-                    var modalInstance  = {
+                    // create modal instance and add helper methods
+
+                    var modalInstance = {
                         show: function() {
                             $dialog.modal("show");
                         },
-                        hide: function() {
-                            console.log("hiding");
+                        hide: function () {
                             $dialog.modal("hide");
-                        },
-                        onShown: function (cb) {
-                            $dialog.on("show.bs.modal", cb);
-                        },
-                        onHidden: function (cb) {
-                            $dialog.on("hidden.bs.modal", cb);
                         }
                     };
 
-                    // provide modalInstance to specified controller
+                    // broadcast shown and hidden events
+
+                    $dialog.on("shown.bs.modal", function () {
+                        $timeout(function () {
+                            $rootScope.$broadcast("modal.shown", modalInstance);
+                        })
+                    });
+
+                    $dialog.on("hidden.bs.modal", function () {
+                        $timeout(function () {
+                            $rootScope.$broadcast("modal.hidden", modalInstance);
+                        });
+                    });
+
+                    // attach modal instance to specified scope
                     defaults.scope.modalInstance = modalInstance;
 
                     cb(modalInstance);
