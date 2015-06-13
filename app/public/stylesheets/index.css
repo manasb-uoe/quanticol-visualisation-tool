@@ -1,0 +1,145 @@
+/* Common */
+
+html, body {
+    height: 100%;
+}
+
+.reduced-col-padding {
+    padding-right: 0 !important;
+}
+
+
+/* Fix navbar moving to right problem when a modal is opened */
+.modal-open .navbar-fixed-top,
+.modal-open .control-panel,
+.modal-open .control-panel-trigger-wrapper {
+    padding-right: 17px;
+}
+
+
+/* Index page */
+
+.navbar {
+    box-shadow: 0 6px 8px -6px #999;
+}
+
+
+/* Tool page*/
+
+.main-container {
+    margin-top: 50px;
+    height: 100%;
+}
+
+
+/* Tool page: Control panel */
+
+.main-container .control-panel {
+    position: fixed;
+    top: 50px;
+    height: 200px;
+    width: 100%;
+    margin-top: -200px;
+    background-color: transparent;
+}
+
+.main-container .control-panel .control-panel-body {
+    position: relative;
+    background-color: rgba(248, 248, 248, 0.8);
+    height: 100%;
+    box-shadow: 0 6px 8px -6px #999;
+    padding: 15px;
+    overflow: auto;
+    text-align: center;
+}
+
+.main-container .control-panel .control-panel-body .title {
+    font-weight: 600;
+}
+
+.main-container .control-panel .control-panel-body .btn-select-services, .btn-select-buses, .btn-change-time-span {
+    margin-bottom: 5px;
+}
+
+.main-container .control-panel .control-panel-body .divider {
+    border-color: lightgray;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container {
+    padding-right: 20px;
+    float: right;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container .btn-reset-selection {
+    margin-right: 10px;
+    width: 80px;
+}
+
+.main-container .control-panel .control-panel-body .buttons-container .btn-animate {
+    width: 80px;
+}
+
+.main-container .control-panel-trigger-wrapper {
+    position: fixed;
+    top: 58px;
+    width: 100%;
+    margin-top: 0;
+    text-align: center;
+}
+
+.main-container .control-panel-trigger-wrapper .control-panel-trigger {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0 0 15px 15px;
+    background-color: #0e9aef;
+    display: inline;
+    padding: 10px;
+    text-align: center;
+    color: #f8f8f8;
+    cursor: pointer;
+}
+
+.main-container .control-panel-trigger-wrapper .control-panel-trigger:hover {
+    background-color: #0c8ad7;
+}
+
+
+/* Tool page: Select services modal */
+
+#select-services-modal .form-search {
+    margin-bottom: 20px;
+}
+
+#select-services-modal .services-container {
+    padding-right: 15px;
+}
+
+#select-services-modal .services-container .service {
+    background-color: #f5f5f5;
+    padding: 5px 10px 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#select-services-modal .services-container .service .left-col {
+    display: inline-block;
+}
+
+#select-services-modal .services-container .service .right-col {
+    display: inline-block;
+    float: right;
+}
+#select-services-modal .services-container .service .name {
+    margin: 0;
+}
+
+#select-services-modal .services-container .service :hover {
+
+}
+
+#select-services-modal .services-container .selected-service {
+    background-color: #dff0d8;
+}

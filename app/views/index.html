@@ -2,45 +2,18 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Bus Simulator</title>
-    <!-- stylesheets -->
+    <!-- css -->
     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
     <!-- scripts -->
-    <script type="text/javascript" src="/libs/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="/libs/angular.min.js"></script>
-    <script type="text/javascript" src="/libs/angular-ui-router.js"></script>
-    <script type="text/javascript" src="/libs/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
-    <script type="text/javascript" src="/libs/gmaps_api_wrapper.js"></script>
-    <script type="text/javascript" src="/libs/angular_bootstrap_ui/modal.js"></script>
-    <script type="text/javascript" src="/angular/app.js"></script>
+    <script data-main="javascripts/main" type="text/javascript" src="/javascripts/libs/require.js"></script>
 </head>
 
-<body data-ng-app="bus-simulator" ng-controller="NavigationController">
+<body>
 <!--Navigation bar-->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" ui-sref="tool">QUANTICOL Bus Simulator</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li ng-repeat="tab in tabs" ng-class="{'active': tab.active}">
-                    <a ui-sref="{{tab.state}}" ng-click="selectTab(tab)"> <span class="glyphicon {{tab.iconClass}}" aria-hidden="true"></span> {{tab.name}}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div id="navigation-bar"></div>
 
-<!--Main content-->
-<ui-view></ui-view>
-
+<!-- Main content -->
+<div id="content"></div>
 </body>
 </html>
