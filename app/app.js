@@ -8,7 +8,8 @@ var swig = require('swig');
 var mongoose = require('mongoose');
 var dbConfig = require("./utils/db_config");
 
-var routes = require('./routes/main');
+var indexRoute = require('./routes/index');
+var apiRoutes = require("./routes/api");
 
 /**
  * Express app initialization and configuration
@@ -33,7 +34,8 @@ app.configure = function () {
     mongoose.connect(dbConfig.url_prod);
 
     // routes setup
-    app.use('/', routes);
+    app.use("/", indexRoute);
+    app.use('/api', apiRoutes);
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
