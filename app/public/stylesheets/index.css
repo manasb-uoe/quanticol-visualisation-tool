@@ -105,33 +105,30 @@ html, body {
     margin-bottom: 20px;
 }
 
-#select-services-modal .services-container {
+#select-services-modal #services-container {
     padding-right: 15px;
 }
 
-#select-services-modal .services-container .service {
+#select-services-modal #services-container .service {
     background-color: #f5f5f5;
-    padding: 5px 10px 5px 10px;
+    padding: 7px 10px 7px 10px;
     margin-bottom: 10px;
     cursor: pointer;
 }
 
-#select-services-modal .services-container .service .left-col {
+#select-services-modal #services-container .service:hover {
+    background-color: #dff0d8;
+}
+
+#select-services-modal #services-container .service .left-col {
     display: inline-block;
 }
 
-#select-services-modal .services-container .service .right-col {
+#select-services-modal #services-container .service .right-col {
     display: inline-block;
     float: right;
 }
-#select-services-modal .services-container .service .name {
-    margin: 0;
-}
 
-#select-services-modal .services-container .service :hover {
-
-}
-
-#select-services-modal .services-container .selected-service {
+#select-services-modal #services-container .selected-service {
     background-color: #dff0d8;
 }

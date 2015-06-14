@@ -1,0 +1,12 @@
+<div class="col-md-4 reduced-col-padding">
+    <div class="service {% if isSelected %} selected-service {% endif %}">
+        <div class="left-col">
+            <strong>{{ name }}</strong> ({{ service_type }})
+        </div>
+        <div class="right-col">
+            {% if isSelected %}
+                <span class="glyphicon glyphicon-ok"></span>
+            {% endif %}
+        </div>
+    </div>
+</div>

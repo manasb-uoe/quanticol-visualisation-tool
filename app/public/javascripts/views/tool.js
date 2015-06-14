@@ -7,8 +7,11 @@ define([
     "underscore",
     "backbone",
     "swig",
-    "text!../../templates/tool.html"
-], function($, _, Backbone, swig, toolTemplate) {
+    "bootstrap",
+    "collections/services",
+    "text!../../templates/tool.html",
+    "views/select_services_modal"
+], function($, _, Backbone, swig, bootstrap, serviceCollection, toolTemplate, selectServicesModalView) {
     "use strict";
 
     var ToolView = Backbone.View.extend({
@@ -17,9 +20,13 @@ define([
 
         },
         events: {
-            "click .control-panel-trigger": "toggleControlPanel"
+            "click .control-panel-trigger": "toggleControlPanel",
+            "click #select-services-modal-trigger": "showSelectServicesModal"
         },
         render: function () {
+            // first render all sub views
+            selectServicesModalView.render();
+
             var compiledTemplate = swig.render(toolTemplate);
             this.$el.html(compiledTemplate);
 
@@ -59,6 +66,15 @@ define([
                     .addClass("glyphicon glyphicon-chevron-up");
 
                 this.isControlPanelVisible = true;
+            }
+        },
+        showSelectServicesModal: function() {
+            $("#select-services-modal").modal("show");
+
+            if (serviceCollection.length == 0) {
+                serviceCollection.fetch({reset: true});
+            } else {
+                serviceCollection.trigger("reset");
             }
         }
     });
