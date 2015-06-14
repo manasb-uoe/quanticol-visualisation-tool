@@ -9,12 +9,16 @@ require.config({
         jquery: "./libs/jquery-2.1.4.min",
         swig: "./libs/swig.min",
         text: "./libs/text",
-        gmaps: "./libs/gmaps_api_wrapper"
+        gmaps: "./libs/gmaps_api_wrapper",
+        bootstrap: "./libs/bootstrap.min"
     },
     shim: {
         backbone: {
             deps: ["underscore", "jquery"],
             exports: "Backbone"
+        },
+        bootstrap: {
+            deps: ["jquery"]
         }
     }
 });
