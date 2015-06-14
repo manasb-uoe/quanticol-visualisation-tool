@@ -37,48 +37,36 @@ html, body {
 .main-container .control-panel {
     position: fixed;
     top: 50px;
-    height: 200px;
+    height: 250px;
     width: 100%;
-    margin-top: -200px;
+    margin-top: -250px;
     background-color: transparent;
 }
 
 .main-container .control-panel .control-panel-body {
     position: relative;
-    background-color: rgba(248, 248, 248, 0.8);
+    background-color: #f7f7f9;
     height: 100%;
-    box-shadow: 0 6px 8px -6px #999;
+    border-bottom: 1px dashed #0e9aef;
     padding: 15px;
     overflow: auto;
-    text-align: center;
 }
 
-.main-container .control-panel .control-panel-body .title {
+.main-container .control-panel .control-panel-body .callout {
+    padding: 10px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-left-color: #1b809e;
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: 0 6px 8px -6px #999;
+}
+
+.main-container .control-panel .control-panel-body .callout .title {
+    /*font-size: 110%;*/
     font-weight: 600;
-}
-
-.main-container .control-panel .control-panel-body .btn-select-services, .btn-select-buses, .btn-change-time-span {
-    margin-bottom: 5px;
-}
-
-.main-container .control-panel .control-panel-body .divider {
-    border-color: lightgray;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.main-container .control-panel .control-panel-body .buttons-container {
-    padding-right: 20px;
-    float: right;
-}
-
-.main-container .control-panel .control-panel-body .buttons-container .btn-reset-selection {
-    margin-right: 10px;
-    width: 80px;
-}
-
-.main-container .control-panel .control-panel-body .buttons-container .btn-animate {
-    width: 80px;
+    color: #1b809e;
 }
 
 .main-container .control-panel-trigger-wrapper {
@@ -104,6 +92,10 @@ html, body {
 
 .main-container .control-panel-trigger-wrapper .control-panel-trigger:hover {
     background-color: #0c8ad7;
+}
+
+#button-control-panel-reset {
+    margin-right: 5px;
 }
 
 
