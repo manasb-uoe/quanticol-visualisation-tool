@@ -22,6 +22,11 @@ define([
             var context = {};
             var compiledTemplate = swig.render(selectServicesModalTemplate, {locals: context});
             this.$el.html(compiledTemplate);
+
+            this.delegateEvents(this.events);
+        },
+        events: {
+            "click #select-services-modal-save-button": "saveChanges"
         },
         addAllServices: function () {
             // hide progress bar
@@ -33,6 +38,9 @@ define([
         addService: function (service) {
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
+        },
+        saveChanges: function () {
+            this.trigger("modal.saved");
         }
     });
 

@@ -12,7 +12,12 @@ define([
 
     var ServiceCollection = Backbone.Collection.extend({
         model: ServiceModel,
-        url: "/api/services"
+        url: "/api/services",
+        getSelected: function () {
+            return this.filter(function (service) {
+                return service.get("isSelected");
+            });
+        }
     });
 
     return new ServiceCollection();
