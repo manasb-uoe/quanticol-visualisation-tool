@@ -44,11 +44,7 @@ define([
         },
         refreshVehicles: function () {
             console.log("refreshing vehicles");
-            var selectedServiceNames = [];
-            var selected = serviceCollection.getSelected();
-            for (var i=0; i<selected.length; i++) {
-                selectedServiceNames.push(selected[i].get("name"));
-            }
+            var selectedServiceNames = serviceCollection.getSelectedNames();
 
             vehicleCollection.fetch({
                 data: $.param({service: selectedServiceNames}),
@@ -56,9 +52,6 @@ define([
             });
 
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
-        },
-        saveChanges: function () {
-            this.trigger("modal.saved");
         }
     });
 

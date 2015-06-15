@@ -13,10 +13,17 @@ define([
     var ServiceCollection = Backbone.Collection.extend({
         model: ServiceModel,
         url: "/api/services",
-        getSelected: function () {
-            return this.filter(function (service) {
+        getSelectedNames: function () {
+            var selectedNames = [];
+            var selected = this.filter(function (service) {
                 return service.get("isSelected");
             });
+
+            for (var i=0; i<selected.length; i++) {
+                selectedNames.push(selected[i].get("name"));
+            }
+
+            return selectedNames;
         }
     });
 

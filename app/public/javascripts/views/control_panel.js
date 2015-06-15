@@ -18,8 +18,9 @@ define([
 
     var ControlPanelView = Backbone.View.extend({
         initialize: function () {
-            selectServicesModal.on("modal.saved", this.updateSelectedServices);
-            selectVehiclesModal.on("modal.saved", this.updateSelectedVehicles);
+            serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
+            vehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
+            vehicleCollection.on("reset", this.refreshControlPanel, this);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
@@ -80,43 +81,22 @@ define([
                 serviceCollection.trigger("reset");
             }
         },
-        updateSelectedServices: function () {
-            var selectedServiceNames = "";
-            var selected = serviceCollection.getSelected();
-
-            if (selected.length == 0) {
-                selectedServiceNames = "None";
-            } else {
-                for (var i=0; i<selected.length; i++) {
-                    if (i != 0 && i != selected.length) {
-                        selectedServiceNames = selectedServiceNames + ", ";
-                    }
-
-                    selectedServiceNames = selectedServiceNames + selected[i].get("name");
-                }
-            }
-            $("#currently-selected-services").text(selectedServiceNames);
-            $("#currently-selected-vehicles").text("None");
-        },
         showSelectVehiclesModal: function() {
             $("#select-vehicles-modal").modal("show");
         },
-        updateSelectedVehicles: function () {
-            var selectedVehicleNames = "";
-            var selected = vehicleCollection.getSelected();
+        refreshControlPanel: function() {
+            // update selected service names
+            var selectedServiceNames = serviceCollection.getSelectedNames();
+            $("#currently-selected-services").text(selectedServiceNames.length != 0 ? selectedServiceNames : "None");
 
-            if (selected.length == 0) {
-                selectedVehicleNames = "None";
-            } else {
-                for (var i=0; i<selected.length; i++) {
-                    if (i != 0 && i != selected.length) {
-                        selectedVehicleNames = selectedVehicleNames + ", ";
-                    }
+            // update selected vehicle names
+            var selectedVehicleIDs = vehicleCollection.getSelectedIDs();
+            $("#currently-selected-vehicles").text(selectedVehicleIDs.length != 0 ? selectedVehicleIDs : "None");
 
-                    selectedVehicleNames = selectedVehicleNames + selected[i].get("vehicle_id");
-                }
-            }
-            $("#currently-selected-vehicles").text(selectedVehicleNames);
+            // enable or disable 'select vehicles' button depending on whether user has
+            // selected services or not
+
+            
         }
     });
 

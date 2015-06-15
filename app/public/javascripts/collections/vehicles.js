@@ -13,10 +13,17 @@ define([
     var VehicleCollection = Backbone.Collection.extend({
         model: VehicleModel,
         url: "/api/vehicles",
-        getSelected: function () {
-            return this.filter(function (vehicle) {
+        getSelectedIDs: function () {
+            var selectedIDs = [];
+            var selected = this.filter(function (vehicle) {
                 return vehicle.get("isSelected");
             });
+
+            for (var i=0; i<selected.length; i++) {
+                selectedIDs.push(selected[i].get("vehicle_id"));
+            }
+
+            return selectedIDs;
         }
     });
 
