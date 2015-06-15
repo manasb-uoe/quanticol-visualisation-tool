@@ -20,10 +20,10 @@ define([
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
-            "click #select-services-modal-trigger": "showSelectServicesModal"
+            "click #select-services-modal-trigger": "showSelectServicesModal",
+            "click #select-vehicles-modal-trigger": "showSelectVehiclesModal"
         },
         render: function () {
-            console.log("renderd");
             var compiledTemplate = swig.render(controlPanelTemplate);
             this.$el.html(compiledTemplate);
             $("#control-panel-container").html(this.el);
@@ -93,6 +93,9 @@ define([
                 }
             }
             $("#currently-selected-services").text(selectedServiceNames);
+        },
+        showSelectVehiclesModal: function() {
+            $("#select-vehicles-modal").modal("show");
         }
     });
 
