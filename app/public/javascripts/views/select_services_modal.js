@@ -29,6 +29,8 @@ define([
             "click #select-services-modal-save-button": "saveChanges"
         },
         addAllServices: function () {
+            if (serviceCollection.length == 0) return;
+
             // hide progress bar
             $("#select-services-modal-progress").hide();
 
