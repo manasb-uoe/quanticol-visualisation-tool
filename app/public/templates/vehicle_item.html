@@ -1,0 +1,12 @@
+<div class="col-md-4 reduced-col-padding">
+    <div class="vehicle {% if isSelected %} selected-vehicle {% endif %}">
+        <div class="left-col">
+            <strong>{{ vehicle_id }}</strong> (service: {{ service_name }})
+        </div>
+        <div class="right-col">
+            {% if isSelected %}
+            <span class="glyphicon glyphicon-ok"></span>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -132,3 +132,38 @@ html, body {
 #select-services-modal #services-container .selected-service {
     background-color: #dff0d8;
 }
+
+
+/* Tool page: Select vehicles modal */
+
+#select-vehicles-modal .form-search {
+    margin-bottom: 20px;
+}
+
+#select-vehicles-modal #vehicles-container {
+    padding-right: 15px;
+}
+
+#select-vehicles-modal #vehicles-container .vehicle {
+    background-color: #f5f5f5;
+    padding: 7px 10px 7px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#select-vehicles-modal #vehicles-container .vehicle:hover {
+    background-color: #dff0d8;
+}
+
+#select-vehicles-modal #vehicles-container .vehicle .left-col {
+    display: inline-block;
+}
+
+#select-vehicles-modal #vehicles-container .vehicle .right-col {
+    display: inline-block;
+    float: right;
+}
+
+#select-vehicles-modal #vehicles-container .selected-vehicle {
+    background-color: #dff0d8;
+}

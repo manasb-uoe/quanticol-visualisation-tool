@@ -8,15 +8,18 @@ define([
     "backbone",
     "bootstrap",
     "collections/services",
+    "collections/vehicles",
     "views/select_services_modal",
+    "views/select_vehicles_modal",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, selectServicesModal, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
         initialize: function () {
             selectServicesModal.on("modal.saved", this.updateSelectedServices);
+            selectVehiclesModal.on("modal.saved", this.updateSelectedVehicles);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
@@ -93,9 +96,27 @@ define([
                 }
             }
             $("#currently-selected-services").text(selectedServiceNames);
+            $("#currently-selected-vehicles").text("None");
         },
         showSelectVehiclesModal: function() {
             $("#select-vehicles-modal").modal("show");
+        },
+        updateSelectedVehicles: function () {
+            var selectedVehicleNames = "";
+            var selected = vehicleCollection.getSelected();
+
+            if (selected.length == 0) {
+                selectedVehicleNames = "None";
+            } else {
+                for (var i=0; i<selected.length; i++) {
+                    if (i != 0 && i != selected.length) {
+                        selectedVehicleNames = selectedVehicleNames + ", ";
+                    }
+
+                    selectedVehicleNames = selectedVehicleNames + selected[i].get("vehicle_id");
+                }
+            }
+            $("#currently-selected-vehicles").text(selectedVehicleNames);
         }
     });
 

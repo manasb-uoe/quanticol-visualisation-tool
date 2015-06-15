@@ -8,11 +8,12 @@ define([
     "backbone",
     "swig",
     "collections/services",
+    "collections/vehicles",
     "views/select_services_modal",
     "views/select_vehicles_modal",
     "views/control_panel",
     "text!../../templates/tool.html"
-], function($, _, Backbone, swig, serviceCollection, selectServicesModalView, selectVehiclesModalView, controlPanelView, toolTemplate) {
+], function($, _, Backbone, swig, serviceCollection, vehicleCollection, selectServicesModalView, selectVehiclesModalView, controlPanelView, toolTemplate) {
     "use strict";
 
     var ToolView = Backbone.View.extend({
@@ -25,6 +26,10 @@ define([
             selectServicesModalView.render();
             selectVehiclesModalView.render();
             controlPanelView.render();
+
+            // reset all collections
+            serviceCollection.reset();
+            vehicleCollection.reset();
         }
     });
 
