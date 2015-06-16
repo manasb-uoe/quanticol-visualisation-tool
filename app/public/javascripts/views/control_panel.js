@@ -12,13 +12,19 @@ define([
     "views/select_services_modal",
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
+    "views/snackbar",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
         initialize: function () {
+            this.resetSnackbar = new SnackbarView({
+                content: "All selections have been successfully reset!",
+                duration: 5000
+            });
+
             serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("reset", this.refreshControlPanel, this);
@@ -130,6 +136,8 @@ define([
             selectServicesModal.reset();
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
+
+            this.resetSnackbar.toggle();
         }
     });
 
