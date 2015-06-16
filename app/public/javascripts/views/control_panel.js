@@ -22,13 +22,14 @@ define([
             serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("reset", this.refreshControlPanel, this);
-            selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
+            selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
             "click #select-services-modal-trigger": "showSelectServicesModal",
             "click #select-vehicles-modal-trigger": "showSelectVehiclesModal",
-            "click #select-time-span-modal-trigger": "showSelectTimeSpanModal"
+            "click #select-time-span-modal-trigger": "showSelectTimeSpanModal",
+            "click #button-control-panel-reset": "reset"
         },
         render: function () {
             var compiledTemplate = swig.render(controlPanelTemplate);

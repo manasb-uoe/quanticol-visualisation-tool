@@ -24,27 +24,31 @@ define([
             this.delegateEvents(this.events);
 
             this.initDateTimePickers();
-
-            // trigger modal.closed event so that control panel can update the displayed time span
-            var self = this;
-            $("#select-time-span-modal").on("hidden.bs.modal", function () {
-                self.trigger("modal.closed");
-            });
         },
         initDateTimePickers: function() {
+            var self = this;
+
             this.startTimePicker = $("#start-time-picker");
             this.endTimePicker = $("#end-time-picker");
 
             this.startTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date("January 01, 2015 12:00")});
             this.endTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date()});
 
-            var self = this;
             this.startTimePicker.on("dp.change", function (e) {
                 self.endTimePicker.data("DateTimePicker").minDate(e.date);
             });
             this.endTimePicker.on("dp.change", function (e) {
                 self.startTimePicker.data("DateTimePicker").maxDate(e.date);
             });
+
+            // trigger date change event so that control panel can update the displayed time span
+            this.startTimePicker.on("dp.change", function () {
+                self.trigger("modal.time.span.changed");
+            });
+            this.endTimePicker.on("dp.change", function () {
+                self.trigger("modal.time.span.changed");
+            });
+
         },
         getSelectedTimeSpan: function () {
             return {
