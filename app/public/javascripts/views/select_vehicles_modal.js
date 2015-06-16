@@ -20,7 +20,7 @@ define([
         el: "#select-vehicles-modal-container",
         initialize: function () {
             vehicleCollection.on("reset", this.addAllVehicles, this);
-            selectServicesModal.on("modal.saved", this.refreshVehicles, this);
+            selectServicesModal.on("modal.closed", this.refreshVehicles, this);
         },
         events: {
             "click #select-vehicles-modal-save-button": "saveChanges"

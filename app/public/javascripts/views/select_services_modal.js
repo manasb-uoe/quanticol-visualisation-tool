@@ -24,9 +24,13 @@ define([
             this.$el.html(compiledTemplate);
 
             this.delegateEvents(this.events);
-        },
-        events: {
-            "click #select-services-modal-save-button": "saveChanges"
+
+            // trigger modal.closed event when modal is closed
+            // this event will be used as a cue by select-vehicles modal to refresh vehicles
+            var self = this;
+            $("#select-services-modal").on("hidden.bs.modal", function () {
+                self.trigger("modal.closed");
+            });
         },
         addAllServices: function () {
             if (serviceCollection.length == 0) return;
@@ -40,9 +44,6 @@ define([
         addService: function (service) {
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
-        },
-        saveChanges: function () {
-            this.trigger("modal.saved");
         }
     });
 
