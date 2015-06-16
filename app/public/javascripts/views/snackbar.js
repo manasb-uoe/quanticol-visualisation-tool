@@ -14,12 +14,15 @@ define([
         tagName: "span",
         className: "snackbar",
         initialize: function() {
-            this.options.duration = this.options.duration ? this.options.duration : 3000;
+            this.settings = $.extend({
+                content: "Default content",
+                duration: 1000
+            }, this.options);
 
             this.render();
         },
         render: function () {
-            var context = {content: this.options.content};
+            var context = {content: this.settings.content};
             var compiledTemplate = swig.render("{{ content }}", {locals: context});
             this.$el.append(compiledTemplate);
             $("#snackbar-container").append(this.el);
@@ -54,7 +57,7 @@ define([
                             if (!self.isVisible) return;
 
                             self.toggle();
-                        }, self.options.duration);
+                        }, self.settings.duration);
                     }
                 });
             }
