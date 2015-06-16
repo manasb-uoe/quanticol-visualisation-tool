@@ -11,9 +11,10 @@ define([
     "collections/vehicles",
     "views/select_services_modal",
     "views/select_vehicles_modal",
+    "views/select_time_span_modal",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
@@ -25,7 +26,8 @@ define([
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
             "click #select-services-modal-trigger": "showSelectServicesModal",
-            "click #select-vehicles-modal-trigger": "showSelectVehiclesModal"
+            "click #select-vehicles-modal-trigger": "showSelectVehiclesModal",
+            "click #select-time-span-modal-trigger": "showSelectTimeSpanModal"
         },
         render: function () {
             var compiledTemplate = swig.render(controlPanelTemplate);
@@ -113,6 +115,9 @@ define([
             } else {
                 selectTimeSpanButton.removeAttr("disabled");
             }
+        },
+        showSelectTimeSpanModal: function () {
+            $("#select-time-span-modal").modal("show");
         }
     });
 

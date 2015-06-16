@@ -1,0 +1,28 @@
+<div class="modal fade" id="select-time-span-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Select time span</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="start-time-picker">Start time</label>
+                    <div class='input-group date' id='start-time-picker'>
+                        <input type='text' class="form-control" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end-time-picker">End time</label>
+                    <div class='input-group date' id='end-time-picker'>
+                        <input type='text' class="form-control" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="select-time-span-modal-save-button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

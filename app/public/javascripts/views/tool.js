@@ -11,9 +11,10 @@ define([
     "collections/vehicles",
     "views/select_services_modal",
     "views/select_vehicles_modal",
+    "views/select_time_span_modal",
     "views/control_panel",
     "text!../../templates/tool.html"
-], function($, _, Backbone, swig, serviceCollection, vehicleCollection, selectServicesModalView, selectVehiclesModalView, controlPanelView, toolTemplate) {
+], function($, _, Backbone, swig, serviceCollection, vehicleCollection, selectServicesModalView, selectVehiclesModalView, selectTimeSpanModal, controlPanelView, toolTemplate) {
     "use strict";
 
     var ToolView = Backbone.View.extend({
@@ -25,6 +26,7 @@ define([
             // render all sub views
             selectServicesModalView.render();
             selectVehiclesModalView.render();
+            selectTimeSpanModal.render();
             controlPanelView.render();
 
             // reset all collections
