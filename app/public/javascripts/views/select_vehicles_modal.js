@@ -6,20 +6,20 @@ define([
     "jquery",
     "underscore",
     "backbone",
-    "collections/vehicles",
+    "collections/unique_vehicles",
     "collections/services",
     "views/vehicle_item",
     "views/select_services_modal",
     "swig",
     "text!../../templates/select_vehicles_modal.html",
     "text!../../templates/vehicle_item.html"
-], function($, _, Backbone, vehicleCollection, serviceCollection, VehicleItemView, selectServicesModal, swig, selectVehiclesModalTemplate, vehicleItemTemplate) {
+], function($, _, Backbone, uniqueVehicleCollection, serviceCollection, VehicleItemView, selectServicesModal, swig, selectVehiclesModalTemplate, vehicleItemTemplate) {
     "use strict";
 
     var SelectVehiclesView = Backbone.View.extend({
         el: "#select-vehicles-modal-container",
         initialize: function () {
-            vehicleCollection.on("reset", this.addAllVehicles, this);
+            uniqueVehicleCollection.on("reset", this.addAllVehicles, this);
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
         },
         events: {
@@ -36,7 +36,7 @@ define([
             $("#select-vehicles-modal-progress").hide();
 
             $("#vehicles-container").empty();
-            vehicleCollection.each(this.addVehicle, this);
+            uniqueVehicleCollection.each(this.addVehicle, this);
         },
         addVehicle: function(vehicle) {
             var vehicleItemView = new VehicleItemView({model: vehicle});
@@ -46,7 +46,7 @@ define([
             console.log("refreshing vehicles");
             var selectedServiceNames = serviceCollection.getSelectedNames();
 
-            vehicleCollection.fetch({
+            uniqueVehicleCollection.fetch({
                 data: $.param({service: selectedServiceNames}),
                 reset: true
             });
@@ -54,7 +54,7 @@ define([
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
         },
         reset: function () {
-            vehicleCollection.reset();
+            uniqueVehicleCollection.reset();
         }
     });
 

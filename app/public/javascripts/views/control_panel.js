@@ -8,14 +8,15 @@ define([
     "backbone",
     "bootstrap",
     "collections/services",
-    "collections/vehicles",
+    "collections/unique_vehicles",
+    "collections/all_vehicles",
     "views/select_services_modal",
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
     "views/snackbar",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, vehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
@@ -26,16 +27,18 @@ define([
             });
 
             serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
-            vehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
-            vehicleCollection.on("reset", this.refreshControlPanel, this);
+            uniqueVehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
+            uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
+            allVehicleCollection.on("reset", this.test, this);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
             "click #select-services-modal-trigger": "showSelectServicesModal",
             "click #select-vehicles-modal-trigger": "showSelectVehiclesModal",
             "click #select-time-span-modal-trigger": "showSelectTimeSpanModal",
-            "click #button-control-panel-reset": "reset"
+            "click #button-control-panel-reset": "reset",
+            "click #button-control-panel-submit": "submit"
         },
         render: function () {
             var compiledTemplate = swig.render(controlPanelTemplate);
@@ -105,7 +108,7 @@ define([
             $("#currently-selected-services").text(selectedServiceNames.length != 0 ? selectedServiceNames : "None");
 
             // update selected vehicle names
-            var selectedVehicleIDs = vehicleCollection.getSelectedIDs();
+            var selectedVehicleIDs = uniqueVehicleCollection.getSelectedIDs();
             $("#currently-selected-vehicles").text(selectedVehicleIDs.length != 0 ? selectedVehicleIDs : "None");
 
             // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
@@ -138,6 +141,35 @@ define([
             selectTimeSpanModal.reset();
 
             this.resetSnackbar.toggle();
+        },
+        submit: function () {
+            var selectedServices = serviceCollection.getSelectedNames();
+            var selectedVehicles = uniqueVehicleCollection.getSelectedIDs();
+            var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
+
+            if (selectedServices.length == 0) {
+                new SnackbarView({
+                    content: "You need to select at least 1 service!",
+                    duration: 5000
+                }).toggle();
+            } else if (selectedVehicles.length == 0) {
+                new SnackbarView({
+                    content: "You need to select at least 1 vehicle!",
+                    duration: 5000
+                }).toggle();
+            } else {
+                allVehicleCollection.fetch({
+                    data: $.param({
+                        service: selectedServices,
+                        vehicle: selectedVehicles,
+                        startTime: timeSpan.startTime.unix(),
+                        endTime: timeSpan.endTime.unix()}),
+                    reset: true
+                });
+            }
+        },
+        test: function () {
+            console.log(allVehicleCollection.length);
         }
     });
 
