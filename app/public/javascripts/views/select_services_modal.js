@@ -44,6 +44,9 @@ define([
         addService: function (service) {
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
+        },
+        reset: function () {
+            serviceCollection.reset();
         }
     });
 

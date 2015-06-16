@@ -52,6 +52,9 @@ define([
             });
 
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
+        },
+        reset: function () {
+            vehicleCollection.reset();
         }
     });
 

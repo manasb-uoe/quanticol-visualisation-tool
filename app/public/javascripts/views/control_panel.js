@@ -125,6 +125,11 @@ define([
         },
         showSelectTimeSpanModal: function () {
             $("#select-time-span-modal").modal("show");
+        },
+        reset: function () {
+            selectServicesModal.reset();
+            selectVehiclesModal.reset();
+            selectTimeSpanModal.reset();
         }
     });
 

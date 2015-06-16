@@ -55,6 +55,10 @@ define([
                 startTime: this.startTimePicker.data("DateTimePicker").date(),
                 endTime: this.endTimePicker.data("DateTimePicker").date()
             }
+        },
+        reset: function () {
+            this.startTimePicker.data("DateTimePicker").date(this.startTimePicker.data("DateTimePicker").defaultDate());
+            this.endTimePicker.data("DateTimePicker").date(this.endTimePicker.data("DateTimePicker").defaultDate());
         }
     });
 
