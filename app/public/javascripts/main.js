@@ -10,7 +10,9 @@ require.config({
         swig: "./libs/swig.min",
         text: "./libs/text",
         gmaps: "./libs/gmaps_api_wrapper",
-        bootstrap: "./libs/bootstrap.min"
+        bootstrap: "./libs/bootstrap.min",
+        moment: "./libs/moment-with-locales.min",
+        datetimepicker: "./libs/bootstrap-datetimepicker.min"
     },
     shim: {
         backbone: {
@@ -19,6 +21,9 @@ require.config({
         },
         bootstrap: {
             deps: ["jquery"]
+        },
+        datetimepicker: {
+            deps: ["jquery", "moment"]
         }
     }
 });
