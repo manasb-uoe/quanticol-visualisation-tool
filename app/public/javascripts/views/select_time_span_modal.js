@@ -24,20 +24,33 @@ define([
             this.delegateEvents(this.events);
 
             this.initDateTimePickers();
+
+            // trigger modal.closed event so that control panel can update the displayed time span
+            var self = this;
+            $("#select-time-span-modal").on("hidden.bs.modal", function () {
+                self.trigger("modal.closed");
+            });
         },
         initDateTimePickers: function() {
-            var startTimePicker = $("#start-time-picker");
-            var endTimePicker = $("#end-time-picker");
+            this.startTimePicker = $("#start-time-picker");
+            this.endTimePicker = $("#end-time-picker");
 
-            startTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date("January 01, 2015 12:00")});
-            endTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date()});
+            this.startTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date("January 01, 2015 12:00")});
+            this.endTimePicker.datetimepicker({locale: "en", format: "DD/MM/YYYY hh:mm", defaultDate: new Date()});
 
-            startTimePicker.on("dp.change", function (e) {
-                endTimePicker.data("DateTimePicker").minDate(e.date);
+            var self = this;
+            this.startTimePicker.on("dp.change", function (e) {
+                self.endTimePicker.data("DateTimePicker").minDate(e.date);
             });
-            endTimePicker.on("dp.change", function (e) {
-                startTimePicker.data("DateTimePicker").maxDate(e.date);
+            this.endTimePicker.on("dp.change", function (e) {
+                self.startTimePicker.data("DateTimePicker").maxDate(e.date);
             });
+        },
+        getSelectedTimeSpan: function () {
+            return {
+                startTime: this.startTimePicker.data("DateTimePicker").date(),
+                endTime: this.endTimePicker.data("DateTimePicker").date()
+            }
         }
     });
 

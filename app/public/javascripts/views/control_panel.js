@@ -22,6 +22,7 @@ define([
             serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
             vehicleCollection.on("reset", this.refreshControlPanel, this);
+            selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
@@ -115,6 +116,11 @@ define([
             } else {
                 selectTimeSpanButton.removeAttr("disabled");
             }
+
+            // update selected time span
+            var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
+            $("#start-time").text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
+            $("#end-time").text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
         },
         showSelectTimeSpanModal: function () {
             $("#select-time-span-modal").modal("show");
