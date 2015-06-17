@@ -115,17 +115,11 @@ define([
             // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
             // selected services/vehicles or not
             var selectVehiclesButton = $("#select-vehicles-modal-trigger");
-            var selectTimeSpanButton = $("#select-time-span-modal-trigger");
 
             if (selectedServiceNames.length == 0) {
                 selectVehiclesButton.attr("disabled", "disabled");
             } else {
                 selectVehiclesButton.removeAttr("disabled");
-            }
-            if (selectedVehicleIDs.length == 0) {
-                selectTimeSpanButton.attr("disabled", "disabled");
-            } else {
-                selectTimeSpanButton.removeAttr("disabled");
             }
 
             // update selected time span
