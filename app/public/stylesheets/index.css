@@ -31,6 +31,10 @@ html, body {
     height: 100%;
 }
 
+#content {
+    height: 100%;
+}
+
 
 /* Tool page: Control panel */
 
@@ -41,11 +45,12 @@ html, body {
     width: 100%;
     margin-top: -250px;
     background-color: transparent;
+    z-index: 1000;
 }
 
 .main-container .control-panel .control-panel-body {
     position: relative;
-    background-color: #f7f7f9;
+    background-color: rgba(247,247,249,0.8);
     height: 100%;
     border-bottom: 1px dashed #0e9aef;
     padding: 15px;
@@ -75,6 +80,7 @@ html, body {
     width: 100%;
     margin-top: 0;
     text-align: center;
+    z-index: 1000;
 }
 
 .main-container .control-panel-trigger-wrapper .control-panel-trigger {
@@ -167,6 +173,13 @@ html, body {
 #select-vehicles-modal #vehicles-container .selected-vehicle {
     background-color: #dff0d8;
 }
+
+/* Tool page: Map */
+#map-container {
+    height: 100%;
+    width: 100%;
+}
+
 
 /* Snacbar */
 
