@@ -33,7 +33,9 @@ define([
         addInitialMarkers: function () {
             var self = this;
 
-            var vehiclesGrouped = allVehicleCollection.getGrouped();
+            var vehiclesGrouped = allVehicleCollection.groupBy(function (vehicle) {
+                return vehicle.get("vehicle_id");
+            });
 
             Object.keys(vehiclesGrouped).forEach(function (key) {
                 var firstVehicle = vehiclesGrouped[key][0];
