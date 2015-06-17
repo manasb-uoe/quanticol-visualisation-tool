@@ -177,7 +177,7 @@ define([
 
             if (allVehicleCollection.length > 0) {
                 this.toggleControlPanel();
-                mapView.showMapControls();
+                mapView.setup();
                 new SnackbarView({
                     content: "Hint: Use 'play' button in map controls to start the simulation!",
                     duration: 5000
