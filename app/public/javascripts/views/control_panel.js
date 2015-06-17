@@ -14,9 +14,10 @@ define([
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
     "views/snackbar",
+    "views/map",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, mapView, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
@@ -30,7 +31,7 @@ define([
             uniqueVehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
-            allVehicleCollection.on("reset", this.test, this);
+            allVehicleCollection.on("reset", this.onSubmitResults, this);
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
@@ -139,25 +140,28 @@ define([
             selectServicesModal.reset();
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
+            mapView.reset();
 
             this.resetSnackbar.toggle();
         },
-        submit: function () {
+        submit: function (event) {
             var selectedServices = serviceCollection.getSelectedNames();
             var selectedVehicles = uniqueVehicleCollection.getSelectedIDs();
             var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
 
             if (selectedServices.length == 0) {
                 new SnackbarView({
-                    content: "You need to select at least 1 service!",
+                    content: "Error: You need to select at least 1 service!",
                     duration: 5000
                 }).toggle();
             } else if (selectedVehicles.length == 0) {
                 new SnackbarView({
-                    content: "You need to select at least 1 vehicle!",
+                    content: "Error: You need to select at least 1 vehicle!",
                     duration: 5000
                 }).toggle();
             } else {
+                $(event.target).button("loading");
+
                 allVehicleCollection.fetch({
                     data: $.param({
                         service: selectedServices,
@@ -168,8 +172,22 @@ define([
                 });
             }
         },
-        test: function () {
-            console.log(allVehicleCollection.length);
+        onSubmitResults: function () {
+            $("#button-control-panel-submit").button("reset");
+
+            if (allVehicleCollection.length > 0) {
+                this.toggleControlPanel();
+                mapView.showMapControls();
+                new SnackbarView({
+                    content: "Hint: Use 'play' button in map controls to start the simulation!",
+                    duration: 5000
+                }).toggle();
+            } else {
+                new SnackbarView({
+                    content: "Error: No vehicles found for your selection!",
+                    duration: 6000
+                }).toggle();
+            }
         }
     });
 

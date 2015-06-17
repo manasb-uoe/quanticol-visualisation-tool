@@ -181,6 +181,34 @@ html, body {
 }
 
 
+/* Tool page: Map controls */
+#map-controls-container {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    min-width: 400px;
+    max-width: 500px;
+    padding: 15px;
+    box-shadow: 0 6px 8px -6px #999;
+    background-color: rgb(247,247,249);
+    margin-bottom: -200px;
+}
+
+@media (max-width: 767px) {
+    #map-controls-container {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+#map-controls-container .controls {
+    text-align: center;
+}
+
+
 /* Snacbar */
 
 .snackbar {
