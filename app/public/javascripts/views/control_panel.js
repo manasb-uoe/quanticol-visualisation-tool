@@ -135,6 +135,7 @@ define([
             selectServicesModal.reset();
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
+            mapView.reset();
             mapControlsView.hide();
 
             this.resetSnackbar.toggle();
