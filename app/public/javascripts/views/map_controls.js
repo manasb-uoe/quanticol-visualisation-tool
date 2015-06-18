@@ -17,7 +17,7 @@ define([
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
             this.isVisible = false;
-            this.stepSize = 30; // seconds
+            this.stepSize = 40; // seconds
             this.isSimulating = false;
             this.refreshIntervalID = null;
 
@@ -56,7 +56,7 @@ define([
             this.currentTime = this.timeSpan.startTime;
             this.updateTimer();
 
-            mapView.removeMarkers();
+            mapView.reset();
             mapView.assignMarkerColors();
             mapView.updateMarkers(this.currentTime, this.stepSize);
         },
@@ -67,7 +67,7 @@ define([
             if (this.isSimulating) {
                 this.isSimulating = false;
 
-                console.log("stopped");
+                //console.log("stopped");
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-play");
                 this.$playButton.siblings().removeAttr("disabled");

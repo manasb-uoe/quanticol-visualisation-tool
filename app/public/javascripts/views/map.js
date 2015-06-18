@@ -15,15 +15,16 @@ define([
     var MapView = Backbone.View.extend({
         initialize: function () {
             this.markers = [];
-            this.markerIcons = {
-                purple: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/purple-dot.png",
-                yellow: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png",
-                blue: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png",
-                green: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png",
-                red: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png",
-                orange: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png",
-                lightBlue: "http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png",
-                pink: "http://maps.google.com/mapfiles/ms/micons/pink-dot.png"
+            this.polylines = [];
+            this.markerColors = {
+                purple: ["#800080", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/purple-dot.png"],
+                yellow: ["#FFD300", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png"],
+                blue: ["#0000e5", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"],
+                green: ["#008000", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png"],
+                red: ["#FF0000", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png"],
+                orange: ["#FFA500", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png"],
+                lightBlue: ["#00FFFF", "http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png"],
+                pink: ["#ff748c", "http://maps.google.com/mapfiles/ms/micons/pink-dot.png"]
             };
             this.markerColorAssignment = {};
         },
@@ -44,34 +45,35 @@ define([
                     && vehicle.get("last_gps_fix") <= currentTime;
             });
 
+            // TODO probably remove it?
             // remove existing markers for each new vehicle so that we only have one marker for every vehicle
-            var requiredVehicleIDs = [];
-            requiredVehicles.forEach(function (vehicle) {
-                requiredVehicleIDs.push(vehicle.get("vehicle_id"));
-            });
-            var requiredMarkers = [];
-            this.markers.forEach(function (marker) {
-                if (requiredVehicleIDs.indexOf(marker.vehicleID) > -1) {
-                    marker.setMap(null);
-                    marker = undefined;
-                } else {
-                    requiredMarkers.push(marker);
-                }
-            });
-            this.markers = requiredMarkers;
+            //var requiredVehicleIDs = [];
+            //requiredVehicles.forEach(function (vehicle) {
+            //    requiredVehicleIDs.push(vehicle.get("vehicle_id"));
+            //});
+            //var requiredMarkers = [];
+            //this.markers.forEach(function (marker) {
+            //    if (requiredVehicleIDs.indexOf(marker.vehicleID) > -1) {
+            //        marker.setMap(null);
+            //        marker = undefined;
+            //    } else {
+            //        requiredMarkers.push(marker);
+            //    }
+            //});
+            //this.markers = requiredMarkers;
 
-            console.log(this.markers.length);
+            //console.log(this.markers.length);
 
-            console.log("current time: " + moment.unix(currentTime).locale("en").format("hh:mm:ss a"));
-            requiredVehicles.forEach(function (vehicle) {
-                console.log(moment.unix(vehicle.get("last_gps_fix")).locale("en").format("hh:mm:ss a"));
-            });
+            //console.log("current time: " + moment.unix(currentTime).locale("en").format("hh:mm:ss a"));
+            //requiredVehicles.forEach(function (vehicle) {
+            //    console.log(moment.unix(vehicle.get("last_gps_fix")).locale("en").format("hh:mm:ss a"));
+            //});
 
             requiredVehicles.forEach(function (vehicle) {
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]),
                     map: self.googleMap,
-                    icon: new google.maps.MarkerImage(self.markerIcons[self.markerColorAssignment[vehicle.get("vehicle_id")]])
+                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[vehicle.get("vehicle_id")]][1])
                 });
 
                 marker.infoWindow = new google.maps.InfoWindow({
@@ -98,6 +100,27 @@ define([
 
                 marker.vehicleID = vehicle.get("vehicle_id");
 
+                // add polyline from current marker to previous marker with same vehicle id
+                for (var i=self.markers.length-1; i>=0; i--) {
+                    if (self.markers[i].vehicleID == marker.vehicleID) {
+                        var previousMarker = self.markers[i];
+
+                        var polyline = new google.maps.Polyline({
+                            path: [previousMarker.getPosition(), marker.getPosition()],
+                            strokeColor: self.markerColors[self.markerColorAssignment[marker.vehicleID]][0],
+                            geodesic: true,
+                            strokeOpacity: 1.0,
+                            strokeWeight: 2
+                        });
+
+                        polyline.setMap(self.googleMap);
+                        self.polylines.push(polyline);
+
+                        previousMarker.setMap(null);
+                        break;
+                    }
+                }
+
                 self.markers.push(marker);
             });
         },
@@ -111,13 +134,20 @@ define([
             var self = this;
 
             var uniqueVehicleIDs = _.uniq(allVehicleCollection.pluck("vehicle_id"));
-            var colors = Object.keys(this.markerIcons);
+            var colors = Object.keys(this.markerColors);
             uniqueVehicleIDs.forEach(function (id, pos) {
                 self.markerColorAssignment[id] = colors[pos];
             });
         },
+        removePolylines: function () {
+            this.polylines.forEach(function (polyline) {
+                polyline.setMap(null);
+            });
+            this.polylines = [];
+        },
         reset: function () {
             this.removeMarkers();
+            this.removePolylines();
         }
     });
 
