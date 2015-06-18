@@ -20,8 +20,6 @@ define([
             this.stepSize = 40; // seconds
             this.isSimulating = false;
             this.refreshIntervalID = null;
-
-            allVehicleCollection.on("reset", this.reset, this);
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");

@@ -181,6 +181,7 @@ define([
                 this.toggleControlPanel();
 
                 mapControlsView.show();
+                mapControlsView.reset();
 
                 new SnackbarView({
                     content: "Hint: Use 'play' button in map controls to start the simulation!",
