@@ -74,7 +74,7 @@ define([
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]),
                     map: self.googleMap,
-                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[vehicle.get("vehicle_id")]][1])
+                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[vehicle.get("service_name")]][1])
                 });
 
                 marker.infoWindow = new google.maps.InfoWindow({
@@ -100,6 +100,7 @@ define([
                 marker.setMap(self.googleMap);
 
                 marker.vehicleID = vehicle.get("vehicle_id");
+                marker.serviceName = vehicle.get("service_name");
 
                 // add polyline from current marker to previous marker with same vehicle id
                 for (var i=self.markers.length-1; i>=0; i--) {
@@ -108,7 +109,7 @@ define([
 
                         var polyline = new google.maps.Polyline({
                             path: [previousMarker.getPosition(), marker.getPosition()],
-                            strokeColor: self.markerColors[self.markerColorAssignment[marker.vehicleID]][0],
+                            strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
                             geodesic: true,
                             strokeOpacity: 1.0,
                             strokeWeight: 2
@@ -136,10 +137,10 @@ define([
         assignMarkerColors: function () {
             var self = this;
 
-            var uniqueVehicleIDs = _.uniq(allVehicleCollection.pluck("vehicle_id"));
+            var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
             var colors = Object.keys(this.markerColors);
-            uniqueVehicleIDs.forEach(function (id, pos) {
-                self.markerColorAssignment[id] = colors[pos];
+            uniqueServiceNames.forEach(function (name, pos) {
+                self.markerColorAssignment[name] = colors[pos];
             });
         },
         removePolylines: function () {
