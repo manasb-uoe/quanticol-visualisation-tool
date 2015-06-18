@@ -191,7 +191,7 @@ html, body {
     padding: 15px;
     box-shadow: 0 6px 8px -6px #999;
     background-color: rgb(247,247,249);
-    margin-bottom: -250px;
+    margin-bottom: -400px;
 }
 
 @media (max-width: 767px) {
@@ -206,6 +206,28 @@ html, body {
 
 #map-controls-container .controls {
     text-align: center;
+}
+
+#map-controls-container .title {
+    padding-bottom: 6px;
+}
+
+#map-controls-container #legend {
+    margin-bottom: 10px;
+}
+
+#map-controls-container #legend .item .color {
+    border: 1px solid white;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 7px 7px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#map-controls-container #legend .item .service-name {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 

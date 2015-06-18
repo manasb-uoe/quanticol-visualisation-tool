@@ -137,6 +137,8 @@ define([
         assignMarkerColors: function () {
             var self = this;
 
+            this.markerColorAssignment = {};
+
             var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
             var colors = Object.keys(this.markerColors);
             uniqueServiceNames.forEach(function (name, pos) {

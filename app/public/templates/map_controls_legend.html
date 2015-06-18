@@ -1,0 +1,14 @@
+<div class="row">
+    {% for name, color in services %}
+    <div class="col-md-4 col-xs-4">
+        <div class="item">
+            <div class="color" style="background-color: {{ color }}"></div>
+            <div class="service-name">Service {{ name }}</div>
+        </div>
+    </div>
+    {% if loop.index % 3 == 0 %}
+        </div>
+        <div class="row">
+    {% endif %}
+    {% endfor %}
+</div>

@@ -10,8 +10,10 @@ define([
     "moment",
     "views/snackbar",
     "views/map",
-    "text!../../templates/map_controls.html"
-], function($, _, Backbone, allVehicleCollection, moment, SnackbarView, mapView, mapControlsTemplate) {
+    "swig",
+    "text!../../templates/map_controls.html",
+    "text!../../templates/map_controls_legend.html"
+], function($, _, Backbone, allVehicleCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
     "use strict";
 
     var MapControlsView = Backbone.View.extend({
@@ -28,6 +30,7 @@ define([
 
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
+            this.$legend = $("#legend");
         },
         events: {
             "click #play-pause-button": "toggleSimulation",
@@ -45,7 +48,7 @@ define([
             if (!this.isVisible) return;
 
             this.$mapControls.animate({
-                marginBottom: "-250px"
+                marginBottom: "-400px"
             }, 300);
             this.isVisible = false;
         },
@@ -57,6 +60,7 @@ define([
 
             mapView.reset();
             mapView.assignMarkerColors();
+            this.updateLegend();
             mapView.updateMarkers(this.currentTime, this.stepSize);
         },
         updateTimer: function () {
@@ -96,6 +100,14 @@ define([
                     mapView.updateMarkers(self.currentTime, self.stepSize);
                 }, 500);
             }
+        },
+        /**
+         * Updates the legend with all service names mapped to their colors. This method can only be called
+         * AFTER the color assignment has been done, i.e. mapView's assignMarkerColors() must be called first.
+         */
+        updateLegend: function () {
+            var compiledTempalte = swig.render(mapControlsLegendTemplate, {locals: {services: mapView.markerColorAssignment}});
+            this.$legend.html(compiledTempalte);
         },
         delegateTogglePolylines: function () {
             mapView.togglePolylines();
