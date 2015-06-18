@@ -18,7 +18,6 @@ define([
 
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
-            this.isVisible = false;
             this.stepSize = 40; // seconds
             this.isSimulating = false;
             this.refreshIntervalID = null;
@@ -27,6 +26,10 @@ define([
             this.$mapControls = $("#map-controls-container");
             this.$el.html(mapControlsTemplate);
             this.$mapControls.html(this.el);
+
+            this.delegateEvents(this.events);
+
+            this.isVisible = false;
 
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
