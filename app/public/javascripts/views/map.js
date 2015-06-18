@@ -15,6 +15,17 @@ define([
     var MapView = Backbone.View.extend({
         initialize: function () {
             this.markers = [];
+            this.markerIcons = {
+                purple: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/purple-dot.png",
+                yellow: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png",
+                blue: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png",
+                green: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png",
+                red: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png",
+                orange: "http://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png",
+                lightBlue: "http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png",
+                pink: "http://maps.google.com/mapfiles/ms/micons/pink-dot.png"
+            };
+            this.markerColorAssignment = {};
         },
         render: function() {
             var options = {
@@ -60,7 +71,7 @@ define([
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]),
                     map: self.googleMap,
-                    icon: new google.maps.MarkerImage("http://maps.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png")
+                    icon: new google.maps.MarkerImage(self.markerIcons[self.markerColorAssignment[vehicle.get("vehicle_id")]])
                 });
 
                 marker.infoWindow = new google.maps.InfoWindow({
@@ -95,6 +106,15 @@ define([
                 marker.setMap(null);
             });
             this.markers = [];
+        },
+        assignMarkerColors: function () {
+            var self = this;
+
+            var uniqueVehicleIDs = _.uniq(allVehicleCollection.pluck("vehicle_id"));
+            var colors = Object.keys(this.markerIcons);
+            uniqueVehicleIDs.forEach(function (id, pos) {
+                self.markerColorAssignment[id] = colors[pos];
+            });
         },
         reset: function () {
             this.removeMarkers();

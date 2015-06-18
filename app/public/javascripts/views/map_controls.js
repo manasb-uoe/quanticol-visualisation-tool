@@ -57,6 +57,7 @@ define([
             this.updateTimer();
 
             mapView.removeMarkers();
+            mapView.assignMarkerColors();
             mapView.updateMarkers(this.currentTime, this.stepSize);
         },
         updateTimer: function () {

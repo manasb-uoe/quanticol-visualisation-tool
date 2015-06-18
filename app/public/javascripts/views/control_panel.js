@@ -155,7 +155,13 @@ define([
                     content: "Error: You need to select at least 1 vehicle!",
                     duration: 5000
                 }).toggle();
-            } else {
+            } else if (selectedVehicles.length > 8) {
+                new SnackbarView({
+                    content: "Error: You can select at most 8 vehicles!",
+                    duration: 5000
+                }).toggle();
+            }
+            else {
                 $(event.target).button("loading");
 
                 allVehicleCollection.fetch({
