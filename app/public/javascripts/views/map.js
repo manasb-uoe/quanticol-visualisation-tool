@@ -17,14 +17,14 @@ define([
             this.markers = [];
             this.polylines = [];
             this.markerColors = {
-                purple: ["#800080", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/purple-dot.png"],
-                yellow: ["#FFD300", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png"],
-                blue: ["#0000e5", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"],
-                green: ["#008000", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png"],
-                red: ["#FF0000", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png"],
-                orange: ["#FFA500", "http://maps.google.com/intl/en_us/mapfiles/ms/micons/orange-dot.png"],
-                lightBlue: ["#00FFFF", "http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png"],
-                pink: ["#ff748c", "http://maps.google.com/mapfiles/ms/micons/pink-dot.png"]
+                brown: ["#9d7050", "/images/bus_brown.png"],
+                purple: ["#8300c4", "/images/bus_purple.png"],
+                orange: ["#e35d04", "/images/bus_orange.png"],
+                blue: ["#0071d4", "/images/bus_blue.png"],
+                cyan: ["#00c8ff", "/images/bus_cyan.png"],
+                green: ["#16a600", "/images/bus_green.png"],
+                red: ["#de0000", "/images/bus_red.png"],
+                pink: ["#d90990", "/images/bus_pink.png"]
             };
             this.markerColorAssignment = {};
             this.arePolylinesVisible = true;

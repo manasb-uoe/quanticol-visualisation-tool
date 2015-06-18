@@ -150,18 +150,17 @@ define([
                     content: "Error: You need to select at least 1 service!",
                     duration: 5000
                 }).toggle();
+            } else if (selectedServices.length > 8) {
+                new SnackbarView({
+                    content: "Error: You can select at most 8 services!",
+                    duration: 5000
+                }).toggle();
             } else if (selectedVehicles.length == 0) {
                 new SnackbarView({
                     content: "Error: You need to select at least 1 vehicle!",
                     duration: 5000
                 }).toggle();
-            } else if (selectedVehicles.length > 8) {
-                new SnackbarView({
-                    content: "Error: You can select at most 8 vehicles!",
-                    duration: 5000
-                }).toggle();
-            }
-            else {
+            } else {
                 $(event.target).button("loading");
 
                 allVehicleCollection.fetch({
