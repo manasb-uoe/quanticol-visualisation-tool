@@ -191,7 +191,7 @@ html, body {
     padding: 15px;
     box-shadow: 0 6px 8px -6px #999;
     background-color: rgb(247,247,249);
-    margin-bottom: -200px;
+    margin-bottom: -250px;
 }
 
 @media (max-width: 767px) {

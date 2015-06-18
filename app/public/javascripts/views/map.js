@@ -27,6 +27,7 @@ define([
                 pink: ["#ff748c", "http://maps.google.com/mapfiles/ms/micons/pink-dot.png"]
             };
             this.markerColorAssignment = {};
+            this.arePolylinesVisible = true;
         },
         render: function() {
             var options = {
@@ -113,7 +114,9 @@ define([
                             strokeWeight: 2
                         });
 
-                        polyline.setMap(self.googleMap);
+                        if (self.arePolylinesVisible) {
+                            polyline.setMap(self.googleMap);
+                        }
                         self.polylines.push(polyline);
 
                         previousMarker.setMap(null);
@@ -144,6 +147,20 @@ define([
                 polyline.setMap(null);
             });
             this.polylines = [];
+        },
+        togglePolylines: function () {
+            var self = this;
+            if (this.arePolylinesVisible) {
+                this.polylines.forEach(function (polyline) {
+                    polyline.setMap(null);
+                });
+                this.arePolylinesVisible = false;
+            } else {
+                this.polylines.forEach(function (polyline) {
+                    polyline.setMap(self.googleMap);
+                });
+                this.arePolylinesVisible = true;
+            }
         },
         reset: function () {
             this.removeMarkers();

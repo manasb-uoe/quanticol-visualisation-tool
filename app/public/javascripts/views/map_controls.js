@@ -32,7 +32,8 @@ define([
             this.$playButton = $("#play-pause-button");
         },
         events: {
-            "click #play-pause-button": "toggleSimulation"
+            "click #play-pause-button": "toggleSimulation",
+            "change #show-path-trace-checkbox": "delegateTogglePolylines"
         },
         show: function() {
             if (this.isVisible) return;
@@ -46,7 +47,7 @@ define([
             if (!this.isVisible) return;
 
             this.$mapControls.animate({
-                marginBottom: "-200px"
+                marginBottom: "-250px"
             }, 300);
             this.isVisible = false;
         },
@@ -97,6 +98,9 @@ define([
                     mapView.updateMarkers(self.currentTime, self.stepSize);
                 }, 500);
             }
+        },
+        delegateTogglePolylines: function () {
+            mapView.togglePolylines();
         }
     });
 
