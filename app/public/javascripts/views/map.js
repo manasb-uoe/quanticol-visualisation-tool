@@ -27,7 +27,6 @@ define([
                 pink: ["#d90990", "/images/bus_pink.png"]
             };
             this.markerColorAssignment = {};
-            this.arePolylinesVisible = true;
         },
         render: function() {
             var options = {
@@ -37,6 +36,8 @@ define([
             };
 
             this.googleMap = new google.maps.Map($("#map-container")[0], options);
+
+            this.arePolylinesVisible = true;
         },
         updateMarkers: function (currentTime, stepSize) {
             var self = this;
@@ -45,30 +46,6 @@ define([
                 return vehicle.get("last_gps_fix") >= currentTime - stepSize
                     && vehicle.get("last_gps_fix") <= currentTime;
             });
-
-            // TODO probably remove it?
-            // remove existing markers for each new vehicle so that we only have one marker for every vehicle
-            //var requiredVehicleIDs = [];
-            //requiredVehicles.forEach(function (vehicle) {
-            //    requiredVehicleIDs.push(vehicle.get("vehicle_id"));
-            //});
-            //var requiredMarkers = [];
-            //this.markers.forEach(function (marker) {
-            //    if (requiredVehicleIDs.indexOf(marker.vehicleID) > -1) {
-            //        marker.setMap(null);
-            //        marker = undefined;
-            //    } else {
-            //        requiredMarkers.push(marker);
-            //    }
-            //});
-            //this.markers = requiredMarkers;
-
-            //console.log(this.markers.length);
-
-            //console.log("current time: " + moment.unix(currentTime).locale("en").format("hh:mm:ss a"));
-            //requiredVehicles.forEach(function (vehicle) {
-            //    console.log(moment.unix(vehicle.get("last_gps_fix")).locale("en").format("hh:mm:ss a"));
-            //});
 
             requiredVehicles.forEach(function (vehicle) {
                 var marker = new google.maps.Marker({

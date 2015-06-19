@@ -18,9 +18,10 @@ define([
 
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
+            this.refreshIntervalID = null;
             this.stepSize = 40; // seconds
             this.isSimulating = false;
-            this.refreshIntervalID = null;
+            this.isVisible = false;
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
@@ -29,7 +30,14 @@ define([
 
             this.delegateEvents(this.events);
 
-            this.isVisible = false;
+            if (this.isVisible) {
+                this.hide();
+            }
+
+            // close previously running simulation
+            if (this.isSimulating) {
+                this.toggleSimulation();
+            }
 
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
@@ -61,6 +69,11 @@ define([
             this.currentTime = this.timeSpan.startTime;
             this.updateTimer();
 
+            // close previously running simulation
+            if (this.isSimulating) {
+                this.toggleSimulation();
+            }
+
             mapView.reset();
             mapView.assignMarkerColors();
             this.updateLegend();
@@ -72,8 +85,6 @@ define([
         toggleSimulation: function () {
             if (this.isSimulating) {
                 this.isSimulating = false;
-
-                //console.log("stopped");
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-play");
                 this.$playButton.siblings().removeAttr("disabled");
