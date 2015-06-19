@@ -32,10 +32,10 @@ define([
             this.delegateEvents(this.events);
         },
         addAllVehicles: function() {
-            // hide progress bar
             $("#select-vehicles-modal-progress").hide();
 
             $("#vehicles-container").empty();
+
             uniqueVehicleCollection.each(this.addVehicle, this);
         },
         addVehicle: function(vehicle) {
@@ -43,7 +43,8 @@ define([
             $("#vehicles-container").append(vehicleItemView.render().el);
         },
         refreshVehicles: function () {
-            console.log("refreshing vehicles");
+            $("#select-vehicles-modal-progress").show();
+
             var selectedServiceNames = serviceCollection.getSelectedNames();
 
             uniqueVehicleCollection.fetch({
