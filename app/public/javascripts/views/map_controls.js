@@ -25,7 +25,8 @@ define([
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
-            this.$el.html(mapControlsTemplate);
+            var compiledTempalte = swig.render(mapControlsTemplate, {locals: {stepSize: this.stepSize}});
+            this.$el.html(compiledTempalte);
             this.$mapControls.html(this.el);
 
             this.delegateEvents(this.events);
@@ -42,13 +43,12 @@ define([
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
             this.$legend = $("#legend");
-            this.$pathTraceCheckbox = $("#show-path-trace-checkbox");
-            this.$routesCheckbox = $("#show-routes-checkbox");
         },
         events: {
             "click #play-pause-button": "toggleSimulation",
             "change #show-path-trace-checkbox": "delegateTogglePathPolylines",
-            "change #show-routes-checkbox": "delegateToggleRoutePolylines"
+            "change #show-routes-checkbox": "delegateToggleRoutePolylines",
+            "input #step-size-input": "updateStepSize"
         },
         show: function() {
             if (this.isVisible) return;
@@ -131,6 +131,14 @@ define([
         },
         delegateToggleRoutePolylines: function () {
             mapView.toggleRoutePolylines();
+        },
+        updateStepSize: function(event) {
+            var newStepSize = $(event.target).val().trim();
+            if (newStepSize.length > 0) {
+                if (newStepSize > 0) {
+                    this.stepSize = parseInt(newStepSize);
+                }
+            }
         }
     });
 

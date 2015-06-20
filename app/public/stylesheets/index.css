@@ -230,6 +230,21 @@ html, body {
     vertical-align: middle;
 }
 
+#map-controls-container .step-size-form {
+    margin-top: 7px;
+}
+
+#map-controls-container .step-size-label {
+    font-weight: 100;
+    display: inline-block;
+}
+
+#map-controls-container #step-size-input {
+    width: 55px;
+    padding: 10px;
+    display: inline-block;
+}
+
 
 /* Snacbar */
 

@@ -27,7 +27,7 @@
 
 <div><strong>Options</strong></div>
 <div class="options row">
-    <div class="col-md-6">
+    <div class="col-md-6 col-xs-6">
         <div class="checkbox">
             <label>
                 <input type="checkbox" id="show-path-trace-checkbox" checked> Show path trace
@@ -38,5 +38,13 @@
                 <input type="checkbox" id="show-routes-checkbox"> Show routes
             </label>
         </div>
+    </div>
+    <div class="col-md-6 col-xs-6">
+        <form class="form step-size-form">
+            <div class="form-group">
+                <label for="step-size-input"><span class="step-size-label">Step size (s): </span></label>
+                <input type="text" class="form-control input-sm" id="step-size-input" value="{{stepSize}}">
+            </div>
+        </form>
     </div>
 </div>
