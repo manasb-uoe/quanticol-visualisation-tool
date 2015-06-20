@@ -7,15 +7,16 @@ define([
     "underscore",
     "backbone",
     "collections/all_vehicles",
-    "moment",
+    "collections/services",
     "async!http://maps.google.com/maps/api/js?sensor=false"
-], function($, _, Backbone, allVehicleCollection, moment) {
+], function($, _, Backbone, allVehicleCollection, serviceCollection) {
     "use strict";
 
     var MapView = Backbone.View.extend({
         initialize: function () {
             this.markers = [];
-            this.polylines = [];
+            this.pathPolylines = [];
+            this.routePolylines = [];
             this.markerColors = {
                 brown: ["#9d7050", "/images/bus_brown.png"],
                 purple: ["#8300c4", "/images/bus_purple.png"],
@@ -37,7 +38,8 @@ define([
 
             this.googleMap = new google.maps.Map($("#map-container")[0], options);
 
-            this.arePolylinesVisible = true;
+            this.arePathPolylinesVisible = true;
+            this.areRoutePolylinesVisible = false;
         },
         updateMarkers: function (currentTime, stepSize) {
             var self = this;
@@ -92,10 +94,10 @@ define([
                             strokeWeight: 2
                         });
 
-                        if (self.arePolylinesVisible) {
+                        if (self.arePathPolylinesVisible) {
                             polyline.setMap(self.googleMap);
                         }
-                        self.polylines.push(polyline);
+                        self.pathPolylines.push(polyline);
 
                         previousMarker.setMap(null);
                         break;
@@ -123,23 +125,75 @@ define([
             });
         },
         removePolylines: function () {
-            this.polylines.forEach(function (polyline) {
+            // remove path traces
+            this.pathPolylines.forEach(function (polyline) {
                 polyline.setMap(null);
             });
-            this.polylines = [];
+            this.pathPolylines = [];
+
+            // remove routes
+            this.routePolylines.forEach(function (polyline) {
+                polyline.setMap(null);
+            });
+            this.routePolylines = [];
         },
-        togglePolylines: function () {
+        togglePathPolylines: function () {
             var self = this;
-            if (this.arePolylinesVisible) {
-                this.polylines.forEach(function (polyline) {
+            if (this.arePathPolylinesVisible) {
+                this.pathPolylines.forEach(function (polyline) {
                     polyline.setMap(null);
                 });
-                this.arePolylinesVisible = false;
+                this.arePathPolylinesVisible = false;
             } else {
-                this.polylines.forEach(function (polyline) {
+                this.pathPolylines.forEach(function (polyline) {
                     polyline.setMap(self.googleMap);
                 });
-                this.arePolylinesVisible = true;
+                this.arePathPolylinesVisible = true;
+            }
+        },
+        toggleRoutePolylines: function () {
+            var self = this;
+
+            if (this.areRoutePolylinesVisible) {
+                this.routePolylines.forEach(function (polyline) {
+                    polyline.setMap(null);
+                });
+
+                this.areRoutePolylinesVisible = false;
+            } else {
+                // if routes already exist, simply show them, else create and then show them
+                if (self.routePolylines.length == 0) {
+                    var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
+                    uniqueServiceNames.forEach(function (name) {
+                        var service = serviceCollection.getByName(name);
+                        var inboundRoute = _.filter(service.get("routes"), function (route) {
+                            return route.direction == "inbound";
+                        });
+
+                        var pathCoordinates = [];
+                        inboundRoute[0].points.forEach(function (point) {
+                            pathCoordinates.push(new google.maps.LatLng(point.latitude, point.longitude));
+                        });
+
+                        var polyline = new google.maps.Polyline({
+                            path: pathCoordinates,
+                            strokeColor: self.markerColors[self.markerColorAssignment[name]][0],
+                            geodesic: true,
+                            strokeOpacity: 0.3,
+                            strokeWeight: 6
+                        });
+
+                        polyline.setMap(self.googleMap);
+
+                        self.routePolylines.push(polyline);
+                    });
+                } else {
+                    this.routePolylines.forEach(function (polyline) {
+                        polyline.setMap(self.googleMap);
+                    });
+                }
+
+                this.areRoutePolylinesVisible = true;
             }
         },
         reset: function () {

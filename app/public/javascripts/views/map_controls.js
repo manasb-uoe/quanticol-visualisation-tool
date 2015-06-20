@@ -42,10 +42,13 @@ define([
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
             this.$legend = $("#legend");
+            this.$pathTraceCheckbox = $("#show-path-trace-checkbox");
+            this.$routesCheckbox = $("#show-routes-checkbox");
         },
         events: {
             "click #play-pause-button": "toggleSimulation",
-            "change #show-path-trace-checkbox": "delegateTogglePolylines"
+            "change #show-path-trace-checkbox": "delegateTogglePathPolylines",
+            "change #show-routes-checkbox": "delegateToggleRoutePolylines"
         },
         show: function() {
             if (this.isVisible) return;
@@ -123,8 +126,11 @@ define([
             var compiledTempalte = swig.render(mapControlsLegendTemplate, {locals: {services: mapView.markerColorAssignment}});
             this.$legend.html(compiledTempalte);
         },
-        delegateTogglePolylines: function () {
-            mapView.togglePolylines();
+        delegateTogglePathPolylines: function () {
+            mapView.togglePathPolylines();
+        },
+        delegateToggleRoutePolylines: function () {
+            mapView.toggleRoutePolylines();
         }
     });
 

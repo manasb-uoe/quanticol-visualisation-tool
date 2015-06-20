@@ -24,6 +24,15 @@ define([
             }
 
             return selectedNames;
+        },
+        getByName: function(name) {
+            var requiredService = this.filter(function (service) {
+                return service.get("name") == name;
+            });
+
+            if (requiredService.length == 0) throw new Error("No service found with name: " + name);
+
+            return requiredService[0];
         }
     });
 
