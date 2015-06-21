@@ -23,6 +23,7 @@ define([
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
         },
         events: {
+            "click #select-all-vehicles-button": "selectAll",
             "click #select-vehicles-modal-save-button": "saveChanges"
         },
         render: function() {
@@ -53,6 +54,11 @@ define([
             });
 
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
+        },
+        selectAll: function () {
+            uniqueVehicleCollection.each(function (vehicle) {
+                vehicle.set("isSelected", true);
+            });
         },
         reset: function () {
             uniqueVehicleCollection.reset();

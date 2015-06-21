@@ -12,6 +12,9 @@ define([
     "use strict";
 
     var VehicleItemView = Backbone.View.extend({
+        initialize: function () {
+            this.model.on("change:isSelected", this.render, this);
+        },
         events: {
             "click .vehicle": "toggleSelection"
         },
@@ -23,7 +26,6 @@ define([
         },
         toggleSelection: function() {
             this.model.set("isSelected", !this.model.get("isSelected"));
-            this.render();
         }
     });
 
