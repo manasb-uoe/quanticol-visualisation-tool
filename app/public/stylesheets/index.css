@@ -104,6 +104,10 @@ html, body {
     margin-right: 5px;
 }
 
+#currently-selected-services, #currently-selected-vehicles {
+    word-break: break-all;
+}
+
 
 /* Tool page: Select services modal */
 
@@ -180,6 +184,10 @@ html, body {
 
 #select-vehicles-modal #vehicles-container .selected-vehicle {
     background-color: #dff0d8;
+}
+
+#selected-vehicles-modal-services {
+    word-break: break-all;
 }
 
 /* Tool page: Map */
