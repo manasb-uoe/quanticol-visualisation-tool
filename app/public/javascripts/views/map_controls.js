@@ -19,15 +19,20 @@ define([
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
             this.refreshIntervalID = null;
-            this.stepSize = 40; // seconds
+            this.stepSize = 30; // seconds
             this.isSimulating = false;
             this.isVisible = false;
             this.arePathPolylinesVisible = true;
-            this.areRoutePolylinesVisible = false;
+            this.areRoutePolylinesVisible = true;
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
-            var compiledTempalte = swig.render(mapControlsTemplate, {locals: {stepSize: this.stepSize}});
+            var compiledTempalte = swig.render(mapControlsTemplate,
+                {locals: {
+                    stepSize: this.stepSize,
+                    arePathPolylinesVisible: this.arePathPolylinesVisible,
+                    areRoutePolylinesVisible: this.areRoutePolylinesVisible
+                }});
             this.$el.html(compiledTempalte);
             this.$mapControls.html(this.el);
 
