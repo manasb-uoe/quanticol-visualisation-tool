@@ -53,24 +53,24 @@ define([
                     icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[vehicle.get("service_name")]][1])
                 });
 
+                var infoWindowContent = [
+                    "<strong>Vehicle ID: </strong>" + vehicle.get("vehicle_id"),
+                    "<br>",
+                    "<strong>Service name: </strong>" + vehicle.get("service_name"),
+                    "<br>",
+                    "<strong>Destination: </strong>" + vehicle.get("destination"),
+                    "<br>",
+                    "<strong>Current position: </strong>(" + vehicle.get("location")[1] + ", " + vehicle.get("location")[0] + ")"
+                ].join("");
+
                 marker.infoWindow = new google.maps.InfoWindow({
-                    content: "Vehicle ID: " + vehicle.get("vehicle_id")
+                    content: infoWindowContent
                 });
 
                 marker.infoWindow.isOpen = false;
 
-                marker.infoWindow.toggle = function () {
-                    if (marker.infoWindow.isOpen) {
-                        marker.infoWindow.close(self.googleMap, marker);
-                        marker.infoWindow.isOpen = false;
-                    } else {
-                        marker.infoWindow.open(self.googleMap, marker);
-                        marker.infoWindow.isOpen = true;
-                    }
-                };
-
                 google.maps.event.addListener(marker, "click", function () {
-                    marker.infoWindow.toggle();
+                    marker.infoWindow.open(self.googleMap, marker);
                 });
 
                 marker.setMap(self.googleMap);
