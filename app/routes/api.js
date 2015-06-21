@@ -38,7 +38,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                     async.each(
                         vehicleIDs,
                         function (vehicleID, cb) {
-                            VehicleLocation.findOne({vehicle_id: vehicleID}, function (err, vehicle) {
+                            VehicleLocation.findOne({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicle) {
                                 uniqueVehicles.push(vehicle);
                                 cb();
                             });
