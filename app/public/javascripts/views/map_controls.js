@@ -69,17 +69,19 @@ define([
             this.isVisible = false;
         },
         reset: function () {
-            // update current time with start time of simulation
-            this.timeSpan = allVehicleCollection.getTimeSpan();
-            this.currentTime = this.timeSpan.startTime;
-            this.updateTimer();
-
             // close previously running simulation
             if (this.isSimulating) {
                 this.toggleSimulation();
             }
 
             mapView.reset();
+        },
+        setupSimulation: function () {
+            // update current time with start time of simulation
+            this.timeSpan = allVehicleCollection.getTimeSpan();
+            this.currentTime = this.timeSpan.startTime;
+            this.updateTimer();
+
             mapView.assignMarkerColors();
             this.updateLegend();
             mapView.updateMarkers(this.currentTime, this.stepSize, this.arePathPolylinesVisible);

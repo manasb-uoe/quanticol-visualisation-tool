@@ -14,11 +14,10 @@ define([
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
     "views/snackbar",
-    "views/map",
     "views/map_controls",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, mapView, mapControlsView, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, mapControlsView, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
@@ -135,7 +134,7 @@ define([
             selectServicesModal.reset();
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
-            mapView.reset();
+            mapControlsView.reset();
             mapControlsView.hide();
 
             this.resetSnackbar.toggle();
@@ -179,8 +178,9 @@ define([
             if (allVehicleCollection.length > 0) {
                 this.toggleControlPanel();
 
-                mapControlsView.show();
                 mapControlsView.reset();
+                mapControlsView.setupSimulation();
+                mapControlsView.show();
 
                 new SnackbarView({
                     content: "Hint: Use 'play' button in map controls to start the simulation!",
