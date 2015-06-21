@@ -6,9 +6,10 @@ define([
     "jquery",
     "underscore",
     "backbone",
+    "bootstrap",
     "swig",
     "text!../../templates/vehicle_item.html"
-], function($, _, Backbone, swig, vehicleItemTemplate){
+], function($, _, Backbone, bootstrap, swig, vehicleItemTemplate){
     "use strict";
 
     var VehicleItemView = Backbone.View.extend({
@@ -16,7 +17,8 @@ define([
             this.model.on("change:isSelected", this.render, this);
         },
         events: {
-            "click .vehicle": "toggleSelection"
+            "click .vehicle": "toggleSelection",
+            "contextmenu .vehicle": "togglePopover"
         },
         render: function () {
             var compiledTemplate = swig.render(vehicleItemTemplate, {locals: this.model.toJSON()});
@@ -26,6 +28,15 @@ define([
         },
         toggleSelection: function() {
             this.model.set("isSelected", !this.model.get("isSelected"));
+        },
+        togglePopover: function(event) {
+            event.preventDefault();
+
+            this.$el.find(".vehicle").popover({
+                html: true,
+                content: "<strong>Destination: </strong>" + this.model.get("destination"),
+                placement: "top"
+            }).popover("toggle");
         }
     });
 
