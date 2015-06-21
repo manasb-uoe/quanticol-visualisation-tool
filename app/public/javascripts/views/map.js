@@ -37,11 +37,8 @@ define([
             };
 
             this.googleMap = new google.maps.Map($("#map-container")[0], options);
-
-            this.arePathPolylinesVisible = true;
-            this.areRoutePolylinesVisible = false;
         },
-        updateMarkers: function (currentTime, stepSize) {
+        updateMarkers: function (currentTime, stepSize, arePathPolylinesVisible) {
             var self = this;
 
             var requiredVehicles = allVehicleCollection.filter(function (vehicle) {
@@ -94,7 +91,7 @@ define([
                             strokeWeight: 2
                         });
 
-                        if (self.arePathPolylinesVisible) {
+                        if (arePathPolylinesVisible) {
                             polyline.setMap(self.googleMap);
                         }
                         self.pathPolylines.push(polyline);
@@ -137,30 +134,29 @@ define([
             });
             this.routePolylines = [];
         },
-        togglePathPolylines: function () {
+        togglePathPolylines: function (action) {
             var self = this;
-            if (this.arePathPolylinesVisible) {
+
+            if (action == "hide") {
                 this.pathPolylines.forEach(function (polyline) {
                     polyline.setMap(null);
                 });
-                this.arePathPolylinesVisible = false;
-            } else {
+            } else if (action == "show") {
                 this.pathPolylines.forEach(function (polyline) {
                     polyline.setMap(self.googleMap);
                 });
-                this.arePathPolylinesVisible = true;
+            } else {
+                throw new Error("Action can only be 'show' or 'hide'");
             }
         },
-        toggleRoutePolylines: function () {
+        toggleRoutePolylines: function (action) {
             var self = this;
 
-            if (this.areRoutePolylinesVisible) {
+            if (action == "hide") {
                 this.routePolylines.forEach(function (polyline) {
                     polyline.setMap(null);
                 });
-
-                this.areRoutePolylinesVisible = false;
-            } else {
+            } else if (action == "show") {
                 // if routes already exist, simply show them, else create and then show them
                 if (self.routePolylines.length == 0) {
                     var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
@@ -192,8 +188,8 @@ define([
                         polyline.setMap(self.googleMap);
                     });
                 }
-
-                this.areRoutePolylinesVisible = true;
+            } else {
+                throw new Error("Action can only be 'show' or 'hide'");
             }
         },
         reset: function () {

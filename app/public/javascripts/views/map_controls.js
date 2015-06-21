@@ -22,6 +22,8 @@ define([
             this.stepSize = 40; // seconds
             this.isSimulating = false;
             this.isVisible = false;
+            this.arePathPolylinesVisible = true;
+            this.areRoutePolylinesVisible = false;
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
@@ -80,7 +82,13 @@ define([
             mapView.reset();
             mapView.assignMarkerColors();
             this.updateLegend();
-            mapView.updateMarkers(this.currentTime, this.stepSize);
+            mapView.updateMarkers(this.currentTime, this.stepSize, this.arePathPolylinesVisible);
+
+            if (this.areRoutePolylinesVisible) {
+                mapView.toggleRoutePolylines("show");
+            } else {
+                mapView.toggleRoutePolylines("hide");
+            }
         },
         updateTimer: function () {
             this.$currentTimeInput.val(moment.unix(this.currentTime).locale("en").format("MMMM Do YYYY, h:mm:ss a"));
@@ -114,7 +122,7 @@ define([
                     }
 
                     self.updateTimer();
-                    mapView.updateMarkers(self.currentTime, self.stepSize);
+                    mapView.updateMarkers(self.currentTime, self.stepSize, self.arePathPolylinesVisible);
                 }, 500);
             }
         },
@@ -127,10 +135,22 @@ define([
             this.$legend.html(compiledTempalte);
         },
         delegateTogglePathPolylines: function () {
-            mapView.togglePathPolylines();
+            if (this.arePathPolylinesVisible) {
+                mapView.togglePathPolylines("hide");
+                this.arePathPolylinesVisible = false;
+            } else {
+                mapView.togglePathPolylines("show");
+                this.arePathPolylinesVisible = true;
+            }
         },
         delegateToggleRoutePolylines: function () {
-            mapView.toggleRoutePolylines();
+            if (this.areRoutePolylinesVisible) {
+                mapView.toggleRoutePolylines("hide");
+                this.areRoutePolylinesVisible = false;
+            } else {
+                mapView.toggleRoutePolylines("show");
+                this.areRoutePolylinesVisible = true;
+            }
         },
         updateStepSize: function(event) {
             var newStepSize = $(event.target).val().trim();
