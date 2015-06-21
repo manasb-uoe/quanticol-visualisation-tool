@@ -146,18 +146,6 @@ html, body {
 
 /* Tool page: Select vehicles modal */
 
-#select-vehicles-modal .search-and-select-all-container #select-all-vehicles-button {
-    display: inline-block;
-    width: 18%;
-    vertical-align: middle;
-}
-
-#select-vehicles-modal .search-and-select-all-container #search-vehicles-input {
-    display: inline-block;
-    width: 81%;
-    vertical-align: middle;
-}
-
 #select-vehicles-modal #vehicles-container {
     padding-right: 15px;
 }
