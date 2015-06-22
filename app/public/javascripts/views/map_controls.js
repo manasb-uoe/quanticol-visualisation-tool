@@ -23,7 +23,13 @@ define([
             this.isSimulating = false;
             this.isVisible = false;
             this.arePathPolylinesVisible = true;
-            this.areRoutePolylinesVisible = true;
+            this.areRoutePolylinesVisible = false;
+            this.stepSizes = {
+                f: 60,
+                ff: 60*5,
+                b: -60,
+                fb: -60*5
+            }
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
@@ -49,6 +55,10 @@ define([
 
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
+            this.$forwardButton = $("#forward-button");
+            this.$fastForwardButton = $("#fast-forward-button");
+            this.$backwardButton = $("#backward-button");
+            this.$fastBackwardButton = $("#fast-backward-button");
             this.$legend = $("#legend");
         },
         events: {
@@ -56,10 +66,10 @@ define([
             "change #show-path-trace-checkbox": "delegateTogglePathPolylines",
             "change #show-routes-checkbox": "delegateToggleRoutePolylines",
             "input #step-size-input": "updateStepSize",
-            //"click #forward-button": function() {this.skipSimulation("f")},
-            //"click #fast-forward-button": function() {this.skipSimulation("ff")},
-            //"click #backward-button": function() {this.skipSimulation("b")},
-            //"click #fast-backward-button": function() {this.skipSimulation("fb")}
+            "click #forward-button": function() {this.skipSimulation("f")},
+            "click #fast-forward-button": function() {this.skipSimulation("ff")},
+            "click #backward-button": function() {this.skipSimulation("b")},
+            "click #fast-backward-button": function() {this.skipSimulation("fb")}
         },
         show: function() {
             if (this.isVisible) return;
@@ -109,14 +119,13 @@ define([
                 this.isSimulating = false;
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-play");
-                this.$playButton.siblings().removeAttr("disabled");
+
 
                 clearInterval(this.refreshIntervalID);
             } else {
                 this.isSimulating = true;
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-pause");
-                this.$playButton.siblings().attr("disabled", "disabled");
 
                 var self = this;
                 self.refreshIntervalID = setInterval(function() {
@@ -136,6 +145,8 @@ define([
                     mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible);
                 }, 500);
             }
+
+            this.updateControlsVisiblity();
         },
         /**
          * Updates the legend with all service names mapped to their colors. This method can only be called
@@ -168,6 +179,44 @@ define([
             if (newStepSize.length > 0) {
                 if (newStepSize > 0) {
                     this.stepSize = parseInt(newStepSize);
+                }
+            }
+        },
+        skipSimulation: function(action) {
+            if (Object.keys(this.stepSizes).indexOf(action) == -1) {
+                throw new Error("Action can only be 'f', 'ff', 'b' or 'fb'");
+            }
+
+            this.currentTime += this.stepSizes[action];
+
+            if (this.currentTime > this.timeSpan.endTime) {
+                this.currentTime = this.timeSpan.endTime;
+            } else if (this.currentTime < this.timeSpan.startTime) {
+                this.currentTime = this.timeSpan.startTime;
+            }
+
+            this.updateTimer();
+            this.updateControlsVisiblity();
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
+        },
+        updateControlsVisiblity: function () {
+            if (this.isSimulating) {
+                this.$playButton.siblings().attr("disabled", "disabled");
+            } else {
+                if (this.currentTime == this.timeSpan.endTime) {
+                    this.$forwardButton.attr("disabled", "disabled");
+                    this.$fastForwardButton.attr("disabled", "disabled");
+                } else {
+                    this.$forwardButton.removeAttr("disabled");
+                    this.$fastForwardButton.removeAttr("disabled");
+                }
+
+                if (this.currentTime == this.timeSpan.startTime) {
+                    this.$backwardButton.attr("disabled", "disabled");
+                    this.$fastBackwardButton.attr("disabled", "disabled");
+                } else {
+                    this.$backwardButton.removeAttr("disabled");
+                    this.$fastBackwardButton.removeAttr("disabled");
                 }
             }
         }

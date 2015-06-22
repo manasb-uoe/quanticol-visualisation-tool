@@ -43,7 +43,7 @@ define([
 
             // remove all markers and polylines before adding any new ones
             this.removeMarkers();
-            this.removePolylines();
+            this.removePathPolylines();
 
             var requiredVehicles = allVehicleCollection.filter(function (vehicle) {
                 return vehicle.get("last_gps_fix") <= currentTime;
@@ -141,14 +141,13 @@ define([
                 self.markerColorAssignment[name] = colors[pos];
             });
         },
-        removePolylines: function () {
-            // remove path traces
+        removePathPolylines: function () {
             this.pathPolylines.forEach(function (polyline) {
                 polyline.setMap(null);
             });
             this.pathPolylines = [];
-
-            // remove routes
+        },
+        removeRoutePolylines: function () {
             this.routePolylines.forEach(function (polyline) {
                 polyline.setMap(null);
             });
@@ -214,7 +213,8 @@ define([
         },
         reset: function () {
             this.removeMarkers();
-            this.removePolylines();
+            this.removePathPolylines();
+            this.removeRoutePolylines();
         }
     });
 
