@@ -38,29 +38,48 @@ define([
 
             this.googleMap = new google.maps.Map($("#map-container")[0], options);
         },
-        updateMarkers: function (currentTime, stepSize, arePathPolylinesVisible) {
+        updateMarkers: function (currentTime, arePathPolylinesVisible) {
             var self = this;
 
+            // remove all markers and polylines before adding any new ones
+            this.removeMarkers();
+            this.removePolylines();
+
             var requiredVehicles = allVehicleCollection.filter(function (vehicle) {
-                return vehicle.get("last_gps_fix") >= currentTime - stepSize
-                    && vehicle.get("last_gps_fix") <= currentTime;
+                return vehicle.get("last_gps_fix") <= currentTime;
             });
 
-            requiredVehicles.forEach(function (vehicle) {
+            var requiredVehiclesGrouped = _.groupBy(requiredVehicles, function (vehicle) {
+                return vehicle.get("vehicle_id");
+            });
+
+            Object.keys(requiredVehiclesGrouped).forEach(function (vehicleID) {
+                // get list of vehicles for current vehicle id and sort it in ascending oder of last gps fix
+                var vehiclesList = requiredVehiclesGrouped[vehicleID];
+                vehiclesList = _.sortBy(vehiclesList, function (vehicle) {
+                    return vehicle.get("last_gps_fix");
+                });
+
+
+                /**
+                 * Create marker for last vehicle in list
+                 */
+
+                var markerVehicle = vehiclesList[vehiclesList.length-1];
                 var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]),
+                    position: new google.maps.LatLng(markerVehicle.get("location")[1], markerVehicle.get("location")[0]),
                     map: self.googleMap,
-                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[vehicle.get("service_name")]][1])
+                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[markerVehicle.get("service_name")]][1])
                 });
 
                 var infoWindowContent = [
-                    "<strong>Vehicle ID: </strong>" + vehicle.get("vehicle_id"),
+                    "<strong>Vehicle ID: </strong>" + markerVehicle.get("vehicle_id"),
                     "<br>",
-                    "<strong>Service name: </strong>" + vehicle.get("service_name"),
+                    "<strong>Service name: </strong>" + markerVehicle.get("service_name"),
                     "<br>",
-                    "<strong>Destination: </strong>" + vehicle.get("destination"),
+                    "<strong>Destination: </strong>" + markerVehicle.get("destination"),
                     "<br>",
-                    "<strong>Current position: </strong>(" + vehicle.get("location")[1] + ", " + vehicle.get("location")[0] + ")"
+                    "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")"
                 ].join("");
 
                 marker.infoWindow = new google.maps.InfoWindow({
@@ -75,33 +94,34 @@ define([
 
                 marker.setMap(self.googleMap);
 
-                marker.vehicleID = vehicle.get("vehicle_id");
-                marker.serviceName = vehicle.get("service_name");
-
-                // add polyline from current marker to previous marker with same vehicle id
-                for (var i=self.markers.length-1; i>=0; i--) {
-                    if (self.markers[i].vehicleID == marker.vehicleID) {
-                        var previousMarker = self.markers[i];
-
-                        var polyline = new google.maps.Polyline({
-                            path: [previousMarker.getPosition(), marker.getPosition()],
-                            strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
-                            geodesic: true,
-                            strokeOpacity: 1.0,
-                            strokeWeight: 2
-                        });
-
-                        if (arePathPolylinesVisible) {
-                            polyline.setMap(self.googleMap);
-                        }
-                        self.pathPolylines.push(polyline);
-
-                        previousMarker.setMap(null);
-                        break;
-                    }
-                }
+                marker.vehicleID = markerVehicle.get("vehicle_id");
+                marker.serviceName = markerVehicle.get("service_name");
 
                 self.markers.push(marker);
+
+
+                /**
+                 * Create polyline between all adjacent markers in vehiclesList
+                 */
+
+                var pathCoordinates = [];
+                vehiclesList.forEach(function (vehicle) {
+                    pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                });
+
+                var polyline = new google.maps.Polyline({
+                    path: pathCoordinates,
+                    strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
+                    geodesic: true,
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+
+                if (arePathPolylinesVisible) {
+                    polyline.setMap(self.googleMap);
+                }
+
+                self.pathPolylines.push(polyline);
             });
         },
         removeMarkers: function () {
@@ -176,7 +196,7 @@ define([
                             strokeColor: self.markerColors[self.markerColorAssignment[name]][0],
                             geodesic: true,
                             strokeOpacity: 0.3,
-                            strokeWeight: 6
+                            strokeWeight: 8
                         });
 
                         polyline.setMap(self.googleMap);

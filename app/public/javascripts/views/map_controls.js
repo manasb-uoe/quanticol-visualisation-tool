@@ -55,7 +55,11 @@ define([
             "click #play-pause-button": "toggleSimulation",
             "change #show-path-trace-checkbox": "delegateTogglePathPolylines",
             "change #show-routes-checkbox": "delegateToggleRoutePolylines",
-            "input #step-size-input": "updateStepSize"
+            "input #step-size-input": "updateStepSize",
+            //"click #forward-button": function() {this.skipSimulation("f")},
+            //"click #fast-forward-button": function() {this.skipSimulation("ff")},
+            //"click #backward-button": function() {this.skipSimulation("b")},
+            //"click #fast-backward-button": function() {this.skipSimulation("fb")}
         },
         show: function() {
             if (this.isVisible) return;
@@ -89,7 +93,7 @@ define([
 
             mapView.assignMarkerColors();
             this.updateLegend();
-            mapView.updateMarkers(this.currentTime, this.stepSize, this.arePathPolylinesVisible);
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
 
             if (this.areRoutePolylinesVisible) {
                 mapView.toggleRoutePolylines("show");
@@ -129,7 +133,7 @@ define([
                     }
 
                     self.updateTimer();
-                    mapView.updateMarkers(self.currentTime, self.stepSize, self.arePathPolylinesVisible);
+                    mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible);
                 }, 500);
             }
         },
