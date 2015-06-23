@@ -23,8 +23,7 @@ define([
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
         },
         events: {
-            "click #select-all-vehicles-button": "selectAll",
-            "click #select-vehicles-modal-save-button": "saveChanges"
+            "click #select-all-vehicles-button": "selectAll"
         },
         render: function() {
             var compiledTemplate = swig.render(selectVehiclesModalTemplate);

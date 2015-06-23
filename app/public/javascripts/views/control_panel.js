@@ -24,6 +24,8 @@ define([
 
     var ControlPanelView = Backbone.View.extend({
         initialize: function () {
+            var self = this;
+
             this.resetSnackbar = new SnackbarView({
                 content: "All selections have been successfully reset!",
                 duration: 5000
@@ -34,7 +36,11 @@ define([
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
             allVehicleCollection.on("reset", this.onSubmitResults, this);
-            legendDisabledConfirmationModal.on("modal.continued", this.fetchAllVehicles, this);
+            legendDisabledConfirmationModal.on("modal.continued", function () {
+                $("#button-control-panel-submit").button("loading");
+
+                self.fetchAllVehicles();
+            });
 
         },
         events: {

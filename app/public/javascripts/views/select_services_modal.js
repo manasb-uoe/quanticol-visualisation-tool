@@ -18,6 +18,9 @@ define([
         initialize: function () {
             serviceCollection.on("reset", this.addAllServices, this);
         },
+        events: {
+            "click #select-all-services-button": "selectAll"
+        },
         render: function() {
             var context = {};
             var compiledTemplate = swig.render(selectServicesModalTemplate, {locals: context});
@@ -44,6 +47,11 @@ define([
         addService: function (service) {
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
+        },
+        selectAll: function () {
+            serviceCollection.each(function (service) {
+                service.set("isSelected", true);
+            });
         },
         reset: function () {
             serviceCollection.reset();
