@@ -11,3 +11,6 @@ data/
 
 # windows batch scripts
 *.bat
+
+# javascript build
+app/public/javascripts/build/main.min.js
