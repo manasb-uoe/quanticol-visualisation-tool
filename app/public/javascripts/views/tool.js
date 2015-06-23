@@ -12,11 +12,12 @@ define([
     "views/select_services_modal",
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
+    "views/legend_disabled_confirmation_modal",
     "views/control_panel",
     "views/map",
     "views/map_controls",
     "text!../../templates/tool.html"
-], function($, _, Backbone, swig, serviceCollection, uniqueVehicleCollection, selectServicesModalView, selectVehiclesModalView, selectTimeSpanModal, controlPanelView, mapView, mapControlsView, toolTemplate) {
+], function($, _, Backbone, swig, serviceCollection, uniqueVehicleCollection, selectServicesModalView, selectVehiclesModalView, selectTimeSpanModal, legendDisabledConfirmationModal, controlPanelView, mapView, mapControlsView, toolTemplate) {
     "use strict";
 
     var ToolView = Backbone.View.extend({
@@ -29,6 +30,7 @@ define([
             selectServicesModalView.render();
             selectVehiclesModalView.render();
             selectTimeSpanModal.render();
+            legendDisabledConfirmationModal.render();
             controlPanelView.render();
             mapView.render();
             mapControlsView.render();

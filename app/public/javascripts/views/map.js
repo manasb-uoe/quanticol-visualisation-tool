@@ -137,9 +137,18 @@ define([
 
             var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
             var colors = Object.keys(this.markerColors);
-            uniqueServiceNames.forEach(function (name, pos) {
-                self.markerColorAssignment[name] = colors[pos];
-            });
+
+            // if the number of selected services is greater than the available colors, then assign the same color
+            // to each service
+            if (serviceCollection.getSelectedNames().length > colors.length) {
+                uniqueServiceNames.forEach(function (name) {
+                    self.markerColorAssignment[name] = colors[0];
+                });
+            } else {
+                uniqueServiceNames.forEach(function (name, pos) {
+                    self.markerColorAssignment[name] = colors[pos];
+                });
+            }
         },
         removePathPolylines: function () {
             this.pathPolylines.forEach(function (polyline) {

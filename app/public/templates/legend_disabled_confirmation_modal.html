@@ -1,0 +1,22 @@
+<div class="modal fade" id="legend-disabled-confirmation-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Warning!</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Since you have selected more than <strong>{{ colorsLength }}</strong> services, the services
+                    legend will be disabled and all vehicles will be assigned the same marker color.
+                    <br><br>
+                    Do you wish to continue?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="legend-disabled-confirmation-modal-continue-button">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>

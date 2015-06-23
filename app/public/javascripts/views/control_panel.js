@@ -14,10 +14,12 @@ define([
     "views/select_vehicles_modal",
     "views/select_time_span_modal",
     "views/snackbar",
+    "views/map",
     "views/map_controls",
+    "views/legend_disabled_confirmation_modal",
     "swig",
     "text!../../templates/control_panel.html"
-], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, mapControlsView, swig, controlPanelTemplate){
+], function($, _, Backbone, bootstrap, serviceCollection, uniqueVehicleCollection, allVehicleCollection, selectServicesModal, selectVehiclesModal, selectTimeSpanModal, SnackbarView, mapView, mapControlsView, legendDisabledConfirmationModal, swig, controlPanelTemplate){
     "use strict";
 
     var ControlPanelView = Backbone.View.extend({
@@ -32,6 +34,8 @@ define([
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
             allVehicleCollection.on("reset", this.onSubmitResults, this);
+            legendDisabledConfirmationModal.on("modal.continued", this.fetchAllVehicles, this);
+
         },
         events: {
             "click .control-panel-trigger": "toggleControlPanel",
@@ -149,28 +153,32 @@ define([
                     content: "Error: You need to select at least 1 service!",
                     duration: 5000
                 }).toggle();
-            } else if (selectedServices.length > 8) {
-                new SnackbarView({
-                    content: "Error: You can select at most 8 services!",
-                    duration: 5000
-                }).toggle();
             } else if (selectedVehicles.length == 0) {
                 new SnackbarView({
                     content: "Error: You need to select at least 1 vehicle!",
                     duration: 5000
                 }).toggle();
+            } else if (selectedServices.length > Object.keys(mapView.markerColors).length) {
+                $("#legend-disabled-confirmation-modal").modal("show");
             } else {
                 $(event.target).button("loading");
 
-                allVehicleCollection.fetch({
-                    data: $.param({
-                        service: selectedServices,
-                        vehicle: selectedVehicles,
-                        startTime: timeSpan.startTime.unix(),
-                        endTime: timeSpan.endTime.unix()}),
-                    reset: true
-                });
+                this.fetchAllVehicles(selectedServices, selectedVehicles, timeSpan);
             }
+        },
+        fetchAllVehicles: function (selectedServices, selectedVehicles, timeSpan) {
+            selectedServices = selectedServices || serviceCollection.getSelectedNames();
+            selectedVehicles = selectedVehicles || uniqueVehicleCollection.getSelectedIDs();
+            timeSpan = timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
+
+            allVehicleCollection.fetch({
+                data: $.param({
+                    service: selectedServices,
+                    vehicle: selectedVehicles,
+                    startTime: timeSpan.startTime.unix(),
+                    endTime: timeSpan.endTime.unix()}),
+                reset: true
+            });
         },
         onSubmitResults: function () {
             $("#button-control-panel-submit").button("reset");

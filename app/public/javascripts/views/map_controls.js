@@ -7,13 +7,14 @@ define([
     "underscore",
     "backbone",
     "collections/all_vehicles",
+    "collections/services",
     "moment",
     "views/snackbar",
     "views/map",
     "swig",
     "text!../../templates/map_controls.html",
     "text!../../templates/map_controls_legend.html"
-], function($, _, Backbone, allVehicleCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
+], function($, _, Backbone, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
     "use strict";
 
     var MapControlsView = Backbone.View.extend({
@@ -151,10 +152,23 @@ define([
         /**
          * Updates the legend with all service names mapped to their colors. This method can only be called
          * AFTER the color assignment has been done, i.e. mapView's assignMarkerColors() must be called first.
+         * If the number of selected services is greater than the number of available colors, then the legend
+         * is not shown/updated.
          */
         updateLegend: function () {
-            var compiledTempalte = swig.render(mapControlsLegendTemplate, {locals: {services: mapView.markerColorAssignment}});
-            this.$legend.html(compiledTempalte);
+            var compiledTemplate = null;
+
+            var colorsLength = Object.keys(mapView.markerColors).length;
+            if (serviceCollection.getSelectedNames().length > colorsLength) {
+                compiledTemplate = swig.render(
+                    "(Disabled because more than {{ colorsLength }} services were selected)",
+                    {locals: {colorsLength: colorsLength}}
+                );
+            } else {
+                compiledTemplate = swig.render(mapControlsLegendTemplate, {locals: {services: mapView.markerColorAssignment}});
+            }
+
+            this.$legend.html(compiledTemplate);
         },
         delegateTogglePathPolylines: function () {
             if (this.arePathPolylinesVisible) {
