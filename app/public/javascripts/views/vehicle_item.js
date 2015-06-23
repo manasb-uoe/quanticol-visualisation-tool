@@ -17,8 +17,7 @@ define([
             this.model.on("change:isSelected", this.render, this);
         },
         events: {
-            "click .vehicle": "toggleSelection",
-            "contextmenu .vehicle": "togglePopover"
+            "click .vehicle": "toggleSelection"
         },
         render: function () {
             var compiledTemplate = swig.render(vehicleItemTemplate, {locals: this.model.toJSON()});
@@ -28,15 +27,6 @@ define([
         },
         toggleSelection: function() {
             this.model.set("isSelected", !this.model.get("isSelected"));
-        },
-        togglePopover: function(event) {
-            event.preventDefault();
-
-            this.$el.find(".vehicle").popover({
-                html: true,
-                content: "<strong>Destination: </strong>" + this.model.get("destination"),
-                placement: "top"
-            }).popover("toggle");
         }
     });
 
