@@ -105,6 +105,7 @@ define([
             mapView.assignMarkerColors();
             this.updateLegend();
             mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
+            this.updateControlsVisiblity();
 
             if (this.areRoutePolylinesVisible) {
                 mapView.toggleRoutePolylines("show");
