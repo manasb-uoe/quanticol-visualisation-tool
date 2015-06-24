@@ -114,7 +114,14 @@ define([
                     strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
                     geodesic: true,
                     strokeOpacity: 1.0,
-                    strokeWeight: 2
+                    strokeWeight: 2,
+                    icons: [{
+                        icon: {
+                            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                            fillOpacity: 1
+                        },
+                        repeat: "100px"
+                    }]
                 });
 
                 if (arePathPolylinesVisible) {
