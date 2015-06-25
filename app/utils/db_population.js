@@ -17,7 +17,7 @@ var VehicleLocation = require("../models/vehicle_location");
 var options = {
     host: "tfe-opendata.com",
     path: "/",
-    headers: {"Authorization": "Token " + "0c627af5849e23b0b030bc7352550884"}
+    headers: {Authorization: "Token " + "0c627af5849e23b0b030bc7352550884"}
 };
 
 function getJSON(path, onResult) {
@@ -42,13 +42,13 @@ function getJSON(path, onResult) {
  * Populate db collections
  */
 
-function populateStops(path, cbA) {
+function populateStops(cbA) {
     console.log("Populating Stops...");
 
     Stop.remove(function (err) {
         if (err) throw err;
 
-        getJSON(path, function (status, stopsJson) {
+        getJSON("/api/v1/stops", function (status, stopsJson) {
             async.each(
                 stopsJson.stops,
                 function (stopJson, cbB) {
@@ -78,13 +78,13 @@ function populateStops(path, cbA) {
     });
 }
 
-function populateServices(path, cbA) {
+function populateServices(cbA) {
     console.log("Populating Services...");
 
     Service.remove(function (err) {
         if (err) throw err;
 
-        getJSON(path, function (status, servicesJson) {
+        getJSON("/api/v1/services", function (status, servicesJson) {
             async.each(
                 servicesJson.services,
                 function (serviceJson, cbB) {
@@ -104,10 +104,10 @@ function populateServices(path, cbA) {
     })
 }
 
-function populateVehicleLocations(path, cbA) {
+function populateVehicleLocations(cbA) {
     console.log("Populating Vehicle Locations...");
 
-    getJSON(path, function (status, vehicleLocationsJson) {
+    getJSON("/api/v1/vehicle_locations", function (status, vehicleLocationsJson) {
         async.each(
             vehicleLocationsJson.vehicles,
             function (vehicleLocationJson, cbB) {
@@ -143,28 +143,28 @@ mongoose.connection.on("error", function (err) {
 mongoose.connection.once("open", function () {
     var arg = process.argv[2];
 
-    var finalCallback = function () {
-        console.log("END OF DB POPULATION SCRIPT");
-        process.exit(0);
-    };
-
     switch (arg) {
         case "nonlive":
             async.series([
-                function (cb) {
-                    populateStops("/api/v1/stops", cb);
-                },
-                function (cb) {
-                    populateServices("/api/v1/services", cb);
-                },
-                finalCallback
+                populateStops,
+                populateServices,
+                function () {
+                    console.log("END OF DB POPULATION SCRIPT");
+                    process.exit(0);
+                }
             ]);
             break;
         case "live":
-            populateVehicleLocations("/api/v1/vehicle_locations", finalCallback);
+            var counter = 0;
+            setInterval(function () {
+                populateVehicleLocations(function () {
+                    counter++;
+                    console.log("iterations completed: " + counter);
+                });
+            }, 40000);
             break;
         default:
-            throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'.");
+            throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'");
     }
 });
 
