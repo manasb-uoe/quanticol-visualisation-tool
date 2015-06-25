@@ -193,9 +193,14 @@ html, body {
     min-width: 400px;
     max-width: 500px;
     padding: 15px;
-    box-shadow: 0 6px 8px -6px #999;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     background-color: rgb(247,247,249);
     margin-bottom: -400px;
+}
+
+
+#map-controls-container #map-controls-current-time {
+    text-align: center;
 }
 
 @media (max-width: 767px) {
@@ -255,7 +260,7 @@ html, body {
 .snackbar {
     position: fixed;
     background-color: #263238;
-    box-shadow: 0 6px 8px -6px #999;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     color: #ECEFF1;
     bottom: 20px;
     right: 20px;
