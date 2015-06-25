@@ -38,11 +38,17 @@ define([
         addAllServices: function () {
             if (serviceCollection.length == 0) return;
 
-            // hide progress bar
             $("#select-services-modal-progress").hide();
-
             $("#services-container").empty();
-            serviceCollection.each(this.addService, this);
+
+            // sort services by id and then add them to modal body
+            var self = this;
+            var sortedByName = serviceCollection.sortBy(function (service) {
+                return parseInt(service.get("name")) ? parseInt(service.get("name")) : service.get("name");
+            });
+            sortedByName.forEach(function (service) {
+                self.addService(service);
+            });
         },
         addService: function (service) {
             var serviceItemView = new ServiceItemView({model: service});

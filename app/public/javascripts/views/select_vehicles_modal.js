@@ -33,10 +33,16 @@ define([
         },
         addAllVehicles: function() {
             $("#select-vehicles-modal-progress").hide();
-
             $("#vehicles-container").empty();
 
-            uniqueVehicleCollection.each(this.addVehicle, this);
+            // sort vehicles by id and then add them to modal body
+            var sortedByVehicleID = uniqueVehicleCollection.sortBy(function (vehicle) {
+                return parseInt(vehicle.get("vehicle_id"));
+            });
+            var self = this;
+            sortedByVehicleID.forEach(function (vehicle) {
+                self.addVehicle(vehicle);
+            });
         },
         addVehicle: function(vehicle) {
             var vehicleItemView = new VehicleItemView({model: vehicle});
