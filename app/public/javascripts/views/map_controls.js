@@ -64,7 +64,7 @@ define([
         },
         events: {
             "click #play-pause-button": "toggleSimulation",
-            "change #show-path-trace-checkbox": "delegateTogglePathPolylines",
+            "change #show-path-trace-checkbox": "togglePathPolylines",
             "change #show-routes-checkbox": "delegateToggleRoutePolylines",
             "input #step-size-input": "updateStepSize",
             "click #forward-button": function() {this.skipSimulation("f")},
@@ -171,14 +171,10 @@ define([
 
             this.$legend.html(compiledTemplate);
         },
-        delegateTogglePathPolylines: function () {
-            if (this.arePathPolylinesVisible) {
-                mapView.togglePathPolylines("hide");
-                this.arePathPolylinesVisible = false;
-            } else {
-                mapView.togglePathPolylines("show");
-                this.arePathPolylinesVisible = true;
-            }
+        togglePathPolylines: function () {
+            this.arePathPolylinesVisible = !this.arePathPolylinesVisible;
+
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
         },
         delegateToggleRoutePolylines: function () {
             if (this.areRoutePolylinesVisible) {

@@ -101,12 +101,19 @@ define([
 
 
                 /**
-                 * Create polyline between all adjacent markers in vehiclesList
+                 * Create polyline between all adjacent markers in vehiclesList. If user has disabled full path trace,
+                 * then only create polylines between the last few vehicles in the list.
                  */
 
                 var pathCoordinates = [];
-                vehiclesList.forEach(function (vehicle) {
-                    pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                vehiclesList.forEach(function (vehicle, pos) {
+                    if (arePathPolylinesVisible) {
+                        pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                    } else {
+                        if (pos > vehiclesList.length-6) {
+                            pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                        }
+                    }
                 });
 
                 var polyline = new google.maps.Polyline({
@@ -118,15 +125,16 @@ define([
                     icons: [{
                         icon: {
                             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                            fillOpacity: 1
+                            fillOpacity: 1,
+                            strokeColor:'#0000ff',
+                            fillColor:'#0000ff'
                         },
-                        repeat: "100px"
+                        repeat: "100px",
+                        offset: "0%"
                     }]
                 });
 
-                if (arePathPolylinesVisible) {
-                    polyline.setMap(self.googleMap);
-                }
+                polyline.setMap(self.googleMap);
 
                 self.pathPolylines.push(polyline);
             });
@@ -168,21 +176,6 @@ define([
                 polyline.setMap(null);
             });
             this.routePolylines = [];
-        },
-        togglePathPolylines: function (action) {
-            var self = this;
-
-            if (action == "hide") {
-                this.pathPolylines.forEach(function (polyline) {
-                    polyline.setMap(null);
-                });
-            } else if (action == "show") {
-                this.pathPolylines.forEach(function (polyline) {
-                    polyline.setMap(self.googleMap);
-                });
-            } else {
-                throw new Error("Action can only be 'show' or 'hide'");
-            }
         },
         toggleRoutePolylines: function (action) {
             var self = this;
