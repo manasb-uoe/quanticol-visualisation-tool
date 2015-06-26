@@ -19,6 +19,7 @@ define([
             this.areAllSelected = false;
 
             serviceCollection.on("reset", this.addAllServices, this);
+            serviceCollection.on("reset", this.updateSelectAllButton, this);
             serviceCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {
@@ -33,18 +34,11 @@ define([
 
             this.$selectAllButton = $("#select-all-services-button");
 
-            var self = this;
-            var $selectServicesModal = $("#select-services-modal");
-
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
-            $selectServicesModal.on("hidden.bs.modal", function () {
+            var self = this;
+            $("#select-services-modal").on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");
-            });
-
-            // update select all button state whenever this modal is shown
-            $selectServicesModal.on("shown.bs.modal", function () {
-                self.updateSelectAllButton();
             });
         },
         addAllServices: function () {

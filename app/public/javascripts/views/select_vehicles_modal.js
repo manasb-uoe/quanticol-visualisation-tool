@@ -22,6 +22,7 @@ define([
             this.areAllSelected = false;
 
             uniqueVehicleCollection.on("reset", this.addAllVehicles, this);
+            uniqueVehicleCollection.on("reset", this.updateSelectAllButton, this);
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
             uniqueVehicleCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
@@ -35,12 +36,6 @@ define([
             this.delegateEvents(this.events);
 
             this.$selectAllButton = $("#select-all-vehicles-button");
-
-            // update select all button state whenever this modal is shown
-            var self = this;
-            $("#select-vehicles-modal").on("shown.bs.modal", function () {
-                self.updateSelectAllButton();
-            });
         },
         addAllVehicles: function() {
             $("#select-vehicles-modal-progress").hide();
