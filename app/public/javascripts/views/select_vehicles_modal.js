@@ -23,6 +23,7 @@ define([
 
             uniqueVehicleCollection.on("reset", this.addAllVehicles, this);
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
+            uniqueVehicleCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {
             "click #select-all-vehicles-button": "toggleSelectAll"
@@ -32,6 +33,14 @@ define([
             this.$el.html(compiledTemplate);
 
             this.delegateEvents(this.events);
+
+            this.$selectAllButton = $("#select-all-vehicles-button");
+
+            // update select all button state whenever this modal is shown
+            var self = this;
+            $("#select-vehicles-modal").on("shown.bs.modal", function () {
+                self.updateSelectAllButton();
+            });
         },
         addAllVehicles: function() {
             $("#select-vehicles-modal-progress").hide();
@@ -62,28 +71,31 @@ define([
 
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
         },
+        updateSelectAllButton: function () {
+            if (uniqueVehicleCollection.getSelectedIDs().length == uniqueVehicleCollection.length) {
+                this.$selectAllButton.addClass("btn-success");
+                this.$selectAllButton.removeClass("btn-default");
+
+                this.areAllSelected = true;
+            } else {
+                this.$selectAllButton.removeClass("btn-success");
+                this.$selectAllButton.addClass("btn-default");
+
+                this.areAllSelected = false;
+            }
+        },
         toggleSelectAll: function () {
-            var $target = $(event.target);
-
             if (this.areAllSelected) {
-                $target.removeClass("btn-success");
-                $target.addClass("btn-default");
-
                 uniqueVehicleCollection.each(function (vehicle) {
                     vehicle.set("isSelected", false);
                 });
-
-                this.areAllSelected = false;
             } else {
-                $target.addClass("btn-success");
-                $target.removeClass("btn-default");
-
                 uniqueVehicleCollection.each(function (vehicle) {
                     vehicle.set("isSelected", true);
                 });
-
-                this.areAllSelected = true;
             }
+
+            this.updateSelectAllButton();
         },
         reset: function () {
             uniqueVehicleCollection.reset();

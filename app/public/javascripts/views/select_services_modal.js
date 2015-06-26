@@ -19,6 +19,7 @@ define([
             this.areAllSelected = false;
 
             serviceCollection.on("reset", this.addAllServices, this);
+            serviceCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {
             "click #select-all-services-button": "toggleSelectAll"
@@ -30,11 +31,20 @@ define([
 
             this.delegateEvents(this.events);
 
+            this.$selectAllButton = $("#select-all-services-button");
+
+            var self = this;
+            var $selectServicesModal = $("#select-services-modal");
+
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
-            var self = this;
-            $("#select-services-modal").on("hidden.bs.modal", function () {
+            $selectServicesModal.on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");
+            });
+
+            // update select all button state whenever this modal is shown
+            $selectServicesModal.on("shown.bs.modal", function () {
+                self.updateSelectAllButton();
             });
         },
         addAllServices: function () {
@@ -56,28 +66,31 @@ define([
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
         },
-        toggleSelectAll: function (event) {
-            var $target = $(event.target);
+        updateSelectAllButton: function () {
+            if (serviceCollection.getSelectedNames().length == serviceCollection.length) {
+                this.$selectAllButton.addClass("btn-success");
+                this.$selectAllButton.removeClass("btn-default");
 
+                this.areAllSelected = true;
+            } else {
+                this.$selectAllButton.removeClass("btn-success");
+                this.$selectAllButton.addClass("btn-default");
+
+                this.areAllSelected = false;
+            }
+        },
+        toggleSelectAll: function () {
             if (this.areAllSelected) {
-                $target.removeClass("btn-success");
-                $target.addClass("btn-default");
-
                 serviceCollection.each(function (service) {
                     service.set("isSelected", false);
                 });
-
-                this.areAllSelected = false;
             } else {
-                $target.addClass("btn-success");
-                $target.removeClass("btn-default");
-
                 serviceCollection.each(function (service) {
                     service.set("isSelected", true);
                 });
-
-                this.areAllSelected = true;
             }
+
+            this.updateSelectAllButton();
         },
         reset: function () {
             serviceCollection.reset();
