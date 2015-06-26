@@ -27,7 +27,8 @@ define([
             uniqueVehicleCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {
-            "click #select-all-vehicles-button": "toggleSelectAll"
+            "click #select-all-vehicles-button": "toggleSelectAll",
+            "input #search-vehicles-input": "search"
         },
         render: function() {
             var compiledTemplate = swig.render(selectVehiclesModalTemplate);
@@ -36,6 +37,7 @@ define([
             this.delegateEvents(this.events);
 
             this.$selectAllButton = $("#select-all-vehicles-button");
+            this.$searchVehiclesInput = $("#search-vehicles-input");
         },
         addAllVehicles: function() {
             $("#select-vehicles-modal-progress").hide();
@@ -51,8 +53,10 @@ define([
             });
         },
         addVehicle: function(vehicle) {
-            var vehicleItemView = new VehicleItemView({model: vehicle});
-            $("#vehicles-container").append(vehicleItemView.render().el);
+            if (vehicle.get("isMatchingSearchTerm")) {
+                var vehicleItemView = new VehicleItemView({model: vehicle});
+                $("#vehicles-container").append(vehicleItemView.render().el);
+            }
         },
         refreshVehicles: function () {
             $("#select-vehicles-modal-progress").show();
@@ -67,7 +71,7 @@ define([
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
         },
         updateSelectAllButton: function () {
-            if (uniqueVehicleCollection.getSelectedIDs().length == uniqueVehicleCollection.length) {
+            if (uniqueVehicleCollection.getSelectedSearchResultsCount() == uniqueVehicleCollection.getSearchResultsCount()) {
                 this.$selectAllButton.addClass("btn-success");
                 this.$selectAllButton.removeClass("btn-default");
 
@@ -82,18 +86,26 @@ define([
         toggleSelectAll: function () {
             if (this.areAllSelected) {
                 uniqueVehicleCollection.each(function (vehicle) {
-                    vehicle.set("isSelected", false);
+                    if (vehicle.get("isMatchingSearchTerm")) {
+                        vehicle.set("isSelected", false);
+                    }
                 });
             } else {
                 uniqueVehicleCollection.each(function (vehicle) {
-                    vehicle.set("isSelected", true);
+                    if (vehicle.get("isMatchingSearchTerm")) {
+                        vehicle.set("isSelected", true);
+                    }
                 });
             }
 
             this.updateSelectAllButton();
         },
+        search: function () {
+            uniqueVehicleCollection.search(this.$searchVehiclesInput.val());
+        },
         reset: function () {
             uniqueVehicleCollection.reset();
+            this.$searchVehiclesInput.val("");
         }
     });
 

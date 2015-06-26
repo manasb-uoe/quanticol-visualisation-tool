@@ -10,7 +10,10 @@ define([
     "use strict";
 
     var VehicleModel = Backbone.Model.extend({
-        urlRoot: "/api/vehicles"
+        urlRoot: "/api/vehicles",
+        defaults: {
+            isMatchingSearchTerm: true
+        }
     });
 
     return VehicleModel;

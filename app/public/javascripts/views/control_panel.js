@@ -119,7 +119,7 @@ define([
             $("#currently-selected-services").text(selectedServiceNames.length != 0 ? selectedServiceNames : "None");
 
             // update selected vehicle names
-            var selectedVehicleIDs = uniqueVehicleCollection.getSelectedIDs();
+            var selectedVehicleIDs = uniqueVehicleCollection.getAllSelectedIDs();
             $("#currently-selected-vehicles").text(selectedVehicleIDs.length != 0 ? selectedVehicleIDs : "None");
 
             // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
@@ -151,7 +151,7 @@ define([
         },
         submit: function (event) {
             var selectedServices = serviceCollection.getAllSelectedNames();
-            var selectedVehicles = uniqueVehicleCollection.getSelectedIDs();
+            var selectedVehicles = uniqueVehicleCollection.getAllSelectedIDs();
             var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
 
             if (selectedServices.length == 0) {
@@ -174,7 +174,7 @@ define([
         },
         fetchAllVehicles: function (selectedServices, selectedVehicles, timeSpan) {
             selectedServices = selectedServices || serviceCollection.getAllSelectedNames();
-            selectedVehicles = selectedVehicles || uniqueVehicleCollection.getSelectedIDs();
+            selectedVehicles = selectedVehicles || uniqueVehicleCollection.getAllSelectedIDs();
             timeSpan = timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
 
             allVehicleCollection.fetch({
