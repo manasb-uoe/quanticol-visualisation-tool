@@ -19,11 +19,13 @@ define([
     var SelectVehiclesView = Backbone.View.extend({
         el: "#select-vehicles-modal-container",
         initialize: function () {
+            this.areAllSelected = false;
+
             uniqueVehicleCollection.on("reset", this.addAllVehicles, this);
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
         },
         events: {
-            "click #select-all-vehicles-button": "selectAll"
+            "click #select-all-vehicles-button": "toggleSelectAll"
         },
         render: function() {
             var compiledTemplate = swig.render(selectVehiclesModalTemplate);
@@ -60,10 +62,28 @@ define([
 
             $("#selected-vehicles-modal-services").text(selectedServiceNames);
         },
-        selectAll: function () {
-            uniqueVehicleCollection.each(function (vehicle) {
-                vehicle.set("isSelected", true);
-            });
+        toggleSelectAll: function () {
+            var $target = $(event.target);
+
+            if (this.areAllSelected) {
+                $target.removeClass("btn-success");
+                $target.addClass("btn-default");
+
+                uniqueVehicleCollection.each(function (vehicle) {
+                    vehicle.set("isSelected", false);
+                });
+
+                this.areAllSelected = false;
+            } else {
+                $target.addClass("btn-success");
+                $target.removeClass("btn-default");
+
+                uniqueVehicleCollection.each(function (vehicle) {
+                    vehicle.set("isSelected", true);
+                });
+
+                this.areAllSelected = true;
+            }
         },
         reset: function () {
             uniqueVehicleCollection.reset();

@@ -10,16 +10,18 @@ define([
     "collections/services",
     "views/service_item",
     "text!../../templates/select_services_modal.html"
-], function($, _, Backbone, swig, serviceCollection, ServiceItemView, selectServicesModalTemplate){
+], function($, _, Backbone, swig, serviceCollection, ServiceItemView, selectServicesModalTemplate) {
     "use strict";
 
     var SelectServicesModalView = Backbone.View.extend({
         el: "#select-services-modal-container",
         initialize: function () {
+            this.areAllSelected = false;
+
             serviceCollection.on("reset", this.addAllServices, this);
         },
         events: {
-            "click #select-all-services-button": "selectAll"
+            "click #select-all-services-button": "toggleSelectAll"
         },
         render: function() {
             var context = {};
@@ -54,10 +56,28 @@ define([
             var serviceItemView = new ServiceItemView({model: service});
             $("#services-container").append(serviceItemView.render().el);
         },
-        selectAll: function () {
-            serviceCollection.each(function (service) {
-                service.set("isSelected", true);
-            });
+        toggleSelectAll: function (event) {
+            var $target = $(event.target);
+
+            if (this.areAllSelected) {
+                $target.removeClass("btn-success");
+                $target.addClass("btn-default");
+
+                serviceCollection.each(function (service) {
+                    service.set("isSelected", false);
+                });
+
+                this.areAllSelected = false;
+            } else {
+                $target.addClass("btn-success");
+                $target.removeClass("btn-default");
+
+                serviceCollection.each(function (service) {
+                    service.set("isSelected", true);
+                });
+
+                this.areAllSelected = true;
+            }
         },
         reset: function () {
             serviceCollection.reset();
