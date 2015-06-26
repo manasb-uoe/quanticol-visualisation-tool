@@ -110,7 +110,7 @@ define([
                     if (arePathPolylinesVisible) {
                         pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
                     } else {
-                        if (pos > vehiclesList.length-6) {
+                        if (pos > vehiclesList.length-4) {
                             pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
                         }
                     }
@@ -129,7 +129,7 @@ define([
                             strokeColor:'#0000ff',
                             fillColor:'#0000ff'
                         },
-                        repeat: "100px",
+                        repeat: arePathPolylinesVisible ? "100px" : "0px",
                         offset: "0%"
                     }]
                 });
