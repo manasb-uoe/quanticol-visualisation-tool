@@ -160,7 +160,7 @@ define([
             var compiledTemplate = null;
 
             var colorsLength = Object.keys(mapView.markerColors).length;
-            if (serviceCollection.getSelectedNames().length > colorsLength) {
+            if (serviceCollection.getAllSelectedNames().length > colorsLength) {
                 compiledTemplate = swig.render(
                     "(Disabled because more than {{ colorsLength }} services were selected)",
                     {locals: {colorsLength: colorsLength}}

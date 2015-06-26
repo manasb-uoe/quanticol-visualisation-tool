@@ -115,7 +115,7 @@ define([
         },
         refreshControlPanel: function() {
             // update selected service names
-            var selectedServiceNames = serviceCollection.getSelectedNames();
+            var selectedServiceNames = serviceCollection.getAllSelectedNames();
             $("#currently-selected-services").text(selectedServiceNames.length != 0 ? selectedServiceNames : "None");
 
             // update selected vehicle names
@@ -150,7 +150,7 @@ define([
             this.resetSnackbar.toggle();
         },
         submit: function (event) {
-            var selectedServices = serviceCollection.getSelectedNames();
+            var selectedServices = serviceCollection.getAllSelectedNames();
             var selectedVehicles = uniqueVehicleCollection.getSelectedIDs();
             var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
 
@@ -173,7 +173,7 @@ define([
             }
         },
         fetchAllVehicles: function (selectedServices, selectedVehicles, timeSpan) {
-            selectedServices = selectedServices || serviceCollection.getSelectedNames();
+            selectedServices = selectedServices || serviceCollection.getAllSelectedNames();
             selectedVehicles = selectedVehicles || uniqueVehicleCollection.getSelectedIDs();
             timeSpan = timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
 

@@ -10,7 +10,10 @@ define([
     "use strict";
 
     var ServiceModel = Backbone.Model.extend({
-        urlRoot: "/api/services"
+        urlRoot: "/api/services",
+        defaults: {
+            "isMatchingSearchTerm": true
+        }
     });
 
     return ServiceModel;

@@ -155,7 +155,7 @@ define([
 
             // if the number of selected services is greater than the available colors, then assign the same color
             // to each service
-            if (serviceCollection.getSelectedNames().length > colors.length) {
+            if (serviceCollection.getAllSelectedNames().length > colors.length) {
                 uniqueServiceNames.forEach(function (name) {
                     self.markerColorAssignment[name] = colors[0];
                 });

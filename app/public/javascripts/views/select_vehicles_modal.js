@@ -57,7 +57,7 @@ define([
         refreshVehicles: function () {
             $("#select-vehicles-modal-progress").show();
 
-            var selectedServiceNames = serviceCollection.getSelectedNames();
+            var selectedServiceNames = serviceCollection.getAllSelectedNames();
 
             uniqueVehicleCollection.fetch({
                 data: $.param({service: selectedServiceNames}),

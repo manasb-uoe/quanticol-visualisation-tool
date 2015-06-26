@@ -23,7 +23,8 @@ define([
             serviceCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {
-            "click #select-all-services-button": "toggleSelectAll"
+            "click #select-all-services-button": "toggleSelectAll",
+            "input #search-services-input": "search"
         },
         render: function() {
             var context = {};
@@ -33,6 +34,7 @@ define([
             this.delegateEvents(this.events);
 
             this.$selectAllButton = $("#select-all-services-button");
+            this.$searchServicesInput = $("#search-services-input");
 
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
@@ -57,11 +59,13 @@ define([
             });
         },
         addService: function (service) {
-            var serviceItemView = new ServiceItemView({model: service});
-            $("#services-container").append(serviceItemView.render().el);
+            if (service.get("isMatchingSearchTerm")) {
+                var serviceItemView = new ServiceItemView({model: service});
+                $("#services-container").append(serviceItemView.render().el);
+            }
         },
         updateSelectAllButton: function () {
-            if (serviceCollection.getSelectedNames().length == serviceCollection.length) {
+            if (serviceCollection.getSelectedSearchResultsCount() == serviceCollection.getSearchResultsCount()) {
                 this.$selectAllButton.addClass("btn-success");
                 this.$selectAllButton.removeClass("btn-default");
 
@@ -76,18 +80,26 @@ define([
         toggleSelectAll: function () {
             if (this.areAllSelected) {
                 serviceCollection.each(function (service) {
-                    service.set("isSelected", false);
+                    if (service.get("isMatchingSearchTerm")) {
+                        service.set("isSelected", false);
+                    }
                 });
             } else {
                 serviceCollection.each(function (service) {
-                    service.set("isSelected", true);
+                    if (service.get("isMatchingSearchTerm")) {
+                        service.set("isSelected", true);
+                    }
                 });
             }
 
             this.updateSelectAllButton();
         },
+        search: function () {
+            serviceCollection.search(this.$searchServicesInput.val());
+        },
         reset: function () {
             serviceCollection.reset();
+            this.$searchServicesInput.val("");
         }
     });
 

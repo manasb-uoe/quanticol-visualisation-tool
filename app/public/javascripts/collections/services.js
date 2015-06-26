@@ -13,7 +13,7 @@ define([
     var ServiceCollection = Backbone.Collection.extend({
         model: ServiceModel,
         url: "/api/services",
-        getSelectedNames: function () {
+        getAllSelectedNames: function () {
             var selectedNames = [];
             var selected = this.filter(function (service) {
                 return service.get("isSelected");
@@ -25,6 +25,11 @@ define([
 
             return selectedNames;
         },
+        getSelectedSearchResultsCount: function () {
+            return this.filter(function (service) {
+                return service.get("isSelected") && service.get("isMatchingSearchTerm");
+            }).length;
+        },
         getByName: function(name) {
             var requiredService = this.filter(function (service) {
                 return service.get("name") == name;
@@ -33,6 +38,30 @@ define([
             if (requiredService.length == 0) throw new Error("No service found with name: " + name);
 
             return requiredService[0];
+        },
+        search: function (term) {
+            term = term.trim().toLowerCase();
+
+            this.each(function (service) {
+                if (term.length == 0) {
+                    service.set("isMatchingSearchTerm", true);
+                } else {
+                    if (service.get("service_type").toLowerCase().indexOf(term) == 0
+                        || service.get("name").toLowerCase().indexOf(term) == 0
+                        || service.get("description").toLowerCase().indexOf(term) > -1) {
+                        service.set("isMatchingSearchTerm", true);
+                    } else {
+                        service.set("isMatchingSearchTerm", false);
+                    }
+                }
+            });
+
+            this.trigger("reset");
+        },
+        getSearchResultsCount: function () {
+            return this.countBy(function (service) {
+                return service.get("isMatchingSearchTerm");
+            }).true;
         }
     });
 
