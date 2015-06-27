@@ -8,9 +8,8 @@ define([
     "backbone",
     "collections/all_vehicles",
     "collections/services",
-    "async!http://maps.google.com/maps/api/js?sensor=false", // do not use directly
     "slidingmarker"
-], function($, _, Backbone, allVehicleCollection, serviceCollection, GooglsMapsLib, SlidingMarker) {
+], function($, _, Backbone, allVehicleCollection, serviceCollection, SlidingMarker) {
     "use strict";
 
     var MapView = Backbone.View.extend({

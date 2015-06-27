@@ -14,10 +14,7 @@ require.config({
         "jquery-easing": "./libs/jquery.easing.1.3.min",
         "marker-animate": "./libs/markerAnimate",
         slidingmarker: "./libs/SlidingMarker",
-
-        /* Plugins */
-        text: "./libs/text",
-        async: "./libs/async"
+        text: "./libs/text"
     },
     shim: {
         backbone: {
