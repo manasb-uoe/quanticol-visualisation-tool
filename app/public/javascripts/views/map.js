@@ -42,7 +42,7 @@ define([
             var self = this;
 
             // remove all markers and polylines before adding any new ones
-            this.removeMarkers();
+            //this.removeMarkers();
             this.removePathPolylines();
 
             var requiredVehicles = allVehicleCollection.filter(function (vehicle) {
@@ -65,78 +65,95 @@ define([
                  * Create marker for last vehicle in list
                  */
 
-                var markerVehicle = vehiclesList[vehiclesList.length-1];
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(markerVehicle.get("location")[1], markerVehicle.get("location")[0]),
-                    map: self.googleMap,
-                    icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[markerVehicle.get("service_name")]][1])
-                });
+                var marker = null;
 
-                var infoWindowContent = [
-                    "<strong>Vehicle ID: </strong>" + markerVehicle.get("vehicle_id"),
-                    "<br>",
-                    "<strong>Service name: </strong>" + markerVehicle.get("service_name"),
-                    "<br>",
-                    "<strong>Destination: </strong>" + markerVehicle.get("destination"),
-                    "<br>",
-                    "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")"
-                ].join("");
-
-                marker.infoWindow = new google.maps.InfoWindow({
-                    content: infoWindowContent
-                });
-
-                marker.infoWindow.isOpen = false;
-
-                google.maps.event.addListener(marker, "click", function () {
-                    marker.infoWindow.open(self.googleMap, marker);
-                });
-
-                marker.setMap(self.googleMap);
-
-                marker.vehicleID = markerVehicle.get("vehicle_id");
-                marker.serviceName = markerVehicle.get("service_name");
-
-                self.markers.push(marker);
-
-
-                /**
-                 * Create polyline between all adjacent markers in vehiclesList. If user has disabled full path trace,
-                 * then only create polylines between the last few vehicles in the list.
-                 */
-
-                var pathCoordinates = [];
-                vehiclesList.forEach(function (vehicle, pos) {
-                    if (arePathPolylinesVisible) {
-                        pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
-                    } else {
-                        if (pos > vehiclesList.length-4) {
-                            pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
-                        }
+                self.markers.forEach(function (oldMarker) {
+                    if (oldMarker.vehicleID == vehicleID) {
+                        marker = oldMarker;
                     }
                 });
 
-                var polyline = new google.maps.Polyline({
-                    path: pathCoordinates,
-                    strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
-                    geodesic: true,
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                    icons: [{
-                        icon: {
-                            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                            fillOpacity: 1,
-                            strokeColor:'#0000ff',
-                            fillColor:'#0000ff'
-                        },
-                        repeat: arePathPolylinesVisible ? "100px" : "0px",
-                        offset: "0%"
-                    }]
-                });
+                var markerVehicle = vehiclesList[vehiclesList.length-1];
+                var newPosition = new google.maps.LatLng(markerVehicle.get("location")[1], markerVehicle.get("location")[0]);
 
-                polyline.setMap(self.googleMap);
+                if (marker == null) {
+                    marker = new google.maps.Marker({
+                        position: newPosition,
+                        map: self.googleMap,
+                        icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[markerVehicle.get("service_name")]][1])
+                    });
 
-                self.pathPolylines.push(polyline);
+                    marker.vehicleID = markerVehicle.get("vehicle_id");
+                    marker.serviceName = markerVehicle.get("service_name");
+
+                    self.markers.push(marker);
+                }
+
+                if (marker.getPosition() != newPosition) {
+                    var infoWindowContent = [
+                        "<strong>Vehicle ID: </strong>" + markerVehicle.get("vehicle_id"),
+                        "<br>",
+                        "<strong>Service name: </strong>" + markerVehicle.get("service_name"),
+                        "<br>",
+                        "<strong>Destination: </strong>" + markerVehicle.get("destination"),
+                        "<br>",
+                        "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")"
+                    ].join("");
+
+                    if (marker.infoWindow) {
+                        marker.infoWindow.setContent(infoWindowContent);
+                    } else {
+                        marker.infoWindow = new google.maps.InfoWindow({
+                            content: infoWindowContent
+                        });
+
+                        marker.infoWindow.isOpen = false;
+
+                        google.maps.event.addListener(marker, "click", function () {
+                            marker.infoWindow.open(self.googleMap, marker);
+                        });
+                    }
+
+                    marker.setPosition(newPosition);
+
+                    /**
+                     * Create polyline between all adjacent markers in vehiclesList. If user has disabled full path trace,
+                     * then only create polylines between the last few vehicles in the list.
+                     */
+
+                    var pathCoordinates = [];
+                    vehiclesList.forEach(function (vehicle, pos) {
+                        if (arePathPolylinesVisible) {
+                            pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                        } else {
+                            if (pos > vehiclesList.length-4) {
+                                pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                            }
+                        }
+                    });
+
+                    var polyline = new google.maps.Polyline({
+                        path: pathCoordinates,
+                        strokeColor: self.markerColors[self.markerColorAssignment[marker.serviceName]][0],
+                        geodesic: true,
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2,
+                        icons: [{
+                            icon: {
+                                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                                fillOpacity: 1,
+                                strokeColor:'#0000ff',
+                                fillColor:'#0000ff'
+                            },
+                            repeat: arePathPolylinesVisible ? "100px" : "0px",
+                            offset: "0%"
+                        }]
+                    });
+
+                    polyline.setMap(self.googleMap);
+
+                    self.pathPolylines.push(polyline);
+                }
             });
         },
         removeMarkers: function () {
