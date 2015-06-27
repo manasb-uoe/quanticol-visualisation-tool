@@ -41,9 +41,9 @@ html, body {
 .main-container .control-panel {
     position: fixed;
     top: 50px;
-    height: 260px;
+    height: 270px;
     width: 100%;
-    margin-top: -260px;
+    margin-top: -270px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -113,10 +113,6 @@ html, body {
 
 #button-control-panel-reset {
     margin-right: 5px;
-}
-
-#currently-selected-services, #currently-selected-vehicles {
-    word-break: break-all;
 }
 
 

@@ -71,7 +71,7 @@ define([
 
             if (this.isControlPanelVisible) {
                 $controlPanel.animate(
-                    {marginTop: "-260px"},
+                    {marginTop: "-270px"},
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
@@ -90,7 +90,7 @@ define([
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
-                    {marginTop: "260px"},
+                    {marginTop: "270px"},
                     {duration: 300, queue: false}
                 );
 
@@ -115,26 +115,30 @@ define([
         },
         refreshControlPanel: function() {
             // update selected service names
-            var selectedServiceNames = serviceCollection.getAllSelectedNames();
+            var selectedServices = serviceCollection.filter(function (service) {
+                return service.get("isSelected");
+            });
             var $servicesSelect = $("#currently-selected-services-select");
             $servicesSelect.empty();
-            if (selectedServiceNames.length == 0) {
-                $servicesSelect.append("<option disabled><strong>None</strong></option>")
+            if (selectedServices.length == 0) {
+                $servicesSelect.append("<option disabled>None</option>")
             } else {
-                selectedServiceNames.forEach(function (service) {
-                    $servicesSelect.append("<option disabled><strong>" + service + "</strong></option>");
+                selectedServices.forEach(function (service) {
+                    $servicesSelect.append("<option disabled>" + service.get("name") + " (" + service.get("service_type") + ")</option>");
                 });
             }
 
             // update selected vehicle names
-            var selectedVehicleIDs = uniqueVehicleCollection.getAllSelectedIDs();
+            var selectedVehicleIDs = uniqueVehicleCollection.filter(function (vehicle) {
+                return vehicle.get("isSelected");
+            });
             var $vehiclesSelect = $("#currently-selected-vehicles-select");
             $vehiclesSelect.empty();
             if (selectedVehicleIDs.length == 0) {
-                $vehiclesSelect.append("<option disabled><strong>None</strong></option>")
+                $vehiclesSelect.append("<option disabled>None</option>")
             } else {
                 selectedVehicleIDs.forEach(function (vehicle) {
-                    $vehiclesSelect.append("<option disabled><strong>" + vehicle + "</strong></option>");
+                    $vehiclesSelect.append("<option disabled>" + vehicle.get("vehicle_id") + " (Service " + vehicle.get("service_name") + ")</option>");
                 });
             }
 
@@ -142,7 +146,7 @@ define([
             // selected services/vehicles or not
             var selectVehiclesButton = $("#select-vehicles-modal-trigger");
 
-            if (selectedServiceNames.length == 0) {
+            if (selectedServices.length == 0) {
                 selectVehiclesButton.attr("disabled", "disabled");
             } else {
                 selectVehiclesButton.removeAttr("disabled");
