@@ -23,8 +23,8 @@ define([
             this.stepSize = 30; // seconds
             this.isSimulating = false;
             this.isVisible = false;
-            this.arePathPolylinesVisible = true;
-            this.areRoutePolylinesVisible = false;
+            this.arePathPolylinesVisible = false;
+            this.areRoutePolylinesVisible = true;
             this.stepSizes = {
                 f: 60,
                 ff: 60*5,
