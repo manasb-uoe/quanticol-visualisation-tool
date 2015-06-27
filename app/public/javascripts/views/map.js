@@ -8,8 +8,9 @@ define([
     "backbone",
     "collections/all_vehicles",
     "collections/services",
-    "async!http://maps.google.com/maps/api/js?sensor=false"
-], function($, _, Backbone, allVehicleCollection, serviceCollection) {
+    "async!http://maps.google.com/maps/api/js?sensor=false", // do not use directly
+    "slidingmarker"
+], function($, _, Backbone, allVehicleCollection, serviceCollection, GooglsMapsLib, SlidingMarker) {
     "use strict";
 
     var MapView = Backbone.View.extend({
@@ -28,6 +29,8 @@ define([
                 pink: ["#d90990", "/images/bus_pink.png"]
             };
             this.markerColorAssignment = {};
+
+            SlidingMarker.initializeGlobally();
         },
         render: function() {
             var options = {
@@ -83,6 +86,9 @@ define([
                         icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[markerVehicle.get("service_name")]][1])
                     });
 
+                    marker.setDuration(500);
+                    marker.setEasing("linear");
+
                     marker.vehicleID = markerVehicle.get("vehicle_id");
                     marker.serviceName = markerVehicle.get("service_name");
 
@@ -103,6 +109,7 @@ define([
                     if (marker.infoWindow) {
                         marker.infoWindow.setContent(infoWindowContent);
                     } else {
+                        console.log("no window");
                         marker.infoWindow = new google.maps.InfoWindow({
                             content: infoWindowContent
                         });
@@ -113,6 +120,34 @@ define([
                             marker.infoWindow.open(self.googleMap, marker);
                         });
                     }
+
+                    ///**
+                    // * interpolation attempt without using any library
+                    // */
+                    //var frames = [];
+                    //var fromLat = marker.getPosition().lat();
+                    //var fromLng = marker.getPosition().lng();
+                    //var toLat = newPosition.lat();
+                    //var toLng = newPosition.lng();
+                    //
+                    //for (var offset=0; offset<1; offset+=0.01) {
+                    //    var curLat = fromLat + offset * (toLat - fromLat);
+                    //    var curLng = fromLng + offset * (toLng - fromLng);
+                    //
+                    //    frames.push(new google.maps.LatLng(curLat, curLng));
+                    //}
+                    //
+                    //var animate = function (index, wait) {
+                    //    marker.setPosition(frames[index]);
+                    //
+                    //    if (index != frames.length-1) {
+                    //        setTimeout(function () {
+                    //            animate(index+1, wait);
+                    //        }, wait);
+                    //    }
+                    //};
+
+                    //animate(0, 5);
 
                     marker.setPosition(newPosition);
 

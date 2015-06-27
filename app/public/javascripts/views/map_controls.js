@@ -145,7 +145,7 @@ define([
 
                     self.updateTimer();
                     mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible);
-                }, 500);
+                }, 300);
             }
 
             this.updateControlsVisiblity();
