@@ -41,9 +41,9 @@ html, body {
 .main-container .control-panel {
     position: fixed;
     top: 50px;
-    height: 250px;
+    height: 260px;
     width: 100%;
-    margin-top: -250px;
+    margin-top: -260px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -58,7 +58,7 @@ html, body {
 }
 
 .main-container .control-panel .control-panel-body .callout {
-    padding: 10px;
+    padding: 15px;
     margin: 20px 0;
     border: 1px solid #eee;
     border-left-width: 5px;
@@ -68,10 +68,21 @@ html, body {
     box-shadow: 0 6px 8px -6px #999;
 }
 
+.main-container .control-panel .control-panel-body .callout .title-wrapper {
+    padding-bottom: 10px;
+}
+
+.main-container .control-panel .control-panel-body .callout .title-wrapper .col-button {
+    text-align: right;
+}
 .main-container .control-panel .control-panel-body .callout .title {
     /*font-size: 110%;*/
     font-weight: 600;
     color: #1b809e;
+}
+
+.main-container .control-panel .control-panel-body .callout button {
+    padding: 2px 10px !important;
 }
 
 .main-container .control-panel-trigger-wrapper {

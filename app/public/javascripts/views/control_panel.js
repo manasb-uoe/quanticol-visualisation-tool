@@ -71,7 +71,7 @@ define([
 
             if (this.isControlPanelVisible) {
                 $controlPanel.animate(
-                    {marginTop: "-250px"},
+                    {marginTop: "-260px"},
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
@@ -90,7 +90,7 @@ define([
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
-                    {marginTop: "250px"},
+                    {marginTop: "260px"},
                     {duration: 300, queue: false}
                 );
 
@@ -116,11 +116,27 @@ define([
         refreshControlPanel: function() {
             // update selected service names
             var selectedServiceNames = serviceCollection.getAllSelectedNames();
-            $("#currently-selected-services").text(selectedServiceNames.length != 0 ? selectedServiceNames : "None");
+            var $servicesSelect = $("#currently-selected-services-select");
+            $servicesSelect.empty();
+            if (selectedServiceNames.length == 0) {
+                $servicesSelect.append("<option disabled><strong>None</strong></option>")
+            } else {
+                selectedServiceNames.forEach(function (service) {
+                    $servicesSelect.append("<option disabled><strong>" + service + "</strong></option>");
+                });
+            }
 
             // update selected vehicle names
             var selectedVehicleIDs = uniqueVehicleCollection.getAllSelectedIDs();
-            $("#currently-selected-vehicles").text(selectedVehicleIDs.length != 0 ? selectedVehicleIDs : "None");
+            var $vehiclesSelect = $("#currently-selected-vehicles-select");
+            $vehiclesSelect.empty();
+            if (selectedVehicleIDs.length == 0) {
+                $vehiclesSelect.append("<option disabled><strong>None</strong></option>")
+            } else {
+                selectedVehicleIDs.forEach(function (vehicle) {
+                    $vehiclesSelect.append("<option disabled><strong>" + vehicle + "</strong></option>");
+                });
+            }
 
             // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
             // selected services/vehicles or not

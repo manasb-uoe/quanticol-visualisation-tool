@@ -4,27 +4,43 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="callout">
-                        <div class="title">Services</div>
-                        <div>Currently selected: <strong><span id="currently-selected-services">None</span></strong></div>
-                        <br>
-                        <button class="btn btn-default btn-sm" id="select-services-modal-trigger">Select services</button>
+                        <div class="row title-wrapper">
+                            <div class="col-md-6">
+                                <div class="title">Selected services</div>
+                            </div>
+                            <div class="col-md-6 col-button">
+                                <button class="btn btn-success btn-sm" id="select-services-modal-trigger"><strong>Select</strong></button>
+                            </div>
+                        </div>
+                        <select class="form-control" id="currently-selected-services-select" multiple></select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="callout">
-                        <div class="title">Vehicles</div>
-                        <div>Currently selected: <strong><span id="currently-selected-vehicles">None</span></strong></div>
-                        <br>
-                        <button class="btn btn-default btn-sm" id="select-vehicles-modal-trigger">Select vehicles</button>
+                        <div class="row title-wrapper">
+                            <div class="col-md-6">
+                                <div class="title">Selected vehicles</div>
+                            </div>
+                            <div class="col-md-6 col-button">
+                                <button class="btn btn-success btn-sm" id="select-vehicles-modal-trigger"><strong>Select</strong></button>
+                            </div>
+                        </div>
+                        <select class="form-control" id="currently-selected-vehicles-select" multiple></select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="callout">
-                        <div class="title">Time span</div>
+                        <div class="row title-wrapper">
+                            <div class="col-md-6">
+                                <div class="title">Time Span</div>
+                            </div>
+                            <div class="col-md-6 col-button">
+                                <button class="btn btn-success btn-sm" id="select-time-span-modal-trigger"><strong>Select</strong></button>
+                            </div>
+                        </div>
                         <div>Start time: <strong><span id="start-time"></span></strong></div>
                         <div>End time: <strong><span id="end-time"></span></strong></div>
-                        <br>
-                        <button class="btn btn-default btn-sm" id="select-time-span-modal-trigger">Select time span</button>
+
                     </div>
                 </div>
             </div>
