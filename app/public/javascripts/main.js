@@ -11,6 +11,9 @@ require.config({
         bootstrap: "./libs/bootstrap.min",
         moment: "./libs/moment-with-locales.min",
         datetimepicker: "./libs/bootstrap-datetimepicker.min",
+        "jquery-easing": "./libs/jquery.easing.1.3.min",
+        "marker-animate": "./libs/markerAnimate",
+        slidingmarker: "./libs/SlidingMarker",
 
         /* Plugins */
         text: "./libs/text",
@@ -26,6 +29,12 @@ require.config({
         },
         datetimepicker: {
             deps: ["jquery", "moment"]
+        },
+        "jquery-easing": {
+            deps: ["jquery"]
+        },
+        "marker-animate": {
+            deps: ["jquery-easing"]
         }
     }
 });
