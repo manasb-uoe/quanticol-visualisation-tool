@@ -59,6 +59,7 @@ define([
             }
         },
         refreshVehicles: function () {
+            this.$searchVehiclesInput.val("");
             $("#select-vehicles-modal-progress").show();
 
             var selectedServiceNames = serviceCollection.getAllSelectedNames();
