@@ -1,7 +1,7 @@
-<div class="col-md-3 col-xs-6 reduced-col-padding">
+<div class="col-md-4 col-xs-6 reduced-col-padding">
     <div class="vehicle {% if isSelected %} selected-vehicle {% endif %}">
         <div class="left-col">
-            <strong>{{ vehicle_id }}</strong> (Services: {{ services }})
+            <strong>{{ vehicle_id }}</strong> {% if services.length > 3%} (Services: {{services[0]}},{{services[1]}},{{services[2]}},...) {% else %} (Services: {{ services }}) {% endif %}
         </div>
         <div class="right-col">
             {% if isSelected %}
