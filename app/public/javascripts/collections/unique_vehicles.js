@@ -33,12 +33,21 @@ define([
         search: function (term) {
             term = term.trim().toLowerCase();
 
+            var doServicesMatch = function (vehicle, term) {
+                var output = false;
+                vehicle.get("services").forEach(function (serviceName) {
+                    console.log(output);
+                    output = output || (serviceName.toLowerCase().indexOf(term) == 0);
+                });
+
+                return output;
+            };
+
             this.each(function (vehicle) {
                 if (term.length == 0) {
                     vehicle.set("isMatchingSearchTerm", true);
                 } else {
-                    if (vehicle.get("vehicle_id").toLowerCase().indexOf(term) == 0
-                        || vehicle.get("service_name").toLowerCase().indexOf(term) == 0) {
+                    if (vehicle.get("vehicle_id").toLowerCase().indexOf(term) == 0 || doServicesMatch(vehicle, term)) {
                         vehicle.set("isMatchingSearchTerm", true);
                     } else {
                         vehicle.set("isMatchingSearchTerm", false);
