@@ -36,7 +36,6 @@ define([
             var doServicesMatch = function (vehicle, term) {
                 var output = false;
                 vehicle.get("services").forEach(function (serviceName) {
-                    console.log(output);
                     output = output || (serviceName.toLowerCase().indexOf(term) == 0);
                 });
 

@@ -64,6 +64,13 @@ define([
             setTimeout(function () {
                 self.toggleControlPanel();
             }, 1000);
+            setTimeout(function () {
+                self.$el.find("#select-services-modal-trigger").popover({
+                    html: true,
+                    content: "Start here!",
+                    placement: "left"
+                }).popover("show");
+            }, 1500);
         },
         toggleControlPanel: function () {
             var $controlPanel = $(".control-panel");
@@ -102,6 +109,8 @@ define([
             }
         },
         showSelectServicesModal: function() {
+            $("#select-services-modal-trigger").popover("destroy");
+
             $("#select-services-modal").modal("show");
 
             if (serviceCollection.length == 0) {
