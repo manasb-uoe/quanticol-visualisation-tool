@@ -51,8 +51,6 @@ router.get("/vehicles/:filter", function (req, res, next) {
                                     }
                                 });
 
-                                console.log(uniqueVehicle);
-
                                 uniqueVehicles.push(uniqueVehicle);
 
                                 cb();
