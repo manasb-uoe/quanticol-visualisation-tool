@@ -34,12 +34,27 @@ router.get("/vehicles/:filter", function (req, res, next) {
                     if (err) return next(err);
 
                     // now that we have the distinct vehicle ids, we will find one vehicle for each of these ids
+                    // along with all the services they belong to
                     var uniqueVehicles = [];
                     async.each(
                         vehicleIDs,
                         function (vehicleID, cb) {
-                            VehicleLocation.findOne({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicle) {
-                                uniqueVehicles.push(vehicle);
+                            VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
+                                // convert mongoose object to regular object since mongoose doesn't allow adding properties
+                                var uniqueVehicle = vehicles[0].toObject();
+                                uniqueVehicle.services = [];
+
+                                vehicles.forEach(function (vehicle) {
+                                    // only add unique services
+                                    if (uniqueVehicle.services.indexOf(vehicle.service_name) == -1) {
+                                        uniqueVehicle.services.push(vehicle.service_name);
+                                    }
+                                });
+
+                                console.log(uniqueVehicle);
+
+                                uniqueVehicles.push(uniqueVehicle);
+
                                 cb();
                             });
                         },

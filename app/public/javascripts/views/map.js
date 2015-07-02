@@ -120,6 +120,13 @@ define([
                         });
                     }
 
+                    // check if vehicle's service is still the same, if not, update its marker image and its serviceName
+                    var newServiceName = markerVehicle.get("service_name");
+                    if (marker.serviceName != newServiceName) {
+                        marker.setIcon(new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[newServiceName]][1]));
+                        marker.serviceName = newServiceName;
+                    }
+
                     ///**
                     // * interpolation attempt without using any library
                     // */

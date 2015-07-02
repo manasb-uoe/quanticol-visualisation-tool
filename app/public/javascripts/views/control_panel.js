@@ -138,7 +138,7 @@ define([
                 $vehiclesSelect.append("<option disabled>None</option>")
             } else {
                 selectedVehicleIDs.forEach(function (vehicle) {
-                    $vehiclesSelect.append("<option disabled>" + vehicle.get("vehicle_id") + " (Service " + vehicle.get("service_name") + ")</option>");
+                    $vehiclesSelect.append("<option disabled>" + vehicle.get("vehicle_id") + " (Services: " + vehicle.get("services") + ")</option>");
                 });
             }
 
