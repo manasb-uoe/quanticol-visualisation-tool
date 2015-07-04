@@ -65,20 +65,21 @@ define([
                 self.toggleControlPanel();
             }, 1000);
             setTimeout(function () {
-                self.$el.find("#select-services-modal-trigger").popover({
-                    html: true,
-                    content: "Start here!",
-                    placement: "left"
-                }).popover("show");
+                self.$el.find("#select-services-modal-trigger").tooltip({
+                    title: "Start here!",
+                    placement: "left",
+                    trigger: "manual"
+                }).tooltip("show");
             }, 1500);
         },
         toggleControlPanel: function () {
             var $controlPanel = $(".control-panel");
             var $controlPanelTriggerWrapper = $(".control-panel-trigger-wrapper");
 
+            var controlPanelHeight = $controlPanel.height();
             if (this.isControlPanelVisible) {
                 $controlPanel.animate(
-                    {marginTop: "-270px"},
+                    {marginTop: -controlPanelHeight},
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
@@ -97,7 +98,7 @@ define([
                     {duration: 300, queue: false}
                 );
                 $controlPanelTriggerWrapper.animate(
-                    {marginTop: "270px"},
+                    {marginTop: controlPanelHeight},
                     {duration: 300, queue: false}
                 );
 
@@ -109,7 +110,7 @@ define([
             }
         },
         showSelectServicesModal: function() {
-            $("#select-services-modal-trigger").popover("destroy");
+            $("#select-services-modal-trigger").tooltip("destroy");
 
             $("#select-services-modal").modal("show");
 
