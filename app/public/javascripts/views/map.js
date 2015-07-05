@@ -8,8 +8,9 @@ define([
     "backbone",
     "collections/all_vehicles",
     "collections/services",
-    "slidingmarker"
-], function($, _, Backbone, allVehicleCollection, serviceCollection, SlidingMarker) {
+    "slidingmarker",
+    "moment"
+], function($, _, Backbone, allVehicleCollection, serviceCollection, SlidingMarker, moment) {
     "use strict";
 
     var MapView = Backbone.View.extend({
@@ -102,13 +103,14 @@ define([
                         "<br>",
                         "<strong>Destination: </strong>" + markerVehicle.get("destination"),
                         "<br>",
-                        "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")"
+                        "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")",
+                        "<br>",
+                        "<strong>Last GPS fix: </strong>" + moment.unix(markerVehicle.get("last_gps_fix")).locale("en").format("MMMM Do YYYY, h:mm:ss a")
                     ].join("");
 
                     if (marker.infoWindow) {
                         marker.infoWindow.setContent(infoWindowContent);
                     } else {
-                        console.log("no window");
                         marker.infoWindow = new google.maps.InfoWindow({
                             content: infoWindowContent
                         });
