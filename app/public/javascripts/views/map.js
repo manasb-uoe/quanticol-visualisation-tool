@@ -56,7 +56,20 @@ define([
                 return vehicle.get("vehicle_id");
             });
 
-            Object.keys(requiredVehiclesGrouped).forEach(function (vehicleID) {
+            var requiredVehicleIDs = Object.keys(requiredVehiclesGrouped);
+
+            // remove markers that are no longer within the current time span
+            this.markers.forEach(function (marker) {
+                if (requiredVehicleIDs.indexOf(marker.vehicleID) == -1) {
+                    marker.setMap(null);
+                } else {
+                    if (marker.getMap() == null) {
+                        marker.setMap(self.googleMap);
+                    }
+                }
+            });
+
+            requiredVehicleIDs.forEach(function (vehicleID) {
                 // get list of vehicles for current vehicle id and sort it in ascending oder of last gps fix
                 var vehiclesList = requiredVehiclesGrouped[vehicleID];
                 vehiclesList = _.sortBy(vehiclesList, function (vehicle) {
