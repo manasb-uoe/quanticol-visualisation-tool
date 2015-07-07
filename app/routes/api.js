@@ -40,7 +40,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                     async.each(
                         vehicleIDs,
                         function (vehicleID, cb) {
-                            VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
+                            VehicleLocation.find({vehicle_id: vehicleID, service_name: {$in: selectedServices}}, function (err, vehicles) {
                                 // convert mongoose object to regular object since mongoose doesn't allow adding properties
                                 var uniqueVehicle = vehicles[0].toObject();
                                 uniqueVehicle.services = [];
