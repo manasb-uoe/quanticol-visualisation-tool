@@ -170,6 +170,9 @@ define([
                 this.timerRefreshIntervalID = setInterval(function() {
 
                     if (self.mode == "live") {
+                        // update time span since new data might have been added
+                        self.timeSpan = allVehicleCollection.getTimeSpan();
+
                         self.currentTime = moment().unix();
                     } else {
                         self.currentTime += self.stepSize;
