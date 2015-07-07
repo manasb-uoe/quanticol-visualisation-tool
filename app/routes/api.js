@@ -7,6 +7,7 @@ var router = express.Router();
 var Service = require("../models/service");
 var VehicleLocation = require("../models/vehicle_location");
 var async = require("async");
+var https = require("https");
 
 router.get("/services", function (req, res, next) {
     Service
@@ -78,6 +79,48 @@ router.get("/vehicles/:filter", function (req, res, next) {
 
                     res.json(vehicles);
                 });
+            break;
+
+        case "live":
+            var options = {
+                host: "tfe-opendata.com",
+                path: "/api/v1/vehicle_locations",
+                headers: {Authorization: "Token " + "0c627af5849e23b0b030bc7352550884"}
+            };
+
+            https.get(options, function (httpResponse) {
+                var output = "";
+
+                httpResponse.on("data", function (chunk) {
+                    output += chunk;
+                });
+
+                httpResponse.on("end", function () {
+                    var jsonOutput = JSON.parse(output);
+
+                    var filteredVehicles = [];
+
+                    jsonOutput.vehicles.forEach(function (vehicleLocationJson) {
+                        // filter according to selected service names and vehicles
+                        if (selectedServices.indexOf(vehicleLocationJson.service_name) > -1
+                            && selectedVehicles.indexOf(vehicleLocationJson.vehicle_id) > -1) {
+
+                            // combine lat and lng into a single array, making it consistent with the vehicle
+                            // model stored in the database
+                            vehicleLocationJson.location = [vehicleLocationJson.longitude, vehicleLocationJson.latitude];
+                            delete vehicleLocationJson.latitude;
+                            delete vehicleLocationJson.longitude;
+
+                            filteredVehicles.push(vehicleLocationJson);
+                        }
+                    });
+
+                    res.json(filteredVehicles);
+                });
+            }).on("error", function (err) {
+                console.log(err.statusCode);
+                console.log("--------timed out-----------");
+            });
             break;
 
         default:
