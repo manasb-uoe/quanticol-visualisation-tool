@@ -6,11 +6,14 @@
                 <h4 class="modal-title" id="myModalLabel">Select services</h4>
             </div>
             <div class="modal-body">
-                <div class="form-group has-feedback">
-                    <label class="control-label sr-only" for="search-services-input">Search by service name, type or description</label>
-                    <input class="form-control" id="search-services-input" placeholder="Search by service name, type or description">
-                    <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
-                    <span id="inputSuccess2Status" class="sr-only">(success)</span>
+                <div class="wrapper">
+                    <div class="form-group has-feedback" id="select-services-modal-form-group">
+                        <label class="control-label sr-only" for="search-services-input">Search by service name, type or description</label>
+                        <input class="form-control" id="search-services-input" placeholder="Search by service name, type or description">
+                        <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+                        <span id="inputSuccess2Status" class="sr-only">(success)</span>
+                    </div>
+                    <button class="btn btn-default" style="" id="select-all-services-button"><span class="glyphicon glyphicon-ok"></span> Select all</button>
                 </div>
 
                 <div class="alert alert-info alert-dismissable fade in" role="alert">
@@ -35,7 +38,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" id="select-all-services-button"><span class="glyphicon glyphicon-ok"></span> Select all</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" id="select-services-modal-save-button">Save changes</button>
             </div>
         </div>

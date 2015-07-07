@@ -40,10 +40,10 @@ html, body {
 
 .main-container .control-panel {
     position: fixed;
-    top: 64px;
-    height: 280px;
+    top: 54px;
+    height: 295px;
     width: 100%;
-    margin-top: -280px;
+    margin-top: -295px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -86,7 +86,7 @@ html, body {
 
 .main-container .control-panel-trigger-wrapper {
     position: fixed;
-    top: 70px;
+    top: 62px;
     width: 100%;
     margin-top: 0;
     text-align: center;
@@ -149,6 +149,19 @@ html, body {
     background-color: #dff0d8;
 }
 
+#select-all-services-button {
+    display: inline-block;
+    width: 15%;
+    vertical-align: top;
+}
+
+#select-services-modal-form-group {
+    display: inline-block;
+    width: 84%;
+    margin-right: 5px;
+    vertical-align: top;
+}
+
 
 /* Tool page: Select vehicles modal */
 
@@ -187,6 +200,20 @@ html, body {
 #currently-selected-vehicles-select, #currently-selected-services-select {
     font-size: 100%;
 }
+
+#select-all-vehicles-button {
+    display: inline-block;
+    width: 15%;
+    vertical-align: top;
+}
+
+#select-vehicles-modal-form-group {
+    display: inline-block;
+    width: 84%;
+    margin-right: 5px;
+    vertical-align: top;
+}
+
 
 /* Tool page: Map */
 #map-container {
