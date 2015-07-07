@@ -12,10 +12,11 @@ define([
     "moment",
     "views/snackbar",
     "views/map",
+    "views/configure_controls_modal",
     "swig",
     "text!../../templates/map_controls.html",
     "text!../../templates/map_controls_legend.html"
-], function($, _, Backbone, uniqueVehicleCollection, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
+], function($, _, Backbone, uniqueVehicleCollection, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, configureControlsModal, swig, mapControlsTemplate, mapControlsLegendTemplate) {
     "use strict";
 
     var MapControlsView = Backbone.View.extend({
@@ -36,6 +37,12 @@ define([
             this.timerRefreshInterval = 300;
             this.liveFetchRefreshInterval = 20000;
             this.liveFetchRefreshIntervalID = 2000;
+
+            // update step sizes whenever user successfully configures step sizes
+            var self = this;
+            configureControlsModal.on("modal.saved.changes", function (newStepSizes) {
+                self.stepSizes = newStepSizes;
+            });
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
@@ -66,6 +73,10 @@ define([
             this.$backwardButton = $("#backward-button");
             this.$fastBackwardButton = $("#fast-backward-button");
             this.$legend = $("#legend");
+
+            // render configure controls modal along with the default step sizes
+            configureControlsModal.render(this.stepSizes);
+
         },
         events: {
             "click #play-pause-button": "toggleSimulation",
@@ -75,7 +86,8 @@ define([
             "click #forward-button": function() {this.skipSimulation("f")},
             "click #fast-forward-button": function() {this.skipSimulation("ff")},
             "click #backward-button": function() {this.skipSimulation("b")},
-            "click #fast-backward-button": function() {this.skipSimulation("fb")}
+            "click #fast-backward-button": function() {this.skipSimulation("fb")},
+            "click #configure-controls-link": "showConfigureControlsModal"
         },
         show: function() {
             if (this.isVisible) return;
@@ -273,6 +285,10 @@ define([
                     this.$fastBackwardButton.removeAttr("disabled");
                 }
             }
+        },
+        showConfigureControlsModal: function () {
+            configureControlsModal.render(this.stepSizes);
+            $("#configure-controls-modal").modal("show");
         }
     });
 

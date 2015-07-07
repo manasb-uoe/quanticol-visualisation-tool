@@ -1,0 +1,46 @@
+<div class="modal fade" id="configure-controls-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Configure Simulation Controls</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="configure-controls-modal-error-container"></div>
+                You can configure the <strong>step sizes (in seconds)</strong> for the following controls:
+
+                <br>
+                <br>
+
+                <form class="form-inline configure-controls-modal-form">
+                    <div class="form-group">
+                        <label class="configure-controls-modal-label"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span> Forward: </label>
+                        <input type="text" id="forward-step-size-input" class="form-control configure-controls-modal-input" value="{{stepSizes.f}}">
+                    </div>
+                </form>
+                <form class="form-inline configure-controls-modal-form">
+                    <div class="form-group">
+                        <label class="configure-controls-modal-label"><span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span> Fast Forward: </label>
+                        <input type="text" id="fast-forward-step-size-input" class="form-control configure-controls-modal-input" value="{{stepSizes.ff}}">
+                    </div>
+                </form>
+                <form class="form-inline configure-controls-modal-form">
+                    <div class="form-group">
+                        <label class="configure-controls-modal-label"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Backward: </label>
+                        <input type="text" id="backward-step-size-input" class="form-control configure-controls-modal-input" value="{{stepSizes.b}}">
+                    </div>
+                </form>
+                <form class="form-inline configure-controls-modal-form">
+                    <div class="form-group">
+                        <label class="configure-controls-modal-label"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span> Fast Backward: </label>
+                        <input type="text" id="fast-backward-step-size-input" class="form-control configure-controls-modal-input" value="{{stepSizes.fb}}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="configure-controls-modal-save-changes-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
