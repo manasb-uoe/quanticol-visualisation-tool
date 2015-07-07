@@ -38,7 +38,7 @@ define([
             this.startTimePicker = $("#start-time-picker");
             this.endTimePicker = $("#end-time-picker");
 
-            this.startTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date("January 01, 2015 12:00")});
+            this.startTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date(0)});
             this.endTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date()});
 
             this.startTimePicker.on("dp.change", function (e) {
