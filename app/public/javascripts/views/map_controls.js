@@ -6,6 +6,7 @@ define([
     "jquery",
     "underscore",
     "backbone",
+    "collections/unique_vehicles",
     "collections/all_vehicles",
     "collections/services",
     "moment",
@@ -14,12 +15,13 @@ define([
     "swig",
     "text!../../templates/map_controls.html",
     "text!../../templates/map_controls_legend.html"
-], function($, _, Backbone, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
+], function($, _, Backbone, uniqueVehicleCollection, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, swig, mapControlsTemplate, mapControlsLegendTemplate) {
     "use strict";
 
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
-            this.refreshIntervalID = null;
+            this.timerRefreshIntervalID = null;
+            this.liveFetchRefreshIntervalID = null;
             this.stepSize = 30; // seconds
             this.isSimulating = false;
             this.isVisible = false;
@@ -30,7 +32,10 @@ define([
                 ff: 60*5,
                 b: -60,
                 fb: -60*5
-            }
+            };
+            this.timerRefreshInterval = 300;
+            this.liveFetchRefreshInterval = 20000;
+            this.liveFetchRefreshIntervalID = 2000;
         },
         render: function () {
             this.$mapControls = $("#map-controls-container");
@@ -96,7 +101,24 @@ define([
 
             mapView.reset();
         },
-        setupSimulation: function () {
+        setupSimulation: function (mode) {
+            this.mode = mode;
+
+            switch (this.mode) {
+                case "live":
+                    this.timerRefreshInterval = 1000;
+
+                    $("#step-size-input").prop("disabled", true);
+                    break;
+                case "nonlive":
+                    this.timerRefreshInterval = 300;
+
+                    $("#step-size-input").prop("disabled", false);
+                    break;
+                default:
+                    throw new Error("mode can only be 'live' or 'nonlive'");
+            }
+
             // update current time with start time of simulation
             this.timeSpan = allVehicleCollection.getTimeSpan();
             this.currentTime = this.timeSpan.startTime;
@@ -122,30 +144,51 @@ define([
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-play");
 
+                clearInterval(this.timerRefreshIntervalID);
 
-                clearInterval(this.refreshIntervalID);
+                if (this.mode == "live") {
+                    clearInterval(this.liveFetchRefreshIntervalID);
+                }
             } else {
                 this.isSimulating = true;
 
                 this.$playButton.children().removeClass().addClass("glyphicon glyphicon-pause");
 
                 var self = this;
-                self.refreshIntervalID = setInterval(function() {
-                    self.currentTime += self.stepSize;
+                this.timerRefreshIntervalID = setInterval(function() {
 
-                    if (self.currentTime > self.timeSpan.endTime) {
-                        self.currentTime = self.timeSpan.endTime;
-                        self.toggleSimulation();
+                    if (self.mode == "live") {
+                        self.currentTime = moment().unix();
+                    } else {
+                        self.currentTime += self.stepSize;
 
-                        new SnackbarView({
-                            content: "Simulation has ended!",
-                            duration: 3000
-                        }).toggle();
+                        if (self.currentTime > self.timeSpan.endTime) {
+                            self.currentTime = self.timeSpan.endTime;
+                            self.toggleSimulation();
+
+                            new SnackbarView({
+                                content: "Simulation has ended!",
+                                duration: 3000
+                            }).toggle();
+                        }
                     }
 
                     self.updateTimer();
+
                     mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible);
-                }, 300);
+                }, this.timerRefreshInterval);
+
+                if (this.mode == "live") {
+                    this.liveFetchRefreshIntervalID = setInterval(function () {
+                        allVehicleCollection.fetch("live", {
+                            selectedServices: serviceCollection.getAllSelectedNames(),
+                            selectedVehicles: uniqueVehicleCollection.getAllSelectedIDs(),
+                            startTime: self.timeSpan.startTime,
+                            endTime: self.timeSpan.endTime,
+                            reset: false
+                        });
+                    }, this.liveFetchRefreshInterval);
+                }
             }
 
             this.updateControlsVisiblity();

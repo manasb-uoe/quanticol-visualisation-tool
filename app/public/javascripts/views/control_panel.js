@@ -49,7 +49,8 @@ define([
             "click #select-vehicles-modal-trigger": "showSelectVehiclesModal",
             "click #select-time-span-modal-trigger": "showSelectTimeSpanModal",
             "click #button-control-panel-reset": "reset",
-            "click #button-control-panel-submit": "submit"
+            "click #button-control-panel-submit": "submit",
+            "change #toggle-live-mode-checkbox": "refreshControlPanel"
         },
         render: function () {
             var compiledTemplate = swig.render(controlPanelTemplate);
@@ -162,10 +163,17 @@ define([
                 selectVehiclesButton.removeAttr("disabled");
             }
 
-            // update selected time span
-            var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
-            $("#start-time").text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
-            $("#end-time").text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
+            // update selected time span if live mode is not enabled
+            if ($("#toggle-live-mode-checkbox").prop("checked")) {
+                $("#select-time-span-modal-trigger").prop("disabled", true);
+                $("#start-time").text("(Disabled)");
+                $("#end-time").text("(Disabled)");
+            } else {
+                var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
+                $("#start-time").text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
+                $("#end-time").text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
+                $("#select-time-span-modal-trigger").prop("disabled", false);
+            }
         },
         showSelectTimeSpanModal: function () {
             $("#select-time-span-modal").modal("show");
@@ -207,12 +215,13 @@ define([
             selectedVehicles = selectedVehicles || uniqueVehicleCollection.getAllSelectedIDs();
             timeSpan = timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
 
-            allVehicleCollection.fetch({
-                data: $.param({
-                    service: selectedServices,
-                    vehicle: selectedVehicles,
-                    startTime: timeSpan.startTime.unix(),
-                    endTime: timeSpan.endTime.unix()}),
+            allVehicleCollection.reset(undefined, {silent: true});
+
+            allVehicleCollection.fetch($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive", {
+                selectedServices: selectedServices,
+                selectedVehicles: selectedVehicles,
+                startTime: timeSpan.startTime.unix(),
+                endTime: timeSpan.endTime.unix(),
                 reset: true
             });
         },
@@ -223,7 +232,7 @@ define([
                 this.toggleControlPanel();
 
                 mapControlsView.reset();
-                mapControlsView.setupSimulation();
+                mapControlsView.setupSimulation($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive");
                 mapControlsView.show();
 
                 new SnackbarView({
