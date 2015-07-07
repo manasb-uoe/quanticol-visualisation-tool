@@ -31,10 +31,10 @@ define([
                 duration: 5000
             });
 
-            serviceCollection.on("change:isSelected", this.refreshControlPanel, this);
-            uniqueVehicleCollection.on("change:isSelected", this.refreshControlPanel, this);
+            selectServicesModal.on("modal.closed", this.refreshControlPanel, this);
+            selectVehiclesModal.on("modal.closed", this.refreshControlPanel, this);
+            selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
-            selectTimeSpanModal.on("modal.time.span.changed", this.refreshControlPanel, this);
             allVehicleCollection.on("reset", this.onSubmitResults, this);
             legendDisabledConfirmationModal.on("modal.continued", function () {
                 $("#button-control-panel-submit").button("loading");

@@ -38,6 +38,7 @@ define([
 
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
+            // AND to update selected services in control panel
             var self = this;
             $("#select-services-modal").on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");

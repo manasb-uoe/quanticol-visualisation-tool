@@ -24,6 +24,13 @@ define([
             this.delegateEvents(this.events);
 
             this.initDateTimePickers();
+
+            // trigger modal.closed event when modal is closed
+            // this event will be used as a cue to update timespan in control panel
+            var self = this;
+            $("#select-time-span-modal").on("hidden.bs.modal", function () {
+                self.trigger("modal.closed");
+            });
         },
         initDateTimePickers: function() {
             var self = this;
@@ -40,15 +47,6 @@ define([
             this.endTimePicker.on("dp.change", function (e) {
                 self.startTimePicker.data("DateTimePicker").maxDate(e.date);
             });
-
-            // trigger date change event so that control panel can update the displayed time span
-            this.startTimePicker.on("dp.change", function () {
-                self.trigger("modal.time.span.changed");
-            });
-            this.endTimePicker.on("dp.change", function () {
-                self.trigger("modal.time.span.changed");
-            });
-
         },
         getSelectedTimeSpan: function () {
             return {

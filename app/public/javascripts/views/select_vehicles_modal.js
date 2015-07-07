@@ -38,6 +38,13 @@ define([
 
             this.$selectAllButton = $("#select-all-vehicles-button");
             this.$searchVehiclesInput = $("#search-vehicles-input");
+
+            // trigger modal.closed event when modal is closed
+            // this event will be used as a cue to update selected vehicles in control panel
+            var self = this;
+            $("#select-vehicles-modal").on("hidden.bs.modal", function () {
+                self.trigger("modal.closed");
+            });
         },
         addAllVehicles: function() {
             $("#select-vehicles-modal-progress").hide();
