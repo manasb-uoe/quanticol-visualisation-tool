@@ -184,6 +184,10 @@ html, body {
     word-break: break-all;
 }
 
+#currently-selected-vehicles-select, #currently-selected-services-select {
+    font-size: 100%;
+}
+
 /* Tool page: Map */
 #map-container {
     height: 100%;
