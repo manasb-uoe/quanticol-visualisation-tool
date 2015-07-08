@@ -124,13 +124,9 @@ define([
             switch (this.mode) {
                 case "live":
                     this.timerRefreshInterval = 1000;
-
-                    $("#step-size-input").prop("disabled", true);
                     break;
                 case "nonlive":
                     this.timerRefreshInterval = 300;
-
-                    $("#step-size-input").prop("disabled", false);
                     break;
                 default:
                     throw new Error("mode can only be 'live' or 'nonlive'");
