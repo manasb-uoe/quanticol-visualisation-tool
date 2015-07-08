@@ -195,16 +195,28 @@ define([
                         geodesic: true,
                         strokeOpacity: 1.0,
                         strokeWeight: 2,
-                        icons: [{
-                            icon: {
-                                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                                fillOpacity: 1,
-                                strokeColor:'#0000ff',
-                                fillColor:'#0000ff'
+                        icons: [
+                            {
+                                icon: {
+                                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                                    fillOpacity: 1,
+                                    strokeColor:'#0000ff',
+                                    fillColor:'#0000ff'
+                                },
+                                repeat: arePathPolylinesVisible ? "200px" : "0px",
+                                offset: "100%"
                             },
-                            repeat: arePathPolylinesVisible ? "100px" : "0px",
-                            offset: "0%"
-                        }]
+                            {
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    fillOpacity: 1,
+                                    strokeColor: "#000000",
+                                    fillColor: "#000000"
+                                },
+                                repeat: "0px",
+                                offset: "0%"
+                            }
+                        ]
                     });
 
                     polyline.setMap(self.googleMap);
