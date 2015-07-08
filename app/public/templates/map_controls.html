@@ -31,7 +31,7 @@
 
 <div class="text-uppercase"><strong>Options</strong></div>
 <div class="options row">
-    <div class="col-md-6 col-xs-6">
+    <div class="col-md-12 col-xs-12">
         <div class="checkbox">
             <label>
                 <input type="checkbox" id="show-path-trace-checkbox" {% if arePathPolylinesVisible %} checked {% endif %}> Show full path trace
@@ -42,5 +42,17 @@
                 <input type="checkbox" id="show-routes-checkbox" {% if areRoutePolylinesVisible %} checked {% endif %}> Show routes
             </label>
         </div>
+        <form class="form">
+            <div class="form-group" id="interpolation-animation-duration-form-group">
+                <label for="interpolation-animation-duration-input"><span class="map-controls-options-label">Interpolation animation duration (ms): </span></label>
+                <input type="text" class="form-control input-sm map-controls-options-input" id="interpolation-animation-duration-input" value="{{interpolationAnimationDuration}}">
+            </div>
+        </form>
+        <form class="form">
+            <div class="form-group" id="refresh-interval-form-group">
+                <label for="refresh-interval-input"><span class="map-controls-options-label">Refresh interval (ms): </span></label>
+                <input type="text" class="form-control input-sm map-controls-options-input" id="refresh-interval-input" value="{{refreshInterval}}">
+            </div>
+        </form>
     </div>
 </div>

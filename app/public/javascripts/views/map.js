@@ -41,7 +41,7 @@ define([
 
             this.googleMap = new google.maps.Map($("#map-container")[0], options);
         },
-        updateMarkers: function (currentTime, arePathPolylinesVisible) {
+        updateMarkers: function (currentTime, arePathPolylinesVisible, interpolationAnimationDuration) {
             var self = this;
 
             // remove all markers and polylines before adding any new ones
@@ -99,14 +99,15 @@ define([
                         icon: new google.maps.MarkerImage(self.markerColors[self.markerColorAssignment[markerVehicle.get("service_name")]][1])
                     });
 
-                    marker.setDuration(500);
-                    marker.setEasing("linear");
-
                     marker.vehicleID = markerVehicle.get("vehicle_id");
                     marker.serviceName = markerVehicle.get("service_name");
 
                     self.markers.push(marker);
                 }
+
+                // SlidingMarker library animation settings
+                marker.setDuration(interpolationAnimationDuration);
+                marker.setEasing("linear");
 
                 if (marker.getPosition() != newPosition) {
                     var infoWindowContent = [
@@ -143,7 +144,7 @@ define([
                     }
 
                     ///**
-                    // * interpolation attempt without using any library
+                    // * successful interpolation attempt without using any library
                     // */
                     //var frames = [];
                     //var fromLat = marker.getPosition().lat();

@@ -21,22 +21,24 @@ define([
 
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
-            this.timerRefreshIntervalID = null;
-            this.liveFetchRefreshIntervalID = null;
             this.isSimulating = false;
             this.isVisible = false;
             this.arePathPolylinesVisible = false;
             this.areRoutePolylinesVisible = true;
-            this.stepSizes = {
+            this.stepSizes = { // all are in seconds
                 p: 30,
                 f: 60,
                 ff: 60*5,
                 b: -60,
                 fb: -60*5
             };
-            this.timerRefreshInterval = 300;
-            this.liveFetchRefreshInterval = 20000;
-            this.liveFetchRefreshIntervalID = 2000;
+            this.interpolationAnimationDuration = 500; // ms
+
+            this.timerRefreshIntervalID = null;
+            this.liveFetchRefreshIntervalID = null;
+
+            this.timerRefreshInterval = 300; // ms
+            this.liveFetchRefreshInterval = 20000; // ms
 
             // update step sizes whenever user successfully configures step sizes
             var self = this;
@@ -49,7 +51,9 @@ define([
             var compiledTempalte = swig.render(mapControlsTemplate,
                 {locals: {
                     arePathPolylinesVisible: this.arePathPolylinesVisible,
-                    areRoutePolylinesVisible: this.areRoutePolylinesVisible
+                    areRoutePolylinesVisible: this.areRoutePolylinesVisible,
+                    interpolationAnimationDuration: this.interpolationAnimationDuration,
+                    refreshInterval: this.timerRefreshInterval
                 }});
             this.$el.html(compiledTempalte);
             this.$mapControls.html(this.el);
@@ -85,7 +89,9 @@ define([
             "click #fast-forward-button": function() {this.skipSimulation("ff")},
             "click #backward-button": function() {this.skipSimulation("b")},
             "click #fast-backward-button": function() {this.skipSimulation("fb")},
-            "click #configure-controls-link": "showConfigureControlsModal"
+            "click #configure-controls-link": "showConfigureControlsModal",
+            "input #interpolation-animation-duration-input": "updateInterpolationAnimationDuration",
+            "input #refresh-interval-input": "updateTimerRefreshInterval"
         },
         show: function() {
             if (this.isVisible) return;
@@ -98,8 +104,9 @@ define([
         hide: function () {
             if (!this.isVisible) return;
 
+            var height = this.$mapControls.height();
             this.$mapControls.animate({
-                marginBottom: "-400px"
+                marginBottom: -height - 50
             }, 300);
             this.isVisible = false;
         },
@@ -136,8 +143,8 @@ define([
 
             mapView.assignMarkerColors();
             this.updateLegend();
-            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
-            this.updateControlsVisiblity();
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible, this.interpolationAnimationDuration);
+            this.updateControlsAndOptionsVisiblity();
 
             if (this.areRoutePolylinesVisible) {
                 mapView.toggleRoutePolylines("show");
@@ -188,7 +195,7 @@ define([
 
                     self.updateTimer();
 
-                    mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible);
+                    mapView.updateMarkers(self.currentTime, self.arePathPolylinesVisible, self.interpolationAnimationDuration);
                 }, this.timerRefreshInterval);
 
                 if (this.mode == "live") {
@@ -204,7 +211,7 @@ define([
                 }
             }
 
-            this.updateControlsVisiblity();
+            this.updateControlsAndOptionsVisiblity();
         },
         /**
          * Updates the legend with all service names mapped to their colors. This method can only be called
@@ -230,7 +237,7 @@ define([
         togglePathPolylines: function () {
             this.arePathPolylinesVisible = !this.arePathPolylinesVisible;
 
-            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible, this.interpolationAnimationDuration);
         },
         delegateToggleRoutePolylines: function () {
             if (this.areRoutePolylinesVisible) {
@@ -255,12 +262,14 @@ define([
             }
 
             this.updateTimer();
-            this.updateControlsVisiblity();
-            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible);
+            this.updateControlsAndOptionsVisiblity();
+            mapView.updateMarkers(this.currentTime, this.arePathPolylinesVisible, this.interpolationAnimationDuration);
         },
-        updateControlsVisiblity: function () {
+        updateControlsAndOptionsVisiblity: function () {
             if (this.isSimulating) {
                 this.$playButton.siblings().attr("disabled", "disabled");
+
+                $("#refresh-interval-input").attr("disabled", "disabled");
             } else {
                 if (this.currentTime == this.timeSpan.endTime) {
                     this.$forwardButton.attr("disabled", "disabled");
@@ -277,11 +286,35 @@ define([
                     this.$backwardButton.removeAttr("disabled");
                     this.$fastBackwardButton.removeAttr("disabled");
                 }
+
+                $("#refresh-interval-input").removeAttr("disabled");
             }
         },
         showConfigureControlsModal: function () {
             configureControlsModal.render(this.stepSizes);
             $("#configure-controls-modal").modal("show");
+        },
+        updateInterpolationAnimationDuration: function(event) {
+            var newDuration = $(event.target).val().trim();
+            if (newDuration.length > 0) {
+                newDuration = parseInt(newDuration);
+                if (!isNaN(newDuration)) {
+                    if (newDuration > 0) {
+                        this.interpolationAnimationDuration = newDuration;
+                    }
+                }
+            }
+        },
+        updateTimerRefreshInterval: function (event) {
+            var newInterval = $(event.target).val().trim();
+            if (newInterval.length > 0) {
+                newInterval = parseInt(newInterval);
+                if (!isNaN(newInterval)) {
+                    if (newInterval > 0) {
+                        this.timerRefreshInterval = newInterval;
+                    }
+                }
+            }
         }
     });
 

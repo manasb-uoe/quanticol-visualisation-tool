@@ -233,7 +233,7 @@ html, body {
     padding: 15px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     background-color: rgb(247,247,249);
-    margin-bottom: -400px;
+    margin-bottom: 0px;
 }
 
 
@@ -279,6 +279,25 @@ html, body {
 
 #configure-controls-link {
     cursor: pointer;
+}
+
+#interpolation-animation-duration-form-group {
+    margin-bottom: 0;
+    margin-top: -8px;
+}
+
+#refresh-interval-form-group {
+    margin-bottom: 0;
+    margin-top: -2px;
+}
+
+.map-controls-options-input {
+    display: inline-block;
+    width: 60px;
+}
+
+.map-controls-options-label {
+    display: inline-block;
 }
 
 /* Map controls: Configure controls modal */
