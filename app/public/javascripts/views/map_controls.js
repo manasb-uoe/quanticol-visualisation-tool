@@ -23,12 +23,12 @@ define([
         initialize: function () {
             this.timerRefreshIntervalID = null;
             this.liveFetchRefreshIntervalID = null;
-            this.stepSize = 30; // seconds
             this.isSimulating = false;
             this.isVisible = false;
             this.arePathPolylinesVisible = false;
             this.areRoutePolylinesVisible = true;
             this.stepSizes = {
+                p: 30,
                 f: 60,
                 ff: 60*5,
                 b: -60,
@@ -48,7 +48,6 @@ define([
             this.$mapControls = $("#map-controls-container");
             var compiledTempalte = swig.render(mapControlsTemplate,
                 {locals: {
-                    stepSize: this.stepSize,
                     arePathPolylinesVisible: this.arePathPolylinesVisible,
                     areRoutePolylinesVisible: this.areRoutePolylinesVisible
                 }});
@@ -82,7 +81,6 @@ define([
             "click #play-pause-button": "toggleSimulation",
             "change #show-path-trace-checkbox": "togglePathPolylines",
             "change #show-routes-checkbox": "delegateToggleRoutePolylines",
-            "input #step-size-input": "updateStepSize",
             "click #forward-button": function() {this.skipSimulation("f")},
             "click #fast-forward-button": function() {this.skipSimulation("ff")},
             "click #backward-button": function() {this.skipSimulation("b")},
@@ -175,7 +173,7 @@ define([
 
                         self.currentTime = moment().unix();
                     } else {
-                        self.currentTime += self.stepSize;
+                        self.currentTime += self.stepSizes.p;
 
                         if (self.currentTime > self.timeSpan.endTime) {
                             self.currentTime = self.timeSpan.endTime;
@@ -241,14 +239,6 @@ define([
             } else {
                 mapView.toggleRoutePolylines("show");
                 this.areRoutePolylinesVisible = true;
-            }
-        },
-        updateStepSize: function(event) {
-            var newStepSize = $(event.target).val().trim();
-            if (newStepSize.length > 0) {
-                if (newStepSize > 0) {
-                    this.stepSize = parseInt(newStepSize);
-                }
             }
         },
         skipSimulation: function(action) {
