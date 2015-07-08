@@ -37,26 +37,46 @@ router.get("/vehicles/:filter", function (req, res, next) {
                     // now that we have the distinct vehicle ids, we will find one vehicle for each of these ids
                     // along with all the services they belong to
                     var uniqueVehicles = [];
-                    async.each(
-                        vehicleIDs,
-                        function (vehicleID, cb) {
-                            VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
-                                // convert mongoose object to regular object since mongoose doesn't allow adding properties
-                                var uniqueVehicle = vehicles[0].toObject();
-                                uniqueVehicle.services = [];
+                    //async.each(
+                    //    vehicleIDs,
+                    //    function (vehicleID, cb) {
+                    //        VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
+                    //            // convert mongoose object to regular object since mongoose doesn't allow adding properties
+                    //            var uniqueVehicle = vehicles[0].toObject();
+                    //            uniqueVehicle.services = [];
+                    //
+                    //            vehicles.forEach(function (vehicle) {
+                    //                // only add unique services
+                    //                if (uniqueVehicle.services.indexOf(vehicle.service_name) == -1) {
+                    //                    uniqueVehicle.services.push(vehicle.service_name);
+                    //                }
+                    //            });
+                    //
+                    //            uniqueVehicles.push(uniqueVehicle);
+                    //
+                    //            cb();
+                    //        });
+                    //    },
+                        async.each(
+                            vehicleIDs,
+                            function (vehicleID, cb) {
+                                VehicleLocation.findOne({vehicle_id: vehicleID, service_name: {$in: selectedServices}}, function (err, vehicle) {
+                                    // convert mongoose object to regular object since mongoose doesn't allow adding properties
+                                    var uniqueVehicle = vehicle.toObject();
+                                    uniqueVehicle.services = [uniqueVehicle.service_name];
 
-                                vehicles.forEach(function (vehicle) {
-                                    // only add unique services
-                                    if (uniqueVehicle.services.indexOf(vehicle.service_name) == -1) {
-                                        uniqueVehicle.services.push(vehicle.service_name);
-                                    }
+                                    //vehicles.forEach(function (vehicle) {
+                                    //    // only add unique services
+                                    //    if (uniqueVehicle.services.indexOf(vehicle.service_name) == -1) {
+                                    //        uniqueVehicle.services.push(vehicle.service_name);
+                                    //    }
+                                    //});
+
+                                    uniqueVehicles.push(uniqueVehicle);
+
+                                    cb();
                                 });
-
-                                uniqueVehicles.push(uniqueVehicle);
-
-                                cb();
-                            });
-                        },
+                            },
                         function () {
                             res.json(uniqueVehicles);
                         }
