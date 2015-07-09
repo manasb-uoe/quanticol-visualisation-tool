@@ -133,7 +133,7 @@ function populateVehicleLocations(cbA) {
     });
 }
 
-function populateVehicleToServices() {
+function populateVehicleToServices(cbA) {
     console.log("Populating Vehicle to Services collection...");
     VehicleToServices.remove(function (err) {
         if (err) throw err;
@@ -146,8 +146,6 @@ function populateVehicleToServices() {
                 async.each(
                     vehicleIDs,
                     function (vehicleID, cb) {
-                        console.log(".");
-
                         VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
                             if (err) throw err;
 
@@ -167,7 +165,7 @@ function populateVehicleToServices() {
                         })
                     },
                     function () {
-                        console.log("\n DONE");
+                        cbA();
                     }
                 );
             });
@@ -185,29 +183,36 @@ mongoose.connection.on("error", function (err) {
 mongoose.connection.once("open", function () {
     var arg = process.argv[2];
 
-    populateVehicleToServices();
-    //switch (arg) {
-    //    case "nonlive":
-    //        async.series([
-    //            populateStops,
-    //            populateServices,
-    //            function () {
-    //                console.log("END OF DB POPULATION SCRIPT");
-    //                process.exit(0);
-    //            }
-    //        ]);
-    //        break;
-    //    case "live":
-    //        var counter = 0;
-    //        setInterval(function () {
-    //            populateVehicleLocations(function () {
-    //                counter++;
-    //                console.log("iterations completed: " + counter);
-    //            });
-    //        }, 40000);
-    //        break;
-    //    default:
-    //        throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'");
-    //}
+    switch (arg) {
+        case "nonlive":
+            async.series([
+                populateStops,
+                populateServices,
+                function () {
+                    console.log("END OF DB POPULATION SCRIPT");
+                    process.exit(0);
+                }
+            ]);
+            break;
+        case "live":
+            var counter = 0;
+            setInterval(function () {
+                populateVehicleLocations(function () {
+                    counter++;
+                    console.log("iterations completed: " + counter);
+                });
+            }, 40000);
+            break;
+        case "vehicle_to_services":
+            populateVehicleToServices(function () {
+                console.log("\nDONE");
+                process.exit(0);
+            });
+            break;
+        default:
+            console.log("Only the following command line arguments are allowed: 'live', 'nonlive' and 'vehicle_to_services'");
+            console.log("\nEXITING NOW.");
+            process.exit(0)
+    }
 });
 
