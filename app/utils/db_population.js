@@ -9,6 +9,7 @@ var dbConfig = require("./db_config");
 var Stop = require("../models/stop");
 var Service = require("../models/service");
 var VehicleLocation = require("../models/vehicle_location");
+var VehicleToServices = require("../models/vehicle_to_services");
 
 /**
  * HTTPS GET request helper
@@ -132,6 +133,47 @@ function populateVehicleLocations(cbA) {
     });
 }
 
+function populateVehicleToServices() {
+    console.log("Populating Vehicle to Services collection...");
+    VehicleToServices.remove(function (err) {
+        if (err) throw err;
+
+        VehicleLocation
+            .distinct("vehicle_id")
+            .exec(function (err, vehicleIDs) {
+                console.log("total vehicles: " + vehicleIDs.length);
+
+                async.each(
+                    vehicleIDs,
+                    function (vehicleID, cb) {
+                        console.log(".");
+
+                        VehicleLocation.find({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicles) {
+                            if (err) throw err;
+
+                            var services = [];
+                            vehicles.forEach(function (vehicle) {
+                                // only add unique services
+                                if (services.indexOf(vehicle.service_name) == -1) {
+                                    services.push(vehicle.service_name);
+                                }
+                            });
+
+                            var vehicleToServices = new VehicleToServices({vehicle_id: vehicleID, services: services});
+                            vehicleToServices.save(function (err) {
+                                if (err) throw err;
+                                cb();
+                            })
+                        })
+                    },
+                    function () {
+                        console.log("\n DONE");
+                    }
+                );
+            });
+    });
+}
+
 /**
  * Handle command line arguments
  */
@@ -143,28 +185,29 @@ mongoose.connection.on("error", function (err) {
 mongoose.connection.once("open", function () {
     var arg = process.argv[2];
 
-    switch (arg) {
-        case "nonlive":
-            async.series([
-                populateStops,
-                populateServices,
-                function () {
-                    console.log("END OF DB POPULATION SCRIPT");
-                    process.exit(0);
-                }
-            ]);
-            break;
-        case "live":
-            var counter = 0;
-            setInterval(function () {
-                populateVehicleLocations(function () {
-                    counter++;
-                    console.log("iterations completed: " + counter);
-                });
-            }, 40000);
-            break;
-        default:
-            throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'");
-    }
+    populateVehicleToServices();
+    //switch (arg) {
+    //    case "nonlive":
+    //        async.series([
+    //            populateStops,
+    //            populateServices,
+    //            function () {
+    //                console.log("END OF DB POPULATION SCRIPT");
+    //                process.exit(0);
+    //            }
+    //        ]);
+    //        break;
+    //    case "live":
+    //        var counter = 0;
+    //        setInterval(function () {
+    //            populateVehicleLocations(function () {
+    //                counter++;
+    //                console.log("iterations completed: " + counter);
+    //            });
+    //        }, 40000);
+    //        break;
+    //    default:
+    //        throw new Error("Only the following command line arguments are allowed: 'live' and 'nonlive'");
+    //}
 });
 
