@@ -30,8 +30,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
     switch (filter) {
         case "unique":
             VehicleLocation
-                .where("service_name")
-                .in(selectedServices)
+                .where("service_name").in(selectedServices)
                 .distinct("vehicle_id")
                 .exec(function (err, vehicleIDs) {
                     if (err) return next(err);
@@ -42,8 +41,8 @@ router.get("/vehicles/:filter", function (req, res, next) {
                     async.each(
                         vehicleIDs,
                         function (vehicleID, cb) {
-                            VehicleToServices.findOne({vehicle_id: vehicleID}, function (err, vehicleToService) {
-                                var uniqueVehicle = {vehicle_id: vehicleID, services: vehicleToService.services};
+                            VehicleToServices.findOne({vehicle_id: vehicleID}, "services", function (err, vehicleToServices) {
+                                var uniqueVehicle = {vehicle_id: vehicleID, services: vehicleToServices.services};
                                 uniqueVehicles.push(uniqueVehicle);
 
                                 cb();
@@ -58,17 +57,13 @@ router.get("/vehicles/:filter", function (req, res, next) {
 
         case "all":
             VehicleLocation
-                .where({
-                    service_name: {$in: selectedServices},
-                    vehicle_id: {$in: selectedVehicles},
-                    last_gps_fix: {
-                        $gte: startTime,
-                        $lte: endTime
-                    }
-                })
+                .where("service_name").in(selectedServices)
+                .where("vehicle_id").in(selectedVehicles)
+                .where("last_gps_fix").gte(startTime).lte(endTime)
+                .select("vehicle_id service_name destination location last_gps_fix")
                 .exec(function (err, vehicles) {
                     if (err) return next(err);
-
+                    console.log(vehicles);
                     res.json(vehicles);
                 });
             break;
@@ -103,10 +98,16 @@ router.get("/vehicles/:filter", function (req, res, next) {
                             delete vehicleLocationJson.latitude;
                             delete vehicleLocationJson.longitude;
 
+                            delete vehicleLocationJson.heading;
+                            delete vehicleLocationJson.speed;
+                            delete vehicleLocationJson.journey_id;
+                            delete vehicleLocationJson.vehicle_type;
+
                             filteredVehicles.push(vehicleLocationJson);
                         }
                     });
 
+                    console.log(filteredVehicles);
                     res.json(filteredVehicles);
                 });
             }).on("error", function (err) {
