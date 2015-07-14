@@ -35,6 +35,9 @@ define([
 
             this.$selectAllButton = $("#select-all-services-button");
             this.$searchServicesInput = $("#search-services-input");
+            this.$servicesContainer = $("#services-container");
+            this.$noServicesFound = $("#no-services-found");
+            this.$progress = $("#select-services-modal-progress");
 
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
@@ -45,19 +48,25 @@ define([
             });
         },
         addAllServices: function () {
-            if (serviceCollection.length == 0) return;
+            this.$progress.hide();
 
-            $("#select-services-modal-progress").hide();
-            $("#services-container").empty();
+            if (serviceCollection.getSearchResultsCount() == 0) {
+                this.$servicesContainer.hide();
+                this.$noServicesFound.show();
+            } else {
+                this.$noServicesFound.hide();
+                this.$servicesContainer.empty();
+                this.$servicesContainer.show();
 
-            // sort services by id and then add them to modal body
-            var self = this;
-            var sortedByName = serviceCollection.sortBy(function (service) {
-                return parseInt(service.get("name")) ? parseInt(service.get("name")) : service.get("name");
-            });
-            sortedByName.forEach(function (service) {
-                self.addService(service);
-            });
+                // sort services by id and then add them to modal body
+                var self = this;
+                var sortedByName = serviceCollection.sortBy(function (service) {
+                    return parseInt(service.get("name")) ? parseInt(service.get("name")) : service.get("name");
+                });
+                sortedByName.forEach(function (service) {
+                    self.addService(service);
+                });
+            }
         },
         addService: function (service) {
             if (service.get("isMatchingSearchTerm")) {

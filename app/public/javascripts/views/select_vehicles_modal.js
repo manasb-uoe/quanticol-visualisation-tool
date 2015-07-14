@@ -38,6 +38,9 @@ define([
 
             this.$selectAllButton = $("#select-all-vehicles-button");
             this.$searchVehiclesInput = $("#search-vehicles-input");
+            this.$vehiclesContainer = $("#vehicles-container");
+            this.$noVehiclesFound = $("#no-vehicles-found");
+            this.$progress = $("#select-vehicles-modal-progress");
 
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue to update selected vehicles in control panel
@@ -47,17 +50,25 @@ define([
             });
         },
         addAllVehicles: function() {
-            $("#select-vehicles-modal-progress").hide();
-            $("#vehicles-container").empty();
+            this.$progress.hide();
 
-            // sort vehicles by id and then add them to modal body
-            var sortedByVehicleID = uniqueVehicleCollection.sortBy(function (vehicle) {
-                return parseInt(vehicle.get("vehicle_id"));
-            });
-            var self = this;
-            sortedByVehicleID.forEach(function (vehicle) {
-                self.addVehicle(vehicle);
-            });
+            if (uniqueVehicleCollection.getSearchResultsCount() == 0) {
+                this.$vehiclesContainer.hide();
+                this.$noVehiclesFound.show();
+            } else {
+                this.$noVehiclesFound.hide();
+                this.$vehiclesContainer.empty();
+                this.$vehiclesContainer.show();
+
+                // sort vehicles by id and then add them to modal body
+                var sortedByVehicleID = uniqueVehicleCollection.sortBy(function (vehicle) {
+                    return parseInt(vehicle.get("vehicle_id"));
+                });
+                var self = this;
+                sortedByVehicleID.forEach(function (vehicle) {
+                    self.addVehicle(vehicle);
+                });
+            }
         },
         addVehicle: function(vehicle) {
             if (vehicle.get("isMatchingSearchTerm")) {
