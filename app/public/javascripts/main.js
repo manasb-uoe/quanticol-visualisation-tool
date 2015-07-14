@@ -10,6 +10,7 @@ require.config({
         swig: "./libs/swig.min",
         bootstrap: "./libs/bootstrap.min",
         moment: "./libs/moment-with-locales.min",
+        momentTimezone: "./libs/moment-timezone-with-data",
         datetimepicker: "./libs/bootstrap-datetimepicker.min",
         "jquery-easing": "./libs/jquery.easing.1.3.min",
         "marker-animate": "./libs/markerAnimate",

@@ -7,9 +7,10 @@ define([
     "underscore",
     "backbone",
     "datetimepicker",
+    "momentTimezone",
     "swig",
     "text!../../templates/select_time_span_modal.html"
-], function($, _, Backbone, datetimepicker, swig, selectTimeSpanModalTemplate) {
+], function($, _, Backbone, datetimepicker, momentTimezone, swig, selectTimeSpanModalTemplate) {
     "use strict";
 
     var SelectTimeSpanView = Backbone.View.extend({
@@ -38,8 +39,8 @@ define([
             this.startTimePicker = $("#start-time-picker");
             this.endTimePicker = $("#end-time-picker");
 
-            this.startTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date(0)});
-            this.endTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date()});
+            this.startTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: new Date("January 01, 2015 00:00")});
+            this.endTimePicker.datetimepicker({locale: "en", format: "MMMM Do YYYY, h:mm a", defaultDate: momentTimezone().tz("Europe/London")});
 
             this.startTimePicker.on("dp.change", function (e) {
                 self.endTimePicker.data("DateTimePicker").minDate(e.date);

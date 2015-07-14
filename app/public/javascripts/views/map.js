@@ -9,8 +9,8 @@ define([
     "collections/all_vehicles",
     "collections/services",
     "slidingmarker",
-    "moment"
-], function($, _, Backbone, allVehicleCollection, serviceCollection, SlidingMarker, moment) {
+    "momentTimezone"
+], function($, _, Backbone, allVehicleCollection, serviceCollection, SlidingMarker, momentTimezone) {
     "use strict";
 
     var MapView = Backbone.View.extend({
@@ -119,7 +119,7 @@ define([
                         "<br>",
                         "<strong>Current position: </strong>(" + markerVehicle.get("location")[1] + ", " + markerVehicle.get("location")[0] + ")",
                         "<br>",
-                        "<strong>Last GPS fix: </strong>" + moment.unix(markerVehicle.get("last_gps_fix")).locale("en").format("MMMM Do YYYY, h:mm:ss a")
+                        "<strong>Last GPS fix: </strong>" + momentTimezone.unix(markerVehicle.get("last_gps_fix")).tz("Europe/London").locale("en").format("MMMM Do YYYY, h:mm:ss a")
                     ].join("");
 
                     if (marker.infoWindow) {

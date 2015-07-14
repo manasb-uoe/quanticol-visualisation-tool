@@ -9,14 +9,14 @@ define([
     "collections/unique_vehicles",
     "collections/all_vehicles",
     "collections/services",
-    "moment",
+    "momentTimezone",
     "views/snackbar",
     "views/map",
     "views/configure_controls_modal",
     "swig",
     "text!../../templates/map_controls.html",
     "text!../../templates/map_controls_legend.html"
-], function($, _, Backbone, uniqueVehicleCollection, allVehicleCollection, serviceCollection, moment, SnackbarView, mapView, configureControlsModal, swig, mapControlsTemplate, mapControlsLegendTemplate) {
+], function($, _, Backbone, uniqueVehicleCollection, allVehicleCollection, serviceCollection, momentTimezone, SnackbarView, mapView, configureControlsModal, swig, mapControlsTemplate, mapControlsLegendTemplate) {
     "use strict";
 
     var MapControlsView = Backbone.View.extend({
@@ -149,7 +149,7 @@ define([
             }
         },
         updateTimer: function () {
-            this.$currentTimeInput.val(moment.unix(this.currentTime).locale("en").format("MMMM Do YYYY, h:mm:ss a"));
+            this.$currentTimeInput.val(momentTimezone.unix(this.currentTime).tz("Europe/London").locale("en").format("MMMM Do YYYY, h:mm:ss a"));
         },
         toggleSimulation: function () {
             if (this.isSimulating) {
@@ -174,7 +174,7 @@ define([
                         // update time span since new data might have been added
                         self.timeSpan = allVehicleCollection.getTimeSpan();
 
-                        self.currentTime = moment().unix();
+                        self.currentTime = momentTimezone().unix();
                     } else {
                         self.currentTime += self.stepSizes.p;
 
