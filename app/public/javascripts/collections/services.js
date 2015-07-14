@@ -26,9 +26,11 @@ define([
             return selectedNames;
         },
         getSelectedSearchResultsCount: function () {
-            return this.filter(function (service) {
+            var count = this.countBy(function (service) {
                 return service.get("isSelected") && service.get("isMatchingSearchTerm");
-            }).length;
+            }).true;
+
+            return count || 0;
         },
         getByName: function(name) {
             var requiredService = this.filter(function (service) {
@@ -59,9 +61,11 @@ define([
             this.trigger("reset");
         },
         getSearchResultsCount: function () {
-            return this.countBy(function (service) {
+            var count = this.countBy(function (service) {
                 return service.get("isMatchingSearchTerm");
             }).true;
+
+            return count || 0;
         }
     });
 

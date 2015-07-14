@@ -26,9 +26,11 @@ define([
             return selectedIDs;
         },
         getSelectedSearchResultsCount: function () {
-            return this.filter(function (vehicle) {
+            var count = this.countBy(function (vehicle) {
                 return vehicle.get("isSelected") && vehicle.get("isMatchingSearchTerm");
-            }).length;
+            }).true;
+
+            return count || 0;
         },
         search: function (term) {
             term = term.trim().toLowerCase();
@@ -57,9 +59,11 @@ define([
             this.trigger("reset");
         },
         getSearchResultsCount: function () {
-            return this.countBy(function (vehicle) {
+            var count = this.countBy(function (vehicle) {
                 return vehicle.get("isMatchingSearchTerm");
             }).true;
+
+            return count || 0;
         }
     });
 
