@@ -50,6 +50,8 @@ define([
             });
         },
         addAllVehicles: function() {
+            if (uniqueVehicleCollection.length == 0) return;
+
             this.$progress.hide();
 
             if (uniqueVehicleCollection.getSearchResultsCount() == 0) {

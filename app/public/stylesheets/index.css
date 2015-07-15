@@ -8,6 +8,10 @@ html, body {
     padding-right: 0 !important;
 }
 
+.nothing-found {
+    display: none;
+}
+
 
 /* Fix navbar moving to right problem when a modal is opened */
 .modal-open .navbar-fixed-top,
