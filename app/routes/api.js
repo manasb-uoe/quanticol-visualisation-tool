@@ -63,7 +63,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 .select("vehicle_id service_name destination location last_gps_fix")
                 .exec(function (err, vehicles) {
                     if (err) return next(err);
-                    console.log(vehicles);
+
                     res.json(vehicles);
                 });
             break;
@@ -107,7 +107,6 @@ router.get("/vehicles/:filter", function (req, res, next) {
                         }
                     });
 
-                    console.log(filteredVehicles);
                     res.json(filteredVehicles);
                 });
             }).on("error", function (err) {
