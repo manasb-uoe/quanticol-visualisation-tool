@@ -66,12 +66,16 @@ html, body {
 
 /* Tool page: Control panel */
 
+#visualize-simulated-data-container {
+    display: none;
+}
+
 .main-container .control-panel {
     position: fixed;
     top: 54px;
-    height: 295px;
+    height: 330px;
     width: 100%;
-    margin-top: -295px;
+    margin-top: -330px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -83,6 +87,23 @@ html, body {
     border-bottom: 1px dashed #0e9aef;
     padding: 5px;
     overflow: auto;
+}
+
+.main-container .control-panel .nav-pills {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.main-container .control-panel .nav-pills li {
+    float: none;
+    display: inline-block;
+    width: 200px;
+    margin-right: 5px;
+}
+
+.main-container .control-panel .nav-pills a {
+    padding: 7px 15px;
+    cursor: pointer;
 }
 
 .main-container .control-panel .control-panel-body .callout {
@@ -227,7 +248,7 @@ html, body {
 }
 
 #currently-selected-vehicles-select, #currently-selected-services-select {
-    font-size: 100%;
+    font-size: 90%;
 }
 
 #select-all-vehicles-button {

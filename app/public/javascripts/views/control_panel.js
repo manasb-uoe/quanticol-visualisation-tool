@@ -24,6 +24,13 @@ define([
 
     var ControlPanelView = Backbone.View.extend({
         initialize: function () {
+            this.visualizationTypeEnum = {
+                REAL: 0,
+                SIMULATED: 1
+            };
+
+            this.visualizationType = this.visualizationTypeEnum.REAL;
+
             var self = this;
 
             this.resetSnackbar = new SnackbarView({
@@ -50,7 +57,13 @@ define([
             "click #select-time-span-modal-trigger": "showSelectTimeSpanModal",
             "click #button-control-panel-reset": "reset",
             "click #button-control-panel-submit": "submit",
-            "change #toggle-live-mode-checkbox": "refreshControlPanel"
+            "change #toggle-live-mode-checkbox": "refreshControlPanel",
+            "click #visualize-real-data-pill": function (event) {
+                this.selectVisualizationType(event, this.visualizationTypeEnum.REAL)
+            },
+            "click #visualize-simulated-data-pill": function (event) {
+                this.selectVisualizationType(event, this.visualizationTypeEnum.SIMULATED)
+            }
         },
         render: function () {
             var compiledTemplate = swig.render(controlPanelTemplate);
@@ -245,6 +258,19 @@ define([
                     duration: 6000
                 }).toggle();
             }
+        },
+        selectVisualizationType: function (event, visualizationType) {
+            var $target = $(event.target);
+            $target.parent().siblings().removeClass("active");
+            $target.parent().addClass("active");
+
+            $target.parent().siblings().each(function (index, el) {
+                $($(el).find("a").attr("data-container")).hide();
+            });
+
+            $($target.attr("data-container")).show();
+
+            this.visualizationType = visualizationType;
         }
     });
 
