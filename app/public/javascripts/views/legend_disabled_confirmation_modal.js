@@ -24,7 +24,16 @@ define([
             var compiledTemplate = swig.render(legendDisabledConfirmationModalTemplate, {locals: {colorsLength: Object.keys(mapView.markerColors).length}});
             this.$el.html(compiledTemplate);
 
+            this.$modal = $("#legend-disabled-confirmation-modal");
+
             this.delegateEvents(this.events);
+        },
+        setVisible: function (shouldSetVisible) {
+            if (shouldSetVisible) {
+                this.$modal.modal("show");
+            } else {
+                this.$modal.modal("hide");
+            }
         }
     });
 

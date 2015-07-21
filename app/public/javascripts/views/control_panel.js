@@ -120,7 +120,7 @@ define([
         showSelectServicesModal: function() {
             $("#select-services-modal-trigger").tooltip("destroy");
 
-            $("#select-services-modal").modal("show");
+            selectServicesModal.setVisible(true);
 
             if (serviceCollection.length == 0) {
                 serviceCollection.fetch({reset: true});
@@ -129,7 +129,7 @@ define([
             }
         },
         showSelectVehiclesModal: function() {
-            $("#select-vehicles-modal").modal("show");
+            selectVehiclesModal.setVisible(true);
         },
         refreshControlPanel: function() {
             // update selected service names
@@ -183,7 +183,7 @@ define([
             }
         },
         showSelectTimeSpanModal: function () {
-            $("#select-time-span-modal").modal("show");
+            selectTimeSpanModal.setVisible(true);
         },
         reset: function (shouldShowSnackbar) {
             selectServicesModal.reset();
@@ -212,7 +212,7 @@ define([
                             duration: 5000
                         }).toggle();
                     } else if (selectedServices.length > Object.keys(mapView.markerColors).length) {
-                        $("#legend-disabled-confirmation-modal").modal("show");
+                        legendDisabledConfirmationModal.setVisible(true);
                     } else {
                         $(event.target).button("loading");
 
@@ -302,7 +302,7 @@ define([
                 // display warning if number of selected services is greater than the number of marker icons
                 // available
                 if (serviceCollection.getAllSelectedNames().length > Object.keys(mapView.markerColors).length) {
-                    $("#legend-disabled-confirmation-modal").modal("show");
+                    legendDisabledConfirmationModal.setVisible(true);
                     return;
                 }
             }

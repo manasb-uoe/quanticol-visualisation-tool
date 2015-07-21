@@ -31,6 +31,8 @@ define([
             var compiledTemplate = swig.render(selectServicesModalTemplate, {locals: context});
             this.$el.html(compiledTemplate);
 
+            this.$modal = $("#select-services-modal");
+
             this.delegateEvents(this.events);
 
             this.$selectAllButton = $("#select-all-services-button");
@@ -43,9 +45,16 @@ define([
             // this event will be used as a cue by select-vehicles modal to refresh vehicles
             // AND to update selected services in control panel
             var self = this;
-            $("#select-services-modal").on("hidden.bs.modal", function () {
+            this.$modal.on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");
             });
+        },
+        setVisible: function (shouldSetVisible) {
+            if (shouldSetVisible) {
+                this.$modal.modal("show");
+            } else {
+                this.$modal.modal("hide");
+            }
         },
         addAllServices: function () {
             if (serviceCollection.length == 0) return;

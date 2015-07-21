@@ -34,6 +34,8 @@ define([
             var compiledTemplate = swig.render(selectVehiclesModalTemplate);
             this.$el.html(compiledTemplate);
 
+            this.$modal = $("#select-vehicles-modal");
+
             this.delegateEvents(this.events);
 
             this.$selectAllButton = $("#select-all-vehicles-button");
@@ -45,9 +47,16 @@ define([
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue to update selected vehicles in control panel
             var self = this;
-            $("#select-vehicles-modal").on("hidden.bs.modal", function () {
+            this.$modal.on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");
             });
+        },
+        setVisible: function (shouldSetVisible) {
+            if (shouldSetVisible) {
+                this.$modal.modal("show");
+            } else {
+                this.$modal.modal("hide");
+            }
         },
         addAllVehicles: function() {
             if (uniqueVehicleCollection.length == 0) return;

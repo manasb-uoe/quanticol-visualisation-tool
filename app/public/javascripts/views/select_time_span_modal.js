@@ -22,6 +22,8 @@ define([
             var compiledTempalte = swig.render(selectTimeSpanModalTemplate);
             this.$el.html(compiledTempalte);
 
+            this.$modal = $("#select-time-span-modal");
+
             this.delegateEvents(this.events);
 
             this.initDateTimePickers();
@@ -29,9 +31,16 @@ define([
             // trigger modal.closed event when modal is closed
             // this event will be used as a cue to update timespan in control panel
             var self = this;
-            $("#select-time-span-modal").on("hidden.bs.modal", function () {
+            this.$modal.on("hidden.bs.modal", function () {
                 self.trigger("modal.closed");
             });
+        },
+        setVisible: function (shouldSetVisible) {
+            if (shouldSetVisible) {
+                this.$modal.modal("show");
+            } else {
+                this.$modal.modal("hide");
+            }
         },
         initDateTimePickers: function() {
             var self = this;
