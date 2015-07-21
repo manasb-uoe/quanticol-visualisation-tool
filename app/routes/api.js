@@ -212,8 +212,8 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
                                 simulatedData[1] = (simulatedData[1] - 0.5) / 0.5;
                             }
 
-                            var position = Math.round(simulatedData[1] * route.points.length);
-
+                            var position = Math.round(simulatedData[1] * (route.points.length-1));
+                            
                             simulatedVehicles.push({
                                 vehicle_id: vehicleID,
                                 service_name: service.name,
