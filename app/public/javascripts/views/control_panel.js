@@ -298,13 +298,6 @@ define([
                         service.set("isSelected", true);
                     }
                 });
-
-                // display warning if number of selected services is greater than the number of marker icons
-                // available
-                if (serviceCollection.getAllSelectedNames().length > Object.keys(mapView.markerColors).length) {
-                    legendDisabledConfirmationModal.setVisible(true);
-                    return;
-                }
             }
 
             if (allVehicleCollection.length > 0) {
