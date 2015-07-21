@@ -237,7 +237,7 @@ define([
 
                         if (file.type != "text/plain") {
                             new SnackbarView({
-                                content: "Error: Only plain text files can be upload!",
+                                content: "Error: Only plain text files can be uploaded!",
                                 duration: 4000
                             }).toggle();
                             return;
