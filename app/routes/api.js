@@ -8,6 +8,7 @@ var Service = require("../models/service");
 var async = require("async");
 var https = require("https");
 var multer = require('multer')({dest: './uploads/'});
+var fs = require('fs');
 
 var VehicleLocation = require("../models/vehicle_location");
 var VehicleToServices = require("../models/vehicle_to_services");
@@ -140,12 +141,105 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
     fs.readFile(req.file.path, function (err, data) {
         if (err) return next(err);
 
-        res.json([]);
 
-        // now that we're done with the file, delete it
-        fs.unlink(req.file.path, function (err) {
-            if (err) return next(err);
+        /**
+         * Parse text file into a JSON object with each vehicle id being  mapped to a list of lists of
+         * timestamps and route completion percentages
+         */
+
+        var array = data.toString().split("\n");
+        var json = {};
+
+        array.forEach(function (line, pos) {
+            array[pos] = line.split("\t");
+
+            var vehicleId = array[pos][0];
+
+            if (vehicleId.indexOf("FleetNumber") == -1) {
+                if (!json[vehicleId]) {
+                    json[vehicleId] = [];
+                }
+
+                array[pos].splice(0, 1);
+
+                array[pos][1] = array[pos][1].substring(0, array[pos][1].indexOf("\r"));
+
+                json[vehicleId].push(array[pos]);
+            }
         });
+
+
+        /**
+         * Predict geographical positions corresponding to route completion percentages
+         */
+
+        json[929] = json[939];
+
+        //var vehicleIDs = Object.keys(json);
+        var vehicleIDs = [929];
+
+        var simulatedVehicles = [];
+
+        async.each(
+            vehicleIDs,
+            function (vehicleID, cb) {
+                VehicleLocation.findOne({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicle) {
+                    if (err) return next(err);
+
+                    if (vehicle == null) return next(new Error("No vehicle found with vehicle_id: " + vehicleID));
+
+                    Service.findOne({name: vehicle.service_name}, "name routes", function (err, service) {
+                        if (service == null) return next(new Error("No service found with name: " + vehicle.service_name));
+
+                        var inboundRoute = undefined;
+                        var outboundRoute = undefined;
+
+                        service.routes.forEach(function (route) {
+                            if (route.direction == "inbound") {
+                                inboundRoute = route;
+                            } else if (route.direction == "outbound") {
+                                outboundRoute = route;
+                            }
+                        });
+
+                        json[vehicleID].forEach(function (simulatedData) {
+                            var route = undefined;
+
+                            if (simulatedData[1] < 0.5) {
+                                route = outboundRoute;
+
+                                simulatedData[1] = simulatedData[1] / 0.5;
+                            } else {
+                                route = inboundRoute;
+
+                                simulatedData[1] = (simulatedData[1] - 0.5) / 0.5;
+                            }
+
+                            var position = Math.round(simulatedData[1] * route.points.length);
+
+                            simulatedVehicles.push({
+                                vehicle_id: vehicleID,
+                                service_name: service.name,
+                                destination: route.destination,
+                                location: [route.points[position].longitude, route.points[position].latitude],
+                                last_gps_fix: parseInt(simulatedData[0]),
+                                completionPercentage: simulatedData[1] * 100
+                            });
+                        });
+
+                        cb();
+                    });
+                });
+            },
+            function () {
+                res.json(simulatedVehicles);
+
+                // now that we're done with the file, delete it
+                fs.unlink(req.file.path, function (err) {
+                    if (err) return next(err);
+                });
+            }
+        );
     });
 });
 

@@ -60,7 +60,7 @@ define([
 
             // remove markers that are no longer within the current time span
             this.markers.forEach(function (marker) {
-                if (requiredVehicleIDs.indexOf(marker.vehicleID) == -1) {
+                if (requiredVehicleIDs.indexOf(marker.vehicleID.toString() /* for some reason requiredVehicleIDs are all Strings instead of Numbers */) == -1) {
                     marker.setMap(null);
                 } else {
                     if (marker.getMap() == null) {

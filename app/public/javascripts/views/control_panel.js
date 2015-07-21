@@ -35,7 +35,7 @@ define([
 
             this.resetSnackbar = new SnackbarView({
                 content: "All selections have been successfully reset!",
-                duration: 5000
+                duration: 3000
             });
 
             selectServicesModal.on("modal.closed", this.refreshControlPanel, this);
@@ -46,7 +46,7 @@ define([
             legendDisabledConfirmationModal.on("modal.continued", function () {
                 $("#button-control-panel-submit").button("loading");
 
-                self.fetchAllVehicles();
+                self.fetchAllVehicles({});
             });
 
         },
@@ -242,7 +242,11 @@ define([
                         }
                         $(event.target).button("loading");
 
-                        this.fetchAllVehicles({file: file});
+                        // need to fetch services first since they'll be used for marker color assignment
+                        var self = this;
+                        serviceCollection.fetch({reset: false, success: function () {
+                            self.fetchAllVehicles({file: file});
+                        }});
                     }
                     break;
 
@@ -283,6 +287,24 @@ define([
         onSubmitResults: function () {
             $("#button-control-panel-submit").button("reset");
 
+            if (this.visualizationType == this.visualizationTypeEnum.SIMULATED) {
+                // IMPORTANT: Need to select those services that were included in the file uploaded by the
+                // user. These selections are then used for marker color assignment.
+                var servicesToSelect = _.uniq(allVehicleCollection.pluck("service_name"));
+                serviceCollection.forEach(function (service) {
+                    if (servicesToSelect.indexOf(service.name) > -1) {
+                        service.set("isSelected", true);
+                    }
+                });
+
+                // display warning if number of selected services is greater than the number of marker icons
+                // available
+                if (serviceCollection.getAllSelectedNames().length > Object.keys(mapView.markerColors).length) {
+                    $("#legend-disabled-confirmation-modal").modal("show");
+                    return;
+                }
+            }
+
             if (allVehicleCollection.length > 0) {
                 this.toggleControlPanel();
 
@@ -313,6 +335,8 @@ define([
             $($target.attr("data-container")).show();
 
             this.visualizationType = visualizationType;
+
+            this.reset();
         }
     });
 

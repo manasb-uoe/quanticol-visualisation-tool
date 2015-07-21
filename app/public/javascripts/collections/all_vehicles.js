@@ -12,6 +12,13 @@ define([
 
     var MapVehicleCollection = Backbone.Collection.extend({
         model: VehicleModel,
+        initialize: function () {
+            this.modesEnum = {
+                LIVE: "live",
+                NONLIVE: "nonlive",
+                SIMULATED: "simulated"
+            };
+        },
         getTimeSpan: function () {
             var minObject = this.min(function (vehicle) {
                 return vehicle.get("last_gps_fix");
@@ -27,7 +34,7 @@ define([
         },
         fetch: function (mode, options) {
             switch (mode) {
-                case "nonlive":
+                case this.modesEnum.NONLIVE:
                     this.url = "/api/vehicles/all";
 
                     options.data = $.param({
@@ -41,7 +48,7 @@ define([
 
                     break;
 
-                case "live":
+                case this.modesEnum.LIVE:
                     this.url = "/api/vehicles/live";
 
                     var self = this;
@@ -60,12 +67,13 @@ define([
                     );
                     break;
 
-                case "simulated":
+                case this.modesEnum.SIMULATED:
                     this.url = "/api/vehicles/simulated";
 
                     var formData = new FormData();
                     formData.append("simulated_data_file", options.file);
 
+                    var self = this;
                     $.ajax({
                         url: this.url,
                         method: "POST",
@@ -74,13 +82,13 @@ define([
                         contentType: false,
                         processData: false,
                         success: function (vehicles) {
-                            self.reset(vehicles, {silent: !options.reset});
+                            self.reset(vehicles, {silent: !(options.reset)});
                         }
                     });
                     break;
 
                 default:
-                    throw new Error("mode can only be 'nonlive' or 'live'");
+                    throw new Error("mode can only be: " + Object.keys(this.modesEnum));
                     break;
             }
         }
