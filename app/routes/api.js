@@ -173,10 +173,7 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
          * Predict geographical positions corresponding to route completion percentages
          */
 
-        json[929] = json[939];
-
-        //var vehicleIDs = Object.keys(json);
-        var vehicleIDs = [929];
+        var vehicleIDs = Object.keys(json);
 
         var simulatedVehicles = [];
 
