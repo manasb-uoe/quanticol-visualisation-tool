@@ -96,10 +96,6 @@ define([
                     {marginTop: -controlPanelHeight},
                     {duration: 300, queue: false}
                 );
-                $controlPanelTriggerWrapper.animate(
-                    {marginTop: "0"},
-                    {duration: 300, queue: false}
-                );
 
                 $controlPanelTriggerWrapper.find(".glyphicon")
                     .removeClass()
@@ -109,10 +105,6 @@ define([
             } else {
                 $controlPanel.animate(
                     {marginTop: "0"},
-                    {duration: 300, queue: false}
-                );
-                $controlPanelTriggerWrapper.animate(
-                    {marginTop: controlPanelHeight},
                     {duration: 300, queue: false}
                 );
 

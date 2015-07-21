@@ -73,9 +73,9 @@ html, body {
 .main-container .control-panel {
     position: fixed;
     top: 54px;
-    height: 330px;
+    height: auto;
     width: 100%;
-    margin-top: -330px;
+    margin-top: -320px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -85,7 +85,7 @@ html, body {
     background-color: rgba(247,247,249,0.8);
     height: 100%;
     border-bottom: 1px dashed #0e9aef;
-    padding: 5px;
+    padding: 5px 5px 15px 5px;
     overflow: auto;
 }
 
@@ -104,6 +104,11 @@ html, body {
 .main-container .control-panel .nav-pills a {
     padding: 7px 15px;
     cursor: pointer;
+}
+
+.main-container .control-panel .control-panel-body input[readonly] {
+    background-color: white !important;
+    cursor: text !important;
 }
 
 .main-container .control-panel .control-panel-body .callout {
@@ -134,12 +139,10 @@ html, body {
 }
 
 .main-container .control-panel-trigger-wrapper {
-    position: fixed;
-    top: 62px;
     width: 100%;
-    margin-top: 0;
     text-align: center;
-    z-index: 1000;
+    position: absolute;
+    bottom: -27px;
 }
 
 .main-container .control-panel-trigger-wrapper .control-panel-trigger {
