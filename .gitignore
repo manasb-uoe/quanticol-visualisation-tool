@@ -14,3 +14,6 @@ data/
 
 # javascript build
 app/public/javascripts/build/main.min.js
+
+# simulated data file uplaods
+app/uploads/
