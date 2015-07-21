@@ -55,7 +55,9 @@ define([
             "click #select-services-modal-trigger": "showSelectServicesModal",
             "click #select-vehicles-modal-trigger": "showSelectVehiclesModal",
             "click #select-time-span-modal-trigger": "showSelectTimeSpanModal",
-            "click #button-control-panel-reset": "reset",
+            "click #button-control-panel-reset": function () {
+                this.reset(true);
+            },
             "click #button-control-panel-submit": "submit",
             "change #toggle-live-mode-checkbox": "refreshControlPanel",
             "click #visualize-real-data-pill": function (event) {
@@ -183,14 +185,14 @@ define([
         showSelectTimeSpanModal: function () {
             $("#select-time-span-modal").modal("show");
         },
-        reset: function () {
+        reset: function (shouldShowSnackbar) {
             selectServicesModal.reset();
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
             mapControlsView.reset();
             mapControlsView.hide();
 
-            this.resetSnackbar.toggle();
+            if (shouldShowSnackbar) this.resetSnackbar.toggle();
         },
         submit: function (event) {
             switch (this.visualizationType) {
@@ -336,7 +338,7 @@ define([
 
             this.visualizationType = visualizationType;
 
-            this.reset();
+            this.reset(false);
         }
     });
 
