@@ -7,6 +7,8 @@ var router = express.Router();
 var Service = require("../models/service");
 var async = require("async");
 var https = require("https");
+var multer = require('multer')({dest: './uploads/'});
+
 var VehicleLocation = require("../models/vehicle_location");
 var VehicleToServices = require("../models/vehicle_to_services");
 
@@ -27,8 +29,14 @@ router.get("/vehicles/:filter", function (req, res, next) {
     var startTime = req.query["startTime"] ? req.query["startTime"] : 0;
     var endTime = req.query["endTime"] ? req.query["endTime"] : ((new Date()).getTime() / 1000).toFixed(0);
 
+    var filtersEnum = {
+        UNIQUE: "unique",
+        ALL: "all",
+        LIVE: "live"
+    };
+
     switch (filter) {
-        case "unique":
+        case filtersEnum.UNIQUE:
             VehicleLocation
                 .where("service_name").in(selectedServices)
                 .distinct("vehicle_id")
@@ -55,7 +63,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 });
             break;
 
-        case "all":
+        case filtersEnum.ALL:
             VehicleLocation
                 .where("service_name").in(selectedServices)
                 .where("vehicle_id").in(selectedVehicles)
@@ -68,7 +76,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 });
             break;
 
-        case "live":
+        case filtersEnum.LIVE:
             var options = {
                 host: "tfe-opendata.com",
                 path: "/api/v1/vehicle_locations",
@@ -116,9 +124,29 @@ router.get("/vehicles/:filter", function (req, res, next) {
             break;
 
         default:
-            return next(new Error("Filter can only be 'unique' or 'all'."));
+            var allowedFilters = [];
+            Object.keys(filtersEnum).forEach(function (key) {
+                allowedFilters.push(filtersEnum[key]);
+            });
+
+            return next(new Error("Filter can only be: " + allowedFilters));
             break;
     }
+});
+
+router.post("/vehicles/simulated", multer.single('simulated_data_file'), function (req, res, next) {
+    if (!req.file) return next(new Error("No file uploaded"));
+
+    fs.readFile(req.file.path, function (err, data) {
+        if (err) return next(err);
+
+        res.json([]);
+
+        // now that we're done with the file, delete it
+        fs.unlink(req.file.path, function (err) {
+            if (err) return next(err);
+        });
+    });
 });
 
 

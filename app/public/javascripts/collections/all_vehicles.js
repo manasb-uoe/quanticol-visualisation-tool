@@ -46,7 +46,7 @@ define([
 
                     var self = this;
                     $.get(
-                        self.url,
+                        this.url,
                         {service: options.selectedServices, vehicle: options.selectedVehicles},
                         function (vehicles) {
                             // append newly fetched live vehicles to existing ones
@@ -58,8 +58,27 @@ define([
                             }
                         }
                     );
-
                     break;
+
+                case "simulated":
+                    this.url = "/api/vehicles/simulated";
+
+                    var formData = new FormData();
+                    formData.append("simulated_data_file", options.file);
+
+                    $.ajax({
+                        url: this.url,
+                        method: "POST",
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (vehicles) {
+                            self.reset(vehicles, {silent: !options.reset});
+                        }
+                    });
+                    break;
+
                 default:
                     throw new Error("mode can only be 'nonlive' or 'live'");
                     break;

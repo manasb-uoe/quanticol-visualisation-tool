@@ -193,42 +193,92 @@ define([
             this.resetSnackbar.toggle();
         },
         submit: function (event) {
-            var selectedServices = serviceCollection.getAllSelectedNames();
-            var selectedVehicles = uniqueVehicleCollection.getAllSelectedIDs();
-            var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
+            switch (this.visualizationType) {
+                case this.visualizationTypeEnum.REAL:
+                    var selectedServices = serviceCollection.getAllSelectedNames();
+                    var selectedVehicles = uniqueVehicleCollection.getAllSelectedIDs();
+                    var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
 
-            if (selectedServices.length == 0) {
-                new SnackbarView({
-                    content: "Error: You need to select at least 1 service!",
-                    duration: 5000
-                }).toggle();
-            } else if (selectedVehicles.length == 0) {
-                new SnackbarView({
-                    content: "Error: You need to select at least 1 vehicle!",
-                    duration: 5000
-                }).toggle();
-            } else if (selectedServices.length > Object.keys(mapView.markerColors).length) {
-                $("#legend-disabled-confirmation-modal").modal("show");
-            } else {
-                $(event.target).button("loading");
+                    if (selectedServices.length == 0) {
+                        new SnackbarView({
+                            content: "Error: You need to select at least 1 service!",
+                            duration: 5000
+                        }).toggle();
+                    } else if (selectedVehicles.length == 0) {
+                        new SnackbarView({
+                            content: "Error: You need to select at least 1 vehicle!",
+                            duration: 5000
+                        }).toggle();
+                    } else if (selectedServices.length > Object.keys(mapView.markerColors).length) {
+                        $("#legend-disabled-confirmation-modal").modal("show");
+                    } else {
+                        $(event.target).button("loading");
 
-                this.fetchAllVehicles(selectedServices, selectedVehicles, timeSpan);
+                        this.fetchAllVehicles({
+                            selectedServices: selectedServices,
+                            selectedVehicles: selectedVehicles,
+                            timeSpan: timeSpan
+                        });
+                    }
+                    break;
+
+                case this.visualizationTypeEnum.SIMULATED:
+                    var $input = $("#simulated-file-input");
+
+                    if ($input[0].files.length == 0) {
+                        new SnackbarView({
+                            content: "Error: You must select a file to be uploaded!",
+                            duration: 4000
+                        }).toggle();
+                    } else {
+                        var file = $input[0].files[0];
+
+                        if (file.type != "text/plain") {
+                            new SnackbarView({
+                                content: "Error: Only plain text files can be upload!",
+                                duration: 4000
+                            }).toggle();
+                            return;
+                        }
+                        $(event.target).button("loading");
+
+                        this.fetchAllVehicles({file: file});
+                    }
+                    break;
+
+                default:
+                    throw new Error("Visualization type can only be: " + Object.keys(this.visualizationTypeEnum));
+                    break;
             }
         },
-        fetchAllVehicles: function (selectedServices, selectedVehicles, timeSpan) {
-            selectedServices = selectedServices || serviceCollection.getAllSelectedNames();
-            selectedVehicles = selectedVehicles || uniqueVehicleCollection.getAllSelectedIDs();
-            timeSpan = timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
+        fetchAllVehicles: function (options) {
+            switch (this.visualizationType) {
+                case this.visualizationTypeEnum.REAL:
+                    var selectedServices = options.selectedServices || serviceCollection.getAllSelectedNames();
+                    var selectedVehicles = options.selectedVehicles || uniqueVehicleCollection.getAllSelectedIDs();
+                    var timeSpan = options.timeSpan || selectTimeSpanModal.getSelectedTimeSpan();
 
-            allVehicleCollection.reset(undefined, {silent: true});
+                    allVehicleCollection.reset(undefined, {silent: true});
 
-            allVehicleCollection.fetch($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive", {
-                selectedServices: selectedServices,
-                selectedVehicles: selectedVehicles,
-                startTime: timeSpan.startTime.unix(),
-                endTime: timeSpan.endTime.unix(),
-                reset: true
-            });
+                    allVehicleCollection.fetch($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive", {
+                        selectedServices: selectedServices,
+                        selectedVehicles: selectedVehicles,
+                        startTime: timeSpan.startTime.unix(),
+                        endTime: timeSpan.endTime.unix(),
+                        reset: true
+                    });
+                    break;
+
+                case this.visualizationTypeEnum.SIMULATED:
+                    allVehicleCollection.reset(undefined, {silent: true});
+
+                    allVehicleCollection.fetch("simulated", {file: options.file, reset: true});
+                    break;
+
+                default:
+                    throw new Error("Visualization type can only be: " + Object.keys(this.visualizationTypeEnum));
+                    break;
+            }
         },
         onSubmitResults: function () {
             $("#button-control-panel-submit").button("reset");
