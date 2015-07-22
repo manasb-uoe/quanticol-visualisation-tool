@@ -52,6 +52,12 @@ define([
         setVisible: function (shouldSetVisible) {
             if (shouldSetVisible) {
                 this.$modal.modal("show");
+
+                if (serviceCollection.length == 0) {
+                    serviceCollection.fetch({reset: true});
+                } else {
+                    serviceCollection.trigger("reset");
+                }
             } else {
                 this.$modal.modal("hide");
             }

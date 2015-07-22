@@ -121,12 +121,6 @@ define([
             $("#select-services-modal-trigger").tooltip("destroy");
 
             selectServicesModal.setVisible(true);
-
-            if (serviceCollection.length == 0) {
-                serviceCollection.fetch({reset: true});
-            } else {
-                serviceCollection.trigger("reset");
-            }
         },
         showSelectVehiclesModal: function() {
             selectVehiclesModal.setVisible(true);
