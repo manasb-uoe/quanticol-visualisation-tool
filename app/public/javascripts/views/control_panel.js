@@ -204,12 +204,12 @@ define([
                     if (selectedServices.length == 0) {
                         new SnackbarView({
                             content: "Error: You need to select at least 1 service!",
-                            duration: 5000
+                            duration: 3000
                         }).toggle();
                     } else if (selectedVehicles.length == 0) {
                         new SnackbarView({
                             content: "Error: You need to select at least 1 vehicle!",
-                            duration: 5000
+                            duration: 3000
                         }).toggle();
                     } else if (selectedServices.length > Object.keys(mapView.markerColors).length) {
                         legendDisabledConfirmationModal.setVisible(true);
@@ -230,7 +230,7 @@ define([
                     if ($input[0].files.length == 0) {
                         new SnackbarView({
                             content: "Error: You must select a file to be uploaded!",
-                            duration: 4000
+                            duration: 3000
                         }).toggle();
                     } else {
                         var file = $input[0].files[0];
@@ -238,7 +238,7 @@ define([
                         if (file.type != "text/plain") {
                             new SnackbarView({
                                 content: "Error: Only plain text files can be uploaded!",
-                                duration: 4000
+                                duration: 3000
                             }).toggle();
                             return;
                         }
@@ -309,12 +309,12 @@ define([
 
                 new SnackbarView({
                     content: "Hint: Use 'play' button in map controls to start the simulation!",
-                    duration: 5000
+                    duration: 3000
                 }).toggle();
             } else {
                 new SnackbarView({
                     content: "Error: No vehicles found for your selection!",
-                    duration: 6000
+                    duration: 3000
                 }).toggle();
             }
         },
