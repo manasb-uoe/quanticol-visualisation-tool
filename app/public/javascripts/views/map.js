@@ -175,19 +175,34 @@ define([
 
                     /**
                      * Create polyline between all adjacent markers in vehiclesList. If user has disabled full path trace,
-                     * then only create polylines between the last few vehicles in the list.
+                     * then only create polylines between the last few vehicles with unique coordinates (length depends
+                     * on maxPathLength) in the list.
                      */
 
                     var pathCoordinates = [];
-                    vehiclesList.forEach(function (vehicle, pos) {
-                        if (arePathPolylinesVisible) {
+
+                    if (arePathPolylinesVisible) {
+                        vehiclesList.forEach(function (vehicle) {
                             pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
-                        } else {
-                            if (pos > vehiclesList.length-4) {
-                                pathCoordinates.push(new google.maps.LatLng(vehicle.get("location")[1], vehicle.get("location")[0]));
+                        });
+                    } else {
+                        var pathLengthCounter = 0;
+                        var maxPathLength = 2;
+
+                        for (var i = vehiclesList.length - 1; i >= 0; i--) {
+                            var a = new google.maps.LatLng(vehiclesList[i].get("location")[1], vehiclesList[i].get("location")[0]);
+                            var b = pathCoordinates[pathCoordinates.length - 1];
+                            if (a && b) {
+                                if (a.lat() != b.lat() && a.lng() != b.lng() && pathLengthCounter < maxPathLength) {
+                                    pathCoordinates.unshift(a);
+                                    pathLengthCounter++;
+                                }
+                            } else {
+                                pathCoordinates.unshift(a);
+                                pathLengthCounter++;
                             }
                         }
-                    });
+                    }
 
                     var polyline = new google.maps.Polyline({
                         path: pathCoordinates,
