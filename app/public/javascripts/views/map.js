@@ -291,12 +291,19 @@ define([
                     var uniqueServiceNames = _.uniq(allVehicleCollection.pluck("service_name"));
                     uniqueServiceNames.forEach(function (name) {
                         var service = serviceCollection.getByName(name);
-                        var inboundRoute = _.filter(service.get("routes"), function (route) {
-                            return route.direction == "inbound";
+                        var route = _.filter(service.get("routes"), function (route) {
+                            return route.direction == "outbound";
                         });
 
+                        // if outbound route is not available, then draw inbound route
+                        if (!route) {
+                            route = _.filter(service.get("routes"), function (route) {
+                                return route.direction == "inbound";
+                            });
+                        }
+
                         var pathCoordinates = [];
-                        inboundRoute[0].points.forEach(function (point) {
+                        route[0].points.forEach(function (point) {
                             pathCoordinates.push(new google.maps.LatLng(point.latitude, point.longitude));
                         });
 
