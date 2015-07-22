@@ -81,8 +81,12 @@ define([
                         cache: false,
                         contentType: false,
                         processData: false,
-                        success: function (vehicles) {
-                            self.reset(vehicles, {silent: !(options.reset)});
+                        success: function (response) {
+                            if (response.status == 200) {
+                                self.reset(response.vehicles, {silent: !(options.reset)});
+                            } else {
+                                self.trigger("error", response.error);
+                            }
                         }
                     });
                     break;

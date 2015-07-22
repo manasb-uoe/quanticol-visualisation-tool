@@ -135,11 +135,11 @@ router.get("/vehicles/:filter", function (req, res, next) {
     }
 });
 
-router.post("/vehicles/simulated", multer.single('simulated_data_file'), function (req, res, next) {
-    if (!req.file) return next(new Error("No file uploaded"));
+router.post("/vehicles/simulated", multer.single('simulated_data_file'), function (req, res) {
+    if (!req.file) return res.json({status: 500, error: "No file uploaded to the server"});
 
     fs.readFile(req.file.path, function (err, data) {
-        if (err) return next(err);
+        if (err) return res.json({status: 500, error: err.message});
 
 
         /**
@@ -147,26 +147,30 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
          * timestamps and route completion percentages
          */
 
-        var array = data.toString().split("\n");
-        var json = {};
+        try {
+            var array = data.toString().split("\n");
+            var json = {};
 
-        array.forEach(function (line, pos) {
-            array[pos] = line.split("\t");
+            array.forEach(function (line, pos) {
+                array[pos] = line.split("\t");
 
-            var vehicleId = array[pos][0];
+                var vehicleId = array[pos][0];
 
-            if (vehicleId.indexOf("FleetNumber") == -1) {
-                if (!json[vehicleId]) {
-                    json[vehicleId] = [];
+                if (vehicleId.indexOf("FleetNumber") == -1) {
+                    if (!json[vehicleId]) {
+                        json[vehicleId] = [];
+                    }
+
+                    array[pos].splice(0, 1);
+
+                    array[pos][1] = array[pos][1].substring(0, array[pos][1].indexOf("\r"));
+
+                    json[vehicleId].push(array[pos]);
                 }
-
-                array[pos].splice(0, 1);
-
-                array[pos][1] = array[pos][1].substring(0, array[pos][1].indexOf("\r"));
-
-                json[vehicleId].push(array[pos]);
-            }
-        });
+            });
+        } catch (err) {
+            return res.json({status: 500, error: "There was a problem parsing the uploaded file"});
+        }
 
 
         /**
@@ -177,16 +181,16 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
 
         var simulatedVehicles = [];
 
-        async.each(
+        async.eachSeries(
             vehicleIDs,
             function (vehicleID, cb) {
                 VehicleLocation.findOne({vehicle_id: vehicleID, service_name: {$ne: null}}, function (err, vehicle) {
-                    if (err) return next(err);
+                    if (err) return res.json({status: 500, error: err.message});
 
-                    if (vehicle == null) return next(new Error("No vehicle found with vehicle_id: " + vehicleID));
+                    if (vehicle == null) return res.json({status: 500, error: "No vehicle found with vehicle_id: " + vehicleID});
 
                     Service.findOne({name: vehicle.service_name}, "name routes", function (err, service) {
-                        if (service == null) return next(new Error("No service found with name: " + vehicle.service_name));
+                        if (service == null) return res.json({status: 500, error: "No service found with name: " + vehicle.service_name});
 
                         var inboundRoute = undefined;
                         var outboundRoute = undefined;
@@ -229,11 +233,11 @@ router.post("/vehicles/simulated", multer.single('simulated_data_file'), functio
                 });
             },
             function () {
-                res.json(simulatedVehicles);
-
                 // now that we're done with the file, delete it
                 fs.unlink(req.file.path, function (err) {
-                    if (err) return next(err);
+                    if (err) return res.json({status: 500, error: err.message});
+
+                    return res.json({status: 200, vehicles: simulatedVehicles});
                 });
             }
         );

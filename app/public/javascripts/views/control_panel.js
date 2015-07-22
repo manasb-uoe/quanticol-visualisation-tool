@@ -45,10 +45,11 @@ define([
             selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             allVehicleCollection.on("reset", this.onSubmitResults, this);
+            allVehicleCollection.on("error", this.onError, this);
             legendDisabledConfirmationModal.on("modal.continued", function () {
                 $("#button-control-panel-submit").button("loading");
 
-                self.fetchAllVehicles({});
+                self.fetchAllVehicles({} /* empty options*/);
             });
 
         },
@@ -314,6 +315,14 @@ define([
                     duration: 3000
                 }).toggle();
             }
+        },
+        onError: function (errorMessage) {
+            $("#button-control-panel-submit").button("reset");
+
+            new SnackbarView({
+                content: "Error: " + errorMessage,
+                duration: 3000
+            }).toggle();
         },
         selectVisualizationType: function (event, visualizationType) {
             var $target = $(event.target);
