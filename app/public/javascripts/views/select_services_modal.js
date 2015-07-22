@@ -67,8 +67,6 @@ define([
             }
         },
         addAllServices: function () {
-            if (serviceCollection.length == 0) return;
-
             this.$progress.hide();
 
             if (serviceCollection.getSearchResultsCount() == 0) {

@@ -79,6 +79,8 @@ define([
 
             this.isControlPanelVisible = false;
 
+            this.refreshControlPanel();
+
             var self = this;
             setTimeout(function () {
                 self.toggleControlPanel();

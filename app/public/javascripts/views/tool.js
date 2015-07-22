@@ -36,8 +36,8 @@ define([
             mapControlsView.render();
 
             // reset all collections
-            serviceCollection.reset();
-            uniqueVehicleCollection.reset();
+            serviceCollection.reset(undefined, {silent: true});
+            uniqueVehicleCollection.reset(undefined, {silent: true});
         }
     });
 
