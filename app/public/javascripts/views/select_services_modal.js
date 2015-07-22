@@ -18,8 +18,12 @@ define([
         initialize: function () {
             this.areAllSelected = false;
 
-            serviceCollection.on("reset", this.addAllServices, this);
-            serviceCollection.on("reset", this.updateSelectAllButton, this);
+            var self = this;
+
+            serviceCollection.on("reset", function () {
+                self.addAllServices.call(self);
+                self.updateSelectAllButton.call(self);
+            });
             serviceCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
         events: {

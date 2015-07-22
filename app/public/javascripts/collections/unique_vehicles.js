@@ -13,6 +13,21 @@ define([
     var VehicleCollection = Backbone.Collection.extend({
         model: VehicleModel,
         url: "/api/vehicles/unique",
+        fetch: function (options) {
+            var self = this;
+
+            $.get(
+                this.url,
+                {service: options.selectedServices},
+                function (response) {
+                    if (response.status == 200) {
+                        self.reset(response.vehicles, {silent: !(options.reset)});
+                    } else {
+                        self.trigger("error", response.error);
+                    }
+                }
+            );
+        },
         getAllSelectedIDs: function () {
             var selectedIDs = [];
             var selected = this.filter(function (vehicle) {

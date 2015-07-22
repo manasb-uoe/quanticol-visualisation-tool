@@ -11,9 +11,8 @@ define([
     "views/vehicle_item",
     "views/select_services_modal",
     "swig",
-    "text!../../templates/select_vehicles_modal.html",
-    "text!../../templates/vehicle_item.html"
-], function($, _, Backbone, uniqueVehicleCollection, serviceCollection, VehicleItemView, selectServicesModal, swig, selectVehiclesModalTemplate, vehicleItemTemplate) {
+    "text!../../templates/select_vehicles_modal.html"
+], function($, _, Backbone, uniqueVehicleCollection, serviceCollection, VehicleItemView, selectServicesModal, swig, selectVehiclesModalTemplate) {
     "use strict";
 
     var SelectVehiclesView = Backbone.View.extend({
@@ -21,8 +20,12 @@ define([
         initialize: function () {
             this.areAllSelected = false;
 
-            uniqueVehicleCollection.on("reset", this.addAllVehicles, this);
-            uniqueVehicleCollection.on("reset", this.updateSelectAllButton, this);
+            var self = this;
+
+            uniqueVehicleCollection.on("reset", function () {
+                self.addAllVehicles.call(self);
+                self.updateSelectAllButton.call(self);
+            });
             selectServicesModal.on("modal.closed", this.refreshVehicles, this);
             uniqueVehicleCollection.on("change:isSelected", this.updateSelectAllButton, this);
         },
@@ -94,7 +97,7 @@ define([
             var selectedServiceNames = serviceCollection.getAllSelectedNames();
 
             uniqueVehicleCollection.fetch({
-                data: $.param({service: selectedServiceNames}),
+                selectedServices: selectedServiceNames,
                 reset: true
             });
 

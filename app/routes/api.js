@@ -14,16 +14,16 @@ var VehicleLocation = require("../models/vehicle_location");
 var VehicleToServices = require("../models/vehicle_to_services");
 
 
-router.get("/services", function (req, res, next) {
+router.get("/services", function (req, res) {
     Service
         .find({}, function (err, services) {
-            if (err) return next(err);
+            if (err) return res.json({status: 500, error: err.message});
 
-            res.json(services);
+            return res.json({status: 200, services: services});
         });
 });
 
-router.get("/vehicles/:filter", function (req, res, next) {
+router.get("/vehicles/:filter", function (req, res) {
     var filter = req.params.filter;
     var selectedServices = req.query["service"] || [];
     var selectedVehicles = req.query["vehicle"] || [];
@@ -42,15 +42,17 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 .where("service_name").in(selectedServices)
                 .distinct("vehicle_id")
                 .exec(function (err, vehicleIDs) {
-                    if (err) return next(err);
+                    if (err) return res.json({status: 500, error: err.message});
 
                     // now that we have the distinct vehicle ids, we will find one vehicle for each of these ids
                     // along with all the services they belong to
                     var uniqueVehicles = [];
-                    async.each(
+                    async.eachSeries(
                         vehicleIDs,
                         function (vehicleID, cb) {
                             VehicleToServices.findOne({vehicle_id: vehicleID}, "services", function (err, vehicleToServices) {
+                                if (err) return res.json({status: 500, error: err.message});
+
                                 var uniqueVehicle = {vehicle_id: vehicleID, services: vehicleToServices.services};
                                 uniqueVehicles.push(uniqueVehicle);
 
@@ -58,7 +60,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                             });
                         },
                         function () {
-                            res.json(uniqueVehicles);
+                            return res.json({status: 200, vehicles: uniqueVehicles});
                         }
                     );
                 });
@@ -71,9 +73,9 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 .where("last_gps_fix").gte(startTime).lte(endTime)
                 .select("vehicle_id service_name destination location last_gps_fix")
                 .exec(function (err, vehicles) {
-                    if (err) return next(err);
+                    if (err) return res.json({status: 500, error: err.message});
 
-                    res.json(vehicles);
+                    return res.json({status: 200, vehicles: vehicles});
                 });
             break;
 
@@ -116,11 +118,10 @@ router.get("/vehicles/:filter", function (req, res, next) {
                         }
                     });
 
-                    res.json(filteredVehicles);
+                    return res.json({status: 200, vehicles: filteredVehicles});
                 });
             }).on("error", function (err) {
-                console.log(err.statusCode);
-                console.log("--------timed out-----------");
+                return res.json({status: 500, error: err.message});
             });
             break;
 
@@ -130,8 +131,7 @@ router.get("/vehicles/:filter", function (req, res, next) {
                 allowedFilters.push(filtersEnum[key]);
             });
 
-            return next(new Error("Filter can only be: " + allowedFilters));
-            break;
+            return res.json({status: 500, error: "Filter can only be: " + allowedFilters});
     }
 });
 

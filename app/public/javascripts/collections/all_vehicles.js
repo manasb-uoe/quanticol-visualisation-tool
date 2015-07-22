@@ -33,49 +33,58 @@ define([
             };
         },
         fetch: function (mode, options) {
+            var self = this;
+
             switch (mode) {
                 case this.modesEnum.NONLIVE:
-                    this.url = "/api/vehicles/all";
-
-                    options.data = $.param({
-                        service: options.selectedServices,
-                        vehicle: options.selectedVehicles,
-                        startTime: options.startTime,
-                        endTime: options.endTime
-                    });
-
-                    Backbone.Collection.prototype.fetch.call(this, options);
+                    $.get(
+                        "/api/vehicles/all",
+                        {
+                            service: options.selectedServices,
+                            vehicle: options.selectedVehicles,
+                            startTime: options.startTime,
+                            endTime: options.endTime
+                        },
+                        function (response) {
+                            if (response.status == 200) {
+                                self.reset(response.vehicles, {silent: !(options.reset)});
+                            } else {
+                                self.trigger("error", response.error);
+                            }
+                        }
+                    );
 
                     break;
 
                 case this.modesEnum.LIVE:
-                    this.url = "/api/vehicles/live";
-
-                    var self = this;
                     $.get(
-                        this.url,
-                        {service: options.selectedServices, vehicle: options.selectedVehicles},
-                        function (vehicles) {
-                            // append newly fetched live vehicles to existing ones
-                            self.add(vehicles);
-                            console.log("got new data");
+                        "/api/vehicles/live",
+                        {
+                            service: options.selectedServices,
+                            vehicle: options.selectedVehicles
+                        },
+                        function (response) {
+                            if (response.status == 200) {
+                                // append newly fetched live vehicles to existing ones
+                                self.add(response.vehicles);
 
-                            if (options.reset) {
-                                self.trigger("reset");
+                                if (options.reset) {
+                                    self.trigger("reset");
+                                }
+                            } else {
+                                self.trigger("error", response.error);
                             }
                         }
                     );
+
                     break;
 
                 case this.modesEnum.SIMULATED:
-                    this.url = "/api/vehicles/simulated";
-
                     var formData = new FormData();
                     formData.append("simulated_data_file", options.file);
 
-                    var self = this;
                     $.ajax({
-                        url: this.url,
+                        url: "/api/vehicles/simulated",
                         method: "POST",
                         data: formData,
                         cache: false,

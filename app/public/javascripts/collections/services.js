@@ -13,6 +13,22 @@ define([
     var ServiceCollection = Backbone.Collection.extend({
         model: ServiceModel,
         url: "/api/services",
+        fetch: function (options) {
+            var self = this;
+
+            $.get(
+                this.url,
+                function (response) {
+                    if (response.status == 200) {
+                        self.reset(response.services, {silent: !(options.reset)});
+
+                        if (options.success) options.success();
+                    } else {
+                        self.trigger("error", response.error);
+                    }
+                }
+            );
+        },
         getAllSelectedNames: function () {
             var selectedNames = [];
             var selected = this.filter(function (service) {
