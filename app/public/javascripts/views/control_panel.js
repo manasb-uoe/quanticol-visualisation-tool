@@ -190,7 +190,7 @@ define([
             selectVehiclesModal.reset();
             selectTimeSpanModal.reset();
             mapControlsView.reset();
-            mapControlsView.hide();
+            mapControlsView.setVisible(false);
 
             if (shouldShowSnackbar) this.resetSnackbar.toggle();
         },
@@ -305,7 +305,7 @@ define([
 
                 mapControlsView.reset();
                 mapControlsView.setupSimulation($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive");
-                mapControlsView.show();
+                mapControlsView.setVisible(true);
 
                 new SnackbarView({
                     content: "Hint: Use 'play' button in map controls to start the simulation!",

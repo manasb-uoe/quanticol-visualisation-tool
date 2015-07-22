@@ -22,7 +22,6 @@ define([
     var MapControlsView = Backbone.View.extend({
         initialize: function () {
             this.isSimulating = false;
-            this.isVisible = false;
             this.arePathPolylinesVisible = false;
             this.areRoutePolylinesVisible = true;
             this.stepSizes = { // all are in seconds
@@ -60,9 +59,7 @@ define([
 
             this.delegateEvents(this.events);
 
-            if (this.isVisible) {
-                this.hide();
-            }
+            this.setVisible(false);
 
             // close previously running simulation
             if (this.isSimulating) {
@@ -93,22 +90,17 @@ define([
             "input #interpolation-animation-duration-input": "updateInterpolationAnimationDuration",
             "input #refresh-interval-input": "updateTimerRefreshInterval"
         },
-        show: function() {
-            if (this.isVisible) return;
-
-            this.$mapControls.animate({
-                marginBottom: "0"
-            }, 300);
-            this.isVisible = true;
-        },
-        hide: function () {
-            if (!this.isVisible) return;
-
-            var height = this.$mapControls.height();
-            this.$mapControls.animate({
-                marginBottom: -height - 50
-            }, 300);
-            this.isVisible = false;
+        setVisible: function (shouldSetVisible) {
+            if (shouldSetVisible) {
+                this.$mapControls.animate({
+                    marginBottom: "0"
+                }, 300);
+            } else {
+                var height = this.$mapControls.height();
+                this.$mapControls.animate({
+                    marginBottom: -height - 50
+                }, 300);
+            }
         },
         reset: function () {
             // close previously running simulation
