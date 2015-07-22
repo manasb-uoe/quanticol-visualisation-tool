@@ -39,6 +39,8 @@ define([
             this.timerRefreshInterval = 300; // ms
             this.liveFetchRefreshInterval = 20000; // ms
 
+            this.shouldShowHints = true;    // used to display hints only for the first time
+
             // update step sizes whenever user successfully configures step sizes
             var self = this;
             configureControlsModal.on("modal.saved.changes", function (newStepSizes) {
@@ -95,6 +97,18 @@ define([
                 this.$mapControls.animate({
                     marginBottom: "0"
                 }, 300);
+
+                var self = this;
+
+                if (this.shouldShowHints) {
+                    setTimeout(function () {
+                        self.$playButton.tooltip({
+                            title: "Click here to start the simulation",
+                            placement: "bottom",
+                            trigger: "manual"
+                        }).tooltip("show");
+                    }, 1000);
+                }
             } else {
                 var height = this.$mapControls.height();
                 this.$mapControls.animate({
@@ -144,6 +158,17 @@ define([
             this.$currentTimeInput.val(momentTimezone.unix(this.currentTime).tz("Europe/London").locale("en").format("MMMM Do YYYY, h:mm:ss a"));
         },
         toggleSimulation: function () {
+            this.$playButton.tooltip("destroy");
+
+            if (this.shouldShowHints) {
+                new SnackbarView({
+                    content: "Hint: Click on a marker to view detailed information about the vehicle",
+                    duration: 5000
+                }).toggle();
+
+                this.shouldShowHints = false;
+            }
+
             if (this.isSimulating) {
                 this.isSimulating = false;
 

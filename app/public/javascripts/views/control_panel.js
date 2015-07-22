@@ -31,6 +31,8 @@ define([
 
             this.visualizationType = this.visualizationTypeEnum.REAL;
 
+            this.shouldShowHints = true;    // used to display hints only for the first time
+
             var self = this;
 
             this.resetSnackbar = new SnackbarView({
@@ -80,13 +82,18 @@ define([
             setTimeout(function () {
                 self.toggleControlPanel();
             }, 1000);
-            setTimeout(function () {
-                self.$el.find("#select-services-modal-trigger").tooltip({
-                    title: "Start here!",
-                    placement: "left",
-                    trigger: "manual"
-                }).tooltip("show");
-            }, 1500);
+
+            if (this.shouldShowHints) {
+                setTimeout(function () {
+                    self.$el.find("#select-services-modal-trigger").tooltip({
+                        title: "Start here",
+                        placement: "left",
+                        trigger: "manual"
+                    }).tooltip("show");
+                }, 1500);
+
+                this.shouldShowHints = false;
+            }
         },
         toggleControlPanel: function () {
             var $controlPanel = $(".control-panel");
@@ -301,10 +308,6 @@ define([
                 mapControlsView.setupSimulation($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive");
                 mapControlsView.setVisible(true);
 
-                new SnackbarView({
-                    content: "Hint: Use 'play' button in map controls to start the simulation!",
-                    duration: 3000
-                }).toggle();
             } else {
                 new SnackbarView({
                     content: "Error: No vehicles found for your selection!",
