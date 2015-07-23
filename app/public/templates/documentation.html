@@ -73,6 +73,7 @@
                 <li><a href="https://www.npmjs.com/package/express">express</a> - Server-side web application framework</li>
                 <li><a href="https://www.npmjs.com/package/mongoose">mongoose</a> - Object Document Model (ODM) for MongoDB</li>
                 <li><a href="https://www.npmjs.com/package/morgan">morgan</a> - HTTP request logger middleware</li>
+                <li><a href="https://www.npmjs.com/package/multer">multer</a> - File upload handling middleware</li>
                 <li><a href="https://www.npmjs.com/package/serve-favicon">serve-favicon</a> - Favicon serving middleware</li>
                 <li><a href="https://www.npmjs.com/package/swig">swig</a> - Template engine</li>
             </ul>
@@ -104,6 +105,47 @@
             <br>
             <!----------------------------------------->
 
+            <h2 id="database-population">Database Population</h2>
+            <hr>
+
+            <p>
+                The command line script (<code>db_population.js</code>) for populating the database is included in
+                <code>utils/</code> directory. It can be run using the following command:
+            </p>
+
+            <pre>$ node db_population.js &lt;argument&gt;</pre>
+
+            <p>The following command-line arguments are allowed:</p>
+            <ul>
+                <li>
+                    <code>live</code> populates the VehicleLocation collection at regular
+                    intervals of 40 seconds. It can be manually stopped by pressing <kbd>Ctrl + C</kbd>.
+                </li>
+                <li>
+                    <code>nonlive</code> first empties the Stop and Service collections, and then repopulates them with
+                    the latest data fetched from the TFE API.
+                </li>
+                <li>
+                    <code>vehicle_to_services</code> first empties the VehicleToServices collection, and then repopulates
+                    it using the existing Stop and Service collections.
+                </li>
+            </ul>
+
+            <p>If any other arguments are supplied to this script, it will print an error message and immediately exit.</p>
+
+            <blockquote>
+                <strong>Note: </strong> When you first run the database populate script, you must run it in the following
+                order of arguments:
+                <ol>
+                    <li><code>nonlive</code> (will exit automatically when done)</li>
+                    <li><code>live</code> (will need to be stopped manually when enough data has been collected)</li>
+                    <li><code>vehicle_to_services</code> (will exit automatically when done)</li>
+                </ol>
+            </blockquote>
+
+            <br>
+            <!----------------------------------------->
+
             <h2 id="project-structure">Project Structure</h2>
             <hr>
 
@@ -115,6 +157,7 @@ app/
  |-- node_modules/ (will be created after you execute 'npm install')
  |-- public/
  |-- routes/
+ |-- uploads/ (will be created after the user uploads a simulated data file)
  |-- utils/
  |-- views/
  |-- app.js
@@ -140,6 +183,9 @@ app/
                     <code>routes/</code> consists of all route files. A route file consists of functions that
                     generate HTTP responses based on the requests received. These responses could be for example an
                     HTML template (<code>routes/index.js</code>) or simply JSON (<code>routes/api.js</code>).
+                </li>
+                <li>
+                    <code>uploads/</code> consists of all simulated data plain text files uploaded by the users.
                 </li>
                 <li>
                     <code>utils/</code> consists of database population/configuration scripts.
@@ -251,10 +297,11 @@ javascripts/
                             'Configure' at the top right corner of the map control panel.
                         </li>
                         <li>
-                            <code>controls_panel.js</code> represents the sliding control panel that is used to select
-                            services, vehicles and the time span for the simulation. It also allows the user to switch to
-                            live simulation mode. Its visiblity can be toggled via the 'Control Panel' button that appears
-                            just under the top navigation bar.
+                            <code>control_panel.js</code> represents the sliding control panel that is used to select
+                            services, vehicles and the time span for the simulation, and also upload plain text files
+                            to visualize simulated data. It also allows the user to switch to live simulation mode.
+                            Its visiblity can be toggled via the 'Control Panel' button that appears just under the
+                            top navigation bar.
                         </li>
                         <li>
                             <code>doc.js</code> represents the documentation page. It basically handles the the navigation
@@ -338,45 +385,14 @@ javascripts/
 
             <br>
             <!----------------------------------------->
-
-            <h2 id="database-population">Database Population</h2>
-            <hr>
-
-            <p>
-                The command line script (<code>db_population.js</code>) for populating the database is included in
-                <code>utils/</code> directory. It can be run using the following command:
-            </p>
-
-            <pre>$ node db_population.js &lt;argument&gt;</pre>
-
-            <p>The following command-line arguments are allowed:</p>
-            <ul>
-                <li>
-                    <code>live</code> populates the VehicleLocation collection at regular
-                    intervals of 40 seconds. It can be manually stopped by pressing <kbd>Ctrl + C</kbd>.
-                </li>
-                <li>
-                    <code>nonlive</code> first empties the Stop and Service collections, and then repopulates them with
-                    the latest data fetched from the TFE API.
-                </li>
-                <li>
-                    <code>vehicle_to_services</code> first empties the VehicleToServices collection, and then repopulates
-                    it using the existing Stop and Service collections.
-                </li>
-            </ul>
-
-            <p>If any other arguments are supplied to this script, it will print an error message and immediately exit.</p>
-
-            <br>
-            <!----------------------------------------->
         </div>
         <div class="col-md-3 visible-lg visible-md">
             <ul class="list-group" id="doc-sidebar">
                 <li class="list-group-item sidebar-item active" data-target="#getting-started">Getting Started</li>
                 <li class="list-group-item sidebar-item" data-target="#dependencies">Dependencies</li>
+                <li class="list-group-item sidebar-item" data-target="#database-population">Database Population</li>
                 <li class="list-group-item sidebar-item" data-target="#project-structure">Project Structure</li>
                 <li class="list-group-item sidebar-item" data-target="#client-side-javascript-structure">Client-side JavaScript Structure</li>
-                <li class="list-group-item sidebar-item" data-target="#database-population">Database Population</li>
             </ul>
         </div>
     </div>
@@ -386,7 +402,7 @@ javascripts/
             <p>Developed by <a href="mailto: manas.bajaj94@gmail.com">Manas Bajaj</a></p>
         </div>
         <div class="col-md-6 col-xs-6 text-right">
-            <p>Hosted on <a href="https://bitbucket.org/enthusiast94/quanticol-visualisation-tool">Bitbucket</a></p>
+            <p>Code hosted on <a href="https://github.com/enthusiast94/quanticol-visualisation-tool">Github</a></p>
         </div>
     </div>
 </div>
