@@ -76,7 +76,7 @@ html, body {
     top: 54px;
     height: auto;
     width: 100%;
-    margin-top: -310px;
+    margin-top: -300px;
     background-color: transparent;
     z-index: 1000;
 }
@@ -153,17 +153,17 @@ html, body {
     width: 100%;
     text-align: center;
     position: absolute;
-    bottom: -29px;
+    bottom: -25px;
 }
 
 .main-container .control-panel-trigger-wrapper .control-panel-trigger {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 4px 4px;
     background-color: #158cba;
     display: inline;
-    padding: 10px;
+    padding: 7px 20px;
     text-align: center;
     color: #f8f8f8;
     cursor: pointer;
@@ -303,17 +303,17 @@ html, body {
     position: absolute;
     width: 100%;
     text-align: center;
-    top: -29px;
+    top: -25px;
 }
 
 #simulation-controls-trigger {
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    border-radius: 15px 15px 0 0;
+    border-radius: 4px 4px 0 0;
     background-color: #158cba;
     display: inline;
-    padding: 10px 10px;
+    padding: 7px 15px;
     text-align: center;
     color: #f8f8f8;
     cursor: pointer;

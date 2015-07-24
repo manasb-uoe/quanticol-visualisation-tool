@@ -125,12 +125,8 @@ define([
             } else {
                 var height = this.$mapControls.height();
 
-                if (!shouldMinimize) {
-                    height = height + 50;
-                }
-
                 this.$mapControls.animate({
-                    marginBottom: -height - 50
+                    marginBottom: !shouldMinimize ? -height - 100: -height - 46
                 }, 300);
 
                 this.isSimulationControlsPanelVisible = false;
