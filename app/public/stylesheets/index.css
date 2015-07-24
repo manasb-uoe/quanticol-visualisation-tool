@@ -2,6 +2,7 @@
 
 html, body {
     height: 100%;
+    font-size: 90%;
 }
 
 .reduced-col-padding {
@@ -295,9 +296,32 @@ html, body {
     padding: 15px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     background-color: rgb(247,247,249);
-    margin-bottom: -500px;
+    margin-bottom: -600px;
 }
 
+#simulation-controls-trigger-wrapper {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: -29px;
+}
+
+#simulation-controls-trigger {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px 15px 0 0;
+    background-color: #158cba;
+    display: inline;
+    padding: 10px 10px;
+    text-align: center;
+    color: #f8f8f8;
+    cursor: pointer;
+}
+
+#simulation-controls-trigger:hover {
+    background-color: #117197;
+}
 
 #map-controls-container #map-controls-current-time {
     text-align: center;

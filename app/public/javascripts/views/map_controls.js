@@ -62,12 +62,14 @@ define([
             this.delegateEvents(this.events);
 
             this.setVisible(false);
+            this.isSimulationControlsPanelVisible = false;
 
             // close previously running simulation
             if (this.isSimulating) {
                 this.toggleSimulation();
             }
 
+            this.simulationControlsTrigger = $("#simulation-controls-trigger");
             this.$currentTimeInput = $("#map-controls-current-time");
             this.$playButton = $("#play-pause-button");
             this.$forwardButton = $("#forward-button");
@@ -84,6 +86,7 @@ define([
 
         },
         events: {
+            "click #simulation-controls-trigger": "minimizeMaximize",
             "click #play-pause-button": "toggleSimulation",
             "change #show-path-trace-checkbox": "togglePathPolylines",
             "change #show-routes-checkbox": "delegateToggleRoutePolylines",
@@ -96,7 +99,11 @@ define([
             "input #refresh-interval-input": "updateTimerRefreshInterval",
             "input #simulation-completion-range": "onSimulationCompletionRangeSlide"
         },
-        setVisible: function (shouldSetVisible) {
+        /**
+         * shouldMinimize is only used if shouldSetVisible is false. It is basically used to minimize simulation
+         * controls panel instead of completely hiding it.
+         */
+        setVisible: function (shouldSetVisible, shouldMinimize) {
             if (shouldSetVisible) {
                 this.$mapControls.animate({
                     marginBottom: "0"
@@ -113,11 +120,35 @@ define([
                         }).tooltip("show");
                     }, 1000);
                 }
+
+                this.isSimulationControlsPanelVisible = true;
             } else {
                 var height = this.$mapControls.height();
+
+                if (!shouldMinimize) {
+                    height = height + 50;
+                }
+
                 this.$mapControls.animate({
                     marginBottom: -height - 50
                 }, 300);
+
+                this.isSimulationControlsPanelVisible = false;
+            }
+        },
+        minimizeMaximize: function () {
+            if (this.isSimulationControlsPanelVisible) {
+                this.simulationControlsTrigger.find(".glyphicon")
+                    .removeClass()
+                    .addClass("glyphicon glyphicon-chevron-up");
+
+                this.setVisible(false, true);
+            } else {
+                this.simulationControlsTrigger.find(".glyphicon")
+                    .removeClass()
+                    .addClass("glyphicon glyphicon-chevron-down");
+
+                this.setVisible(true);
             }
         },
         reset: function () {
