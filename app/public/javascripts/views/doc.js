@@ -26,6 +26,7 @@ define([
                 self.tabs.push($(children[tabPos]));
             });
 
+            // highlight contents tab depending on the current scroll position
             $(window).scroll(function () {
                 self.tabs.forEach(function (tab) {
                     if ($(window).scrollTop() > $(tab.attr("data-target")).offset().top - 80) {
