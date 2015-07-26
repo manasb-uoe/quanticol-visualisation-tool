@@ -4,50 +4,40 @@
             <h2 id="getting-started">Getting Started</h2>
             <hr>
 
-            <p>All the tools you need to get started:</p>
+            <p>Tools you need to get started:</p>
             <ol>
                 <li><a href="https://nodejs.org/">Node.js</a> - Server-side JavaScript environment</li>
                 <li><a href="https://www.mongodb.org/">MongoDB</a> - A NoSQL database</li>
-                <li><a href="https://www.npmjs.com/">npm</a> - Node Package Manager</li>
-                <li><a href="https://www.npmjs.com/package/nodemon">nodemon</a> - A monitor script that restarts a node.js
-                    application whenever changes are detected</li>
             </ol>
-
-            <blockquote>
-                <p><strong>Note</strong>: <code>nodemon</code> can only be installed once you have installed <code>npm</code>.</p>
-            </blockquote>
 
             <p>Once you have installed the above tools, you need to clone the repository,
                 and execute the following command from the <code>app</code> directory to install
                 all the server-side dependencies (listed in <code>app/package.json</code>) in one go:</p>
             <pre>$ npm install</pre>
 
-            <p>Now that all dependencies have been installed, you can start a MongoDB server by executing the following command:</p>
-            <pre>$ mongod --dbpath data/</pre>
-
-            <blockquote>
-                <strong>Note: </strong> You need to manually create an empty <code>data</code> directory within the
-                <code>app</code> directory. This is where all the database content will be stored.
-            </blockquote>
-
             <p>
-                Now, the entire client-side JavaScript code (which has been divided into separate Require.js modules)
+                Now, the client-side JavaScript code (which has been divided into separate Require.js modules)
                 needs to be combined together into a single file (minified and uglified) <code>app/public/javascripts/build/main.min.js</code>.
                 This can be done using the provided Require.js optimizer (<code>app/public/javascripts/libs/r.js</code>), by executing the following
                 command:
             </p>
-            <pre>$ node public/javascripts/libs/r.js -o name=main out=public/javascripts/build/main.min.js mainConfigFile=public/javascripts/main.js include=libs/require.js</pre>
+            <pre>$ npm run build</pre>
+
+            <p>Now create an empty <code>data</code> directory within the <code>app</code> directory. This is where all
+                the database content will be stored. You can start a MongoDB server by executing the following command:</p>
+            <pre>$ npm run start:db</pre>
 
             <p>And finally, the application can be started with the following command:</p>
-            <pre>$ nodemon</pre>
+            <pre>$ npm run start:app</pre>
 
             <blockquote>
                 <p><strong>Note</strong>: All the above commands must be executed from the <code>app</code> directory.
             </blockquote>
 
-            <p>After executing the above two scripts (in any order you like), you can start exploring the tool
-                by visiting the following URL in your preferred browser:</p>
+            <p>After executing the above commands, you can start exploring the tool by visiting the following URL
+                in your preferred browser:</p>
             <pre>localhost:3000</pre>
+
             <blockquote>
                 <p><strong>Note</strong>: If you wish to change the above port number, simply modify the <code>port</code>
                     variable found in <code>app/bin/www</code>, according to your liking.</p>
@@ -74,6 +64,8 @@
                 <li><a href="https://www.npmjs.com/package/mongoose">mongoose</a> - Object Document Model (ODM) for MongoDB</li>
                 <li><a href="https://www.npmjs.com/package/morgan">morgan</a> - HTTP request logger middleware</li>
                 <li><a href="https://www.npmjs.com/package/multer">multer</a> - File upload handling middleware</li>
+                <li><a href="https://www.npmjs.com/package/nodemon">nodemon</a> - A monitor script that restarts a node.js
+                    application whenever changes are detected</li>
                 <li><a href="https://www.npmjs.com/package/serve-favicon">serve-favicon</a> - Favicon serving middleware</li>
                 <li><a href="https://www.npmjs.com/package/swig">swig</a> - Template engine</li>
             </ul>
