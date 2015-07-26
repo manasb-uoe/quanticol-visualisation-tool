@@ -3,36 +3,30 @@
 
 ### Getting Started
 
-All the tools you need to get started:
+Tools you need to get started:
 
 1.  [Node.js](https://nodejs.org/) - Server-side JavaScript environment
 2.  [MongoDB](https://www.mongodb.org/) - A NoSQL database
-3.  [npm](https://www.npmjs.com/) - Node Package Manager
-4.  [nodemon](https://www.npmjs.com/package/nodemon) - A monitor script that restarts a node.js application whenever changes are detected
-
-> **Note**: `nodemon` can only be installed once you have installed `npm`.
 
 Once you have installed the above tools, you need to clone the repository, and execute the following command from the `app` directory to install all the server-side dependencies (listed in `app/package.json`) in one go:
 
 <pre>$ npm install</pre>
 
-Now that all dependencies have been installed, you can start a MongoDB server by executing the following command:
+Now, the client-side JavaScript code (which has been divided into separate Require.js modules) needs to be combined together into a single file (minified and uglified) `app/public/javascripts/build/main.min.js`. This can be done using the provided Require.js optimizer (`app/public/javascripts/libs/r.js`), by executing the following command:
 
-<pre>$ mongod --dbpath data/</pre>
+<pre>$ npm run build</pre>
 
-> **Note:** You need to manually create an empty `data` directory within the `app` directory. This is where all the database content will be stored.
+Now create an empty `data` directory within the `app` directory. This is where all the database content will be stored. You can start a MongoDB server by executing the following command:
 
-Now, the entire client-side JavaScript code (which has been divided into separate Require.js modules) needs to be combined together into a single file (minified and uglified) `app/public/javascripts/build/main.min.js`. This can be done using the provided Require.js optimizer (`app/public/javascripts/libs/r.js`), by executing the following command:
-
-<pre>$ node public/javascripts/libs/r.js -o name=main out=public/javascripts/build/main.min.js mainConfigFile=public/javascripts/main.js include=libs/require.js</pre>
+<pre>$ npm run start:db</pre>
 
 And finally, the application can be started with the following command:
 
-<pre>$ nodemon</pre>
+<pre>$ npm run start:app</pre>
 
 > **Note**: All the above commands must be executed from the `app` directory.
 
-After executing the above two scripts (in any order you like), you can start exploring the tool by visiting the following URL in your preferred browser:
+After executing the above commands, you can start exploring the tool by visiting the following URL in your preferred browser:
 
 <pre>localhost:3000</pre>
 
@@ -50,6 +44,8 @@ All server-side dependencies are included in `app/package.json`, while all clien
 *   [express](https://www.npmjs.com/package/express) - Server-side web application framework
 *   [mongoose](https://www.npmjs.com/package/mongoose) - Object Document Model (ODM) for MongoDB
 *   [morgan](https://www.npmjs.com/package/morgan) - HTTP request logger middleware
+*   [multer](https://www.npmjs.com/package/multer) - File upload handling middleware
+*   [nodemon](https://www.npmjs.com/package/nodemon) - A monitor script that restarts a node.js application whenever changes are detected
 *   [serve-favicon](https://www.npmjs.com/package/serve-favicon) - Favicon serving middleware
 *   [swig](https://www.npmjs.com/package/swig) - Template engine
 
@@ -72,6 +68,26 @@ All server-side dependencies are included in `app/package.json`, while all clien
 
 > **Note:** Even though `moment-timezone-with-data.js` is a superset of `moment-with-locales.min.js`, they are both needed since `moment-with-locales.min.js` is a strict dependency of `bootstrap-datetimepicker.min.js`.
 
+### Database Population
+
+The command line script (`db_population.js`) for populating the database is included in `utils/` directory. It can be run using the following command:
+
+<pre>$ node db_population.js <argument></pre>
+
+The following command-line arguments are allowed:
+
+*   `live` populates the VehicleLocation collection at regular intervals of 40 seconds. It can be manually stopped by pressing <kbd>Ctrl + C</kbd>.
+*   `nonlive` first empties the Stop and Service collections, and then repopulates them with the latest data fetched from the TFE API.
+*   `vehicle_to_services` first empties the VehicleToServices collection, and then repopulates it using the existing Stop and Service collections.
+
+If any other arguments are supplied to this script, it will print an error message and immediately exit.
+
+> **Note:** When you first run the database populate script, you must run it in the following order of arguments:
+> 
+> 1.  `nonlive` (will exit automatically when done)
+> 2.  `live` (will need to be stopped manually when enough data has been collected)
+> 3.  `vehicle_to_services` (will exit automatically when done)
+
 ### Project Structure
 
 When you first clone the repository, `app` directory structure would look like this:
@@ -82,6 +98,7 @@ When you first clone the repository, `app` directory structure would look like t
  |-- node_modules/ (will be created after you execute 'npm install')
  |-- public/
  |-- routes/
+ |-- uploads/ (will be created after the user uploads a simulated data file)
  |-- utils/
  |-- views/
  |-- app.js
@@ -95,6 +112,7 @@ These files/directories are:
 *   `node_modules/` consists of all the dependencies installed using npm.
 *   `public/` consists of all the static files served by the web app (i.e. JavaScripts, CSS stylesheets, HTML templates, images and fonts).
 *   `routes/` consists of all route files. A route file consists of functions that generate HTTP responses based on the requests received. These responses could be for example an HTML template (`routes/index.js`) or simply JSON (`routes/api.js`).
+*   `uploads/` consists of all simulated data plain text files uploaded by the users.
 *   `utils/` consists of database population/configuration scripts.
 *   `views/` consists of HTML templates that are accessed directly by route functions (`routes/`).
 *   `app.js` is the nain configuration file for the `express.js` app.
@@ -148,7 +166,7 @@ These files/directories are:
     *   `vehicle.js` is the dat model which `all_vehicles` and `unique_vehicles` collections are comprised of.
 *   `views/` consists of view files that represent the various parts/sections of the user interface.
     *   `configure_controls_modal.js` represents the modal that is used to configure the step sizes of the simulation controls. This model is displayed whenever the user clicks on 'Configure' at the top right corner of the map control panel.
-    *   `controls_panel.js` represents the sliding control panel that is used to select services, vehicles and the time span for the simulation. It also allows the user to switch to live simulation mode. Its visiblity can be toggled via the 'Control Panel' button that appears just under the top navigation bar.
+    *   `control_panel.js` represents the sliding control panel that is used to select services, vehicles and the time span for the simulation, and also upload plain text files to visualize simulated data. It also allows the user to switch to live simulation mode. Its visiblity can be toggled via the 'Control Panel' button that appears just under the top navigation bar.
     *   `doc.js` represents the documentation page. It basically handles the the navigation sidebar that indicates which section of the documentation the user is currently viewing. This page can be displayed by clicking on the 'Documentation' tab on the navigation bar, or by changing the URL to `/doc`.
     *   `legend_disabled_confirmation_modal.js` represents the modal that is displayed as a warning message whenever the user selects more services than the maximum number of marker icons available.
     *   `map.js` represents the Google map. It provides methods to draw markers and polylines on the map. These methods are invoked by `map_controls.js`.
@@ -168,21 +186,3 @@ These files/directories are:
 > 
 > *   Use `define` if you want to declare a module other parts of your application depend on.
 > *   Use `require` if just want to load and use other modules.
-
-### Database Population
-
-The command line script (`db_population.js`) for populating the database is included in `utils/` directory. It can be run using the following command:
-
-<pre>$ node db_population.js <argument></pre>
-
-The following command-line arguments are allowed:
-
-*   `live` populates the VehicleLocation collection at regular intervals of 40 seconds. It can be manually stopped by pressing <kbd>Ctrl + C</kbd>.
-*   `nonlive` first empties the Stop and Service collections, and then repopulates them with the latest data fetched from the TFE API.
-*   `vehicle_to_services` first empties the VehicleToServices collection, and then repopulates it using the existing Stop and Service collections.
-
-If any other arguments are supplied to this script, it will print an error message and immediately exit.
-
-
-
-</div>
