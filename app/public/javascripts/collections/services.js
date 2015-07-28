@@ -12,17 +12,31 @@ define([
 
     var ServiceCollection = Backbone.Collection.extend({
         model: ServiceModel,
-        url: "/api/services",
         fetch: function (options) {
             var self = this;
 
             $.get(
-                this.url,
+                "/api/services",
                 function (response) {
                     if (response.status == 200) {
-                        self.reset(response.services, {silent: !(options.reset)});
+                        self.reset(response.services, {silent: !(options.reset)});;
 
                         if (options.success) options.success();
+                    } else {
+                        self.trigger("error", response.error);
+                    }
+                }
+            );
+        },
+        // fetches start time and end time of available data based on the services selected by the user
+        fetchTimespan: function () {
+            var self = this;
+            $.get(
+                "/api/timespan",
+                {service: self.getAllSelectedNames()},
+                function (response) {
+                    if (response.status == 200) {
+                        self.trigger("timespan.fetched", response.timespan);
                     } else {
                         self.trigger("error", response.error);
                     }

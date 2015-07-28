@@ -6,17 +6,18 @@ define([
     "jquery",
     "underscore",
     "backbone",
+    "collections/services",
     "datetimepicker",
     "momentTimezone",
     "swig",
     "text!../../templates/select_time_span_modal.html"
-], function($, _, Backbone, datetimepicker, momentTimezone, swig, selectTimeSpanModalTemplate) {
+], function($, _, Backbone, serviceCollection, datetimepicker, momentTimezone, swig, selectTimeSpanModalTemplate) {
     "use strict";
 
     var SelectTimeSpanView = Backbone.View.extend({
         el: "#select-time-span-modal-container",
-        events: {
-
+        initialize: function () {
+            serviceCollection.on("timespan.fetched", this.updateTimespan, this);
         },
         render: function () {
             var compiledTempalte = swig.render(selectTimeSpanModalTemplate);
@@ -63,6 +64,16 @@ define([
                 startTime: this.startTimePicker.data("DateTimePicker").date(),
                 endTime: this.endTimePicker.data("DateTimePicker").date()
             }
+        },
+        updateTimespan: function (timespan) {
+            if (timespan.startTime == null || timespan.endTime == null) {
+                this.reset();
+            } else {
+                this.startTimePicker.data("DateTimePicker").date(momentTimezone.unix(timespan.startTime).tz("Europe/London"));
+                this.endTimePicker.data("DateTimePicker").date(momentTimezone.unix(timespan.endTime).tz("Europe/London"));
+            }
+
+            this.trigger("timespan.updated");
         },
         reset: function () {
             this.startTimePicker.data("DateTimePicker").date(this.startTimePicker.data("DateTimePicker").defaultDate());

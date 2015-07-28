@@ -6,7 +6,7 @@
     "build:js": "node public/javascripts/libs/r.js -o name=main out=public/javascripts/build/main.min.js mainConfigFile=public/javascripts/main.js include=libs/require.js",
     "build": "npm run build:js",
     "start:db": "mongod --dbpath data/",
-    "start:app":"nodemon ./bin/www"
+    "start:app": "nodemon ./bin/www"
   },
   "dependencies": {
     "async": "^1.2.1",
@@ -19,6 +19,7 @@
     "multer": "^1.0.1",
     "nodemon": "^1.3.8",
     "serve-favicon": "~2.2.1",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "underscore": "^1.8.3"
   }
 }

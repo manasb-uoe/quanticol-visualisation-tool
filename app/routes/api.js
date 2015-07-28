@@ -9,10 +9,30 @@ var async = require("async");
 var https = require("https");
 var multer = require('multer')({dest: './uploads/'});
 var fs = require('fs');
+var _ = require('underscore');
 
 var VehicleLocation = require("../models/vehicle_location");
 var VehicleToServices = require("../models/vehicle_to_services");
 
+router.get("/timespan", function (req, res) {
+    var selectedServices = req.query["service"] || [];
+
+    VehicleLocation
+        .where("service_name").in(selectedServices)
+        .select("last_gps_fix")
+        .exec(function (err, vehicles) {
+            if (err) return res.json({status: 500, error: err.message});
+
+            var timespan = {};
+
+            var lastGpsFixes = _.pluck(vehicles, "last_gps_fix");
+            timespan.startTime = _.min(lastGpsFixes);
+            timespan.endTime = _.max(lastGpsFixes);
+
+            return res.json({status: 200, timespan: timespan});
+        });
+
+});
 
 router.get("/services", function (req, res) {
     Service

@@ -40,9 +40,13 @@ define([
                 duration: 3000
             });
 
-            selectServicesModal.on("modal.closed", this.refreshControlPanel, this);
+            selectServicesModal.on("modal.closed", function () {
+                self.refreshControlPanel.call(self);
+                serviceCollection.fetchTimespan();
+            });
             selectVehiclesModal.on("modal.closed", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
+            selectTimeSpanModal.on("timespan.updated", this.refreshControlPanel, this);
             uniqueVehicleCollection.on("reset", this.refreshControlPanel, this);
             allVehicleCollection.on("reset", this.onSubmitResults, this);
             allVehicleCollection.on("error", this.onError, this);
@@ -75,6 +79,19 @@ define([
             this.$el.html(compiledTemplate);
             $("#control-panel-container").html(this.el);
 
+            this.$controlPanel = $(".control-panel");
+            this.$controlPanelTriggerWrapper = $(".control-panel-trigger-wrapper");
+            this.$toggleLiveModeCheckbox = $("#toggle-live-mode-checkbox");
+            this.$selectServicesModalTrigger = $("#select-services-modal-trigger");
+            this.$selectVehiclesModalTrigger = $("#select-vehicles-modal-trigger");
+            this.$selectTimespanModalTrigger = $("#select-time-span-modal-trigger");
+            this.$currentlySelectedServicesSelect = $("#currently-selected-services-select");
+            this.$currentlySelectedVehiclesSelect = $("#currently-selected-vehicles-select");
+            this.$startTime = $("#start-time");
+            this.$endTime = $("#end-time");
+            this.$simulatedDataFileInput = $("#simulated-file-input");
+            this.$submitButton = $("#button-control-panel-submit");
+
             this.delegateEvents(this.events);
 
             this.isControlPanelVisible = false;
@@ -88,7 +105,7 @@ define([
 
             if (this.shouldShowHints) {
                 setTimeout(function () {
-                    self.$el.find("#select-services-modal-trigger").tooltip({
+                    self.$selectServicesModalTrigger.tooltip({
                         title: "Start here",
                         placement: "left",
                         trigger: "manual"
@@ -99,28 +116,25 @@ define([
             }
         },
         toggleControlPanel: function () {
-            var $controlPanel = $(".control-panel");
-            var $controlPanelTriggerWrapper = $(".control-panel-trigger-wrapper");
-
-            var controlPanelHeight = $controlPanel.height();
+            var controlPanelHeight = this.$controlPanel.height();
             if (this.isControlPanelVisible) {
-                $controlPanel.animate(
+                this.$controlPanel.animate(
                     {marginTop: -controlPanelHeight},
                     {duration: 300, queue: false}
                 );
 
-                $controlPanelTriggerWrapper.find(".glyphicon")
+                this.$controlPanelTriggerWrapper.find(".glyphicon")
                     .removeClass()
                     .addClass("glyphicon glyphicon-chevron-down");
 
                 this.isControlPanelVisible = false;
             } else {
-                $controlPanel.animate(
+                this.$controlPanel.animate(
                     {marginTop: "0"},
                     {duration: 300, queue: false}
                 );
 
-                $controlPanelTriggerWrapper.find(".glyphicon")
+                this.$controlPanelTriggerWrapper.find(".glyphicon")
                     .removeClass()
                     .addClass("glyphicon glyphicon-chevron-up");
 
@@ -128,7 +142,7 @@ define([
             }
         },
         showSelectServicesModal: function() {
-            $("#select-services-modal-trigger").tooltip("destroy");
+            this.$selectServicesModalTrigger.tooltip("destroy");
 
             selectServicesModal.setVisible(true);
         },
@@ -136,17 +150,18 @@ define([
             selectVehiclesModal.setVisible(true);
         },
         refreshControlPanel: function() {
+            var self = this;
+
             // update selected service names
             var selectedServices = serviceCollection.filter(function (service) {
                 return service.get("isSelected");
             });
-            var $servicesSelect = $("#currently-selected-services-select");
-            $servicesSelect.empty();
+            this.$currentlySelectedServicesSelect.empty();
             if (selectedServices.length == 0) {
-                $servicesSelect.append("<option disabled>None</option>")
+                this.$currentlySelectedServicesSelect.append("<option disabled>None</option>")
             } else {
                 selectedServices.forEach(function (service) {
-                    $servicesSelect.append("<option disabled>" + service.get("name") + " (" + service.get("service_type") + ")</option>");
+                    self.$currentlySelectedServicesSelect.append("<option disabled>" + service.get("name") + " (" + service.get("service_type") + ")</option>");
                 });
             }
 
@@ -154,36 +169,35 @@ define([
             var selectedVehicleIDs = uniqueVehicleCollection.filter(function (vehicle) {
                 return vehicle.get("isSelected");
             });
-            var $vehiclesSelect = $("#currently-selected-vehicles-select");
-            $vehiclesSelect.empty();
+            this.$currentlySelectedVehiclesSelect.empty();
             if (selectedVehicleIDs.length == 0) {
-                $vehiclesSelect.append("<option disabled>None</option>")
+                this.$currentlySelectedVehiclesSelect.append("<option disabled>None</option>")
             } else {
                 selectedVehicleIDs.forEach(function (vehicle) {
-                    $vehiclesSelect.append("<option disabled>" + vehicle.get("vehicle_id") + " (Services: " + vehicle.get("services") + ")</option>");
+                    self.$currentlySelectedVehiclesSelect.append("<option disabled>" + vehicle.get("vehicle_id") + " (Services: " + vehicle.get("services") + ")</option>");
                 });
+            }
+
+            // update selected time span if live mode is not enabled
+            if (this.$toggleLiveModeCheckbox.prop("checked")) {
+                this.$selectTimespanModalTrigger.prop("disabled", true);
+                this.$startTime.text("(Disabled)");
+                this.$endTime.text("(Disabled)");
+            } else {
+                var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
+                this.$startTime.text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
+                this.$endTime.text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
+                this.$selectTimespanModalTrigger.prop("disabled", false);
             }
 
             // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
             // selected services/vehicles or not
-            var selectVehiclesButton = $("#select-vehicles-modal-trigger");
-
             if (selectedServices.length == 0) {
-                selectVehiclesButton.attr("disabled", "disabled");
+                this.$selectVehiclesModalTrigger.prop("disabled", true);
+                this.$selectTimespanModalTrigger.prop("disabled", true);
             } else {
-                selectVehiclesButton.removeAttr("disabled");
-            }
-
-            // update selected time span if live mode is not enabled
-            if ($("#toggle-live-mode-checkbox").prop("checked")) {
-                $("#select-time-span-modal-trigger").prop("disabled", true);
-                $("#start-time").text("(Disabled)");
-                $("#end-time").text("(Disabled)");
-            } else {
-                var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
-                $("#start-time").text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
-                $("#end-time").text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
-                $("#select-time-span-modal-trigger").prop("disabled", false);
+                this.$selectVehiclesModalTrigger.prop("disabled", false);
+                this.$selectTimespanModalTrigger.prop("disabled", false);
             }
         },
         showSelectTimeSpanModal: function () {
@@ -229,15 +243,13 @@ define([
                     break;
 
                 case this.visualizationTypeEnum.SIMULATED:
-                    var $input = $("#simulated-file-input");
-
-                    if ($input[0].files.length == 0) {
+                    if (this.$simulatedDataFileInput[0].files.length == 0) {
                         new SnackbarView({
                             content: "Error: You must select a file to be uploaded!",
                             duration: 3000
                         }).toggle();
                     } else {
-                        var file = $input[0].files[0];
+                        var file = this.$simulatedDataFileInput[0].files[0];
 
                         if (file.type != "text/plain") {
                             new SnackbarView({
@@ -270,7 +282,7 @@ define([
 
                     allVehicleCollection.reset(undefined, {silent: true});
 
-                    allVehicleCollection.fetch($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive", {
+                    allVehicleCollection.fetch(this.$toggleLiveModeCheckbox.prop("checked") ? "live" : "nonlive", {
                         selectedServices: selectedServices,
                         selectedVehicles: selectedVehicles,
                         startTime: timeSpan.startTime.unix(),
@@ -291,7 +303,7 @@ define([
             }
         },
         onSubmitResults: function () {
-            $("#button-control-panel-submit").button("reset");
+            this.$submitButton.button("reset");
 
             if (this.visualizationType == this.visualizationTypeEnum.SIMULATED) {
                 // IMPORTANT: Need to select those services that were included in the file uploaded by the
@@ -308,7 +320,7 @@ define([
                 this.toggleControlPanel();
 
                 mapControlsView.reset();
-                mapControlsView.setupSimulation($("#toggle-live-mode-checkbox").prop("checked") ? "live" : "nonlive");
+                mapControlsView.setupSimulation(this.$toggleLiveModeCheckbox.prop("checked") ? "live" : "nonlive");
                 mapControlsView.setVisible(true);
 
             } else {
@@ -319,7 +331,7 @@ define([
             }
         },
         onError: function (errorMessage) {
-            $("#button-control-panel-submit").button("reset");
+            this.$submitButton.button("reset");
 
             new SnackbarView({
                 content: "Error: " + errorMessage,
