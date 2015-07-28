@@ -178,6 +178,14 @@ define([
                 });
             }
 
+            // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
+            // selected services/vehicles or not
+            if (selectedServices.length == 0) {
+                this.$selectVehiclesModalTrigger.prop("disabled", true);
+            } else {
+                this.$selectVehiclesModalTrigger.prop("disabled", false);
+            }
+
             // update selected time span if live mode is not enabled
             if (this.$toggleLiveModeCheckbox.prop("checked")) {
                 this.$selectTimespanModalTrigger.prop("disabled", true);
@@ -187,16 +195,6 @@ define([
                 var timeSpan = selectTimeSpanModal.getSelectedTimeSpan();
                 this.$startTime.text(timeSpan.startTime.format('MMMM Do YYYY, h:mm a'));
                 this.$endTime.text(timeSpan.endTime.format('MMMM Do YYYY, h:mm a'));
-                this.$selectTimespanModalTrigger.prop("disabled", false);
-            }
-
-            // enable or disable 'select vehicles' and 'select time span' buttons depending on whether user has
-            // selected services/vehicles or not
-            if (selectedServices.length == 0) {
-                this.$selectVehiclesModalTrigger.prop("disabled", true);
-                this.$selectTimespanModalTrigger.prop("disabled", true);
-            } else {
-                this.$selectVehiclesModalTrigger.prop("disabled", false);
                 this.$selectTimespanModalTrigger.prop("disabled", false);
             }
         },
