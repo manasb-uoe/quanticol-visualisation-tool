@@ -8,6 +8,8 @@ Tools you need to get started:
 1.  [Node.js](https://nodejs.org/) - Server-side JavaScript environment
 2.  [MongoDB](https://www.mongodb.org/) - A NoSQL database
 
+> **Note:** After installing MongoDB, do not forget to add `../MongoDB/Server/<version>/bin` to your PATH variable. This will be needed in order to run `mongod` command from the command line (while running `npm run start:db`).
+
 Once you have installed the above tools, you need to clone the repository, and execute the following command from the `app` directory to install all the server-side dependencies (listed in `app/package.json`) in one go:
 
 <pre>$ npm install</pre>
