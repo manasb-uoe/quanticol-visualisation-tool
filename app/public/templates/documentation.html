@@ -10,6 +10,12 @@
                 <li><a href="https://www.mongodb.org/">MongoDB</a> - A NoSQL database</li>
             </ol>
 
+            <blockquote>
+                <strong>Note: </strong> After installing MongoDB, do not forget to add <code>...\MongoDB\Server\&ltversion>&gtbin</code>
+                to your PATH variable, so that <code>mongod</code> command can be run directly via
+                the command line (will be needed while running <code>npm run start:db</code>).
+            </blockquote>
+
             <p>Once you have installed the above tools, you need to clone the repository,
                 and execute the following command from the <code>app</code> directory to install
                 all the server-side dependencies (listed in <code>app/package.json</code>) in one go:</p>
