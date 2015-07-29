@@ -42,7 +42,12 @@ define([
 
             selectServicesModal.on("modal.closed", function () {
                 self.refreshControlPanel.call(self);
-                serviceCollection.fetchTimespan();
+
+                /**
+                 * Uncomment the line below to enable fetching on timespan based on selected services. Note that
+                 * this process takes a lot of time.
+                 */
+                //serviceCollection.fetchTimespan();
             });
             selectVehiclesModal.on("modal.closed", this.refreshControlPanel, this);
             selectTimeSpanModal.on("modal.closed", this.refreshControlPanel, this);
